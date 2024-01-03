@@ -24,6 +24,11 @@ const routes = [
     name: 'forgot-password',
     component: () => import('../views/ForgotPasswordView.vue'),
     meta: { title: 'Quên Mật Khẩu' }
+  },
+  {
+    path: "/:pathMatch(.*)",
+    name: "notfound",
+    component: () => import("../views/NotFound.vue")
   }
 ]
 
