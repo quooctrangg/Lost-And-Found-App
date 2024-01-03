@@ -1,7 +1,11 @@
 <script setup>
-console.log(import.meta.env.VITE_PORT);
+import Header from '@/components/common/Header.vue';
+import Footer from '@/components/common/Footer.vue';
 </script>
 
 <template>
-    <h1 class="text-red-500">Hello</h1>
+    <Header />
+    <div class="w-[80%] mx-auto">
+        <h1 class="text-red-500">Home</h1>
+    </div>
 </template>
