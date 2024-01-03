@@ -1,3 +1,35 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+.input-custom {
+    @apply bg-gray-50 border border-gray-300 text-gray-800 rounded-lg block w-full p-2
+}
+
+.input-custom:focus {
+    @apply outline-sky-500
+}
+
+.checkbox-custom {
+    @apply w-4 h-4 text-sky-600 bg-gray-100 border-gray-300 rounded
+}
+
+.btn-custom {
+    @apply bg-sky-500 w-full rounded-lg text-sm px-5 py-2 text-center text-slate-800 font-semibold
+}
+
+.btn-custom:hover {
+    @apply bg-sky-300 text-stone-100
+}
+
+.label-custom {
+    @apply block mb-2 text-sm font-medium text-gray-800
+}
+
+.h1-custom {
+    @apply text-lg font-bold leading-tight tracking-tight text-center text-sky-500
+}
+
+.error {
+    @apply text-red-600 text-sm
+}
