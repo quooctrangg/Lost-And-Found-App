@@ -1,0 +1,34 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id        Int      @id @default(autoincrement())
+  email     String
+  name      String
+  password  String
+  type      Int      @default(1)
+  image     String   @default("https://res.cloudinary.com/dig0nsb6m/image/upload/v1704869331/hjv353yrt9hahuomkxey.png")
+  isBan     Boolean  @default(false)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@map("users")
+}
+
+model VerifyCode {
+  id        Int      @id @default(autoincrement())
+  email     String
+  code      Int
+  createdAt DateTime @default(now())
+
+  @@map("verifyCodes")
+}
