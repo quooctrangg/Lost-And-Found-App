@@ -120,12 +120,12 @@ export class AuthService {
 
     async sendVerifyCode(verifyCodeDto: VerifyCodeDto) {
         try {
-            const user = await this.prismaService.user.findFirst({
-                where: {
-                    email: verifyCodeDto.email
-                }
-            })
-            if (!user) return new ResponseData<any>(null, 400, 'Email này chưa đăng ký')
+            // const user = await this.prismaService.user.findFirst({
+            //     where: {
+            //         email: verifyCodeDto.email
+            //     }
+            // })
+            // if (!user) return new ResponseData<any>(null, 400, 'Email này chưa đăng ký')
             await this.prismaService.verifyCode.deleteMany({
                 where: {
                     email: verifyCodeDto.email
@@ -144,7 +144,7 @@ export class AuthService {
                 subject: 'Mã OTP để xác nhận tạo tài khoản mới cho Ứng dụng hỗ trợ tìm kiếm đồ vật bị thất lạt',
                 template: './verifycode',
                 context: {
-                    name: user.name,
+                    name: verifyCodeDto.name,
                     code: code
                 }
             })
