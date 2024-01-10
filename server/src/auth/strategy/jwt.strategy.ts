@@ -7,21 +7,22 @@ import { ResponseData } from "../../global";
 
 @Injectable()
 export class JwtStrategy extends PassportStrategy(Strategy, 'jwt') {
-    constructor(private configService: ConfigService, private prismaService: PrismaService) {
+    constructor(private readonly configService: ConfigService, private readonly prismaService: PrismaService) {
         super({
             jwtFromRequest: ExtractJwt.fromAuthHeaderAsBearerToken(),
             secretOrKey: configService.get('JWT_SECRET')
         })
     }
 
-    async validate(payload: { sub: number, username: string }) {
-        // const user = await this.prismaService.User.findFirst({
-        //     where: { userId: payload.sub },
-        //     include: { User: true }
-        // })
-
-        // if (!user) return
-        // delete user.password
-        // return user
+    async validate(payload: { sub: number, email: string }) {
+        const user = await this.prismaService.user.findFirst({
+            where: {
+                id: payload.sub,
+                email: payload.email
+            }
+        })
+        if (!user) return
+        delete user.password
+        return user
     }
 }

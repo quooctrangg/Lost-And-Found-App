@@ -5,7 +5,7 @@ import { MailerService } from '@nestjs-modules/mailer';
 import { User } from '@prisma/client';
 import * as argon2 from 'argon2';
 import { PrismaService } from '../prisma/prisma.service';
-import { LoginDto, RegisterDto, VerifyCodeDto } from './dto';
+import { ForgotPasswordDto, LoginDto, RegisterDto, VerifyCodeDto } from './dto';
 import { ResponseData } from '../global';
 
 @Injectable()
@@ -26,7 +26,9 @@ export class AuthService {
             createdAt.setMinutes(createdAt.getMinutes() + 5)
             if (createdAt <= currentDate) return new ResponseData<string>(null, 400, 'Quá thời gian của mã xác minh')
             const user = await this.prismaService.user.findFirst({
-                where: { email: registerDto.email }
+                where: {
+                    email: registerDto.email
+                }
             })
             if (user) return new ResponseData<User>(null, 400, 'Email đã được sử dụng')
             const hashedPassword = await argon2.hash(registerDto.password)
@@ -39,7 +41,9 @@ export class AuthService {
             })
             if (!newuser) return new ResponseData<User>(null, 400, 'Tạo tài khoản thất bại, thử lại')
             await this.prismaService.verifyCode.deleteMany({
-                where: { email: registerDto.email }
+                where: {
+                    email: registerDto.email
+                }
             })
             delete newuser.password
             delete newuser.isBan
@@ -52,12 +56,21 @@ export class AuthService {
     async login(loginDto: LoginDto) {
         try {
             const user = await this.prismaService.user.findFirst({
-                where: { email: loginDto.email }
+                where: {
+                    email: loginDto.email
+                },
+                include: {
+                    feedback: {
+                        orderBy: {
+                            createdAt: 'desc'
+                        }
+                    }
+                }
             })
             if (!user) return new ResponseData<string>(null, 400, 'Tài khoản không tồn tại')
             const passwordMatched = await argon2.verify(user.password, loginDto.password)
             if (!passwordMatched) return new ResponseData<string>(null, 400, 'Mật khẩu không chính xác')
-            // if (user.isBan) return new ResponseData<any>({ feedback: user.feedback }, 403, 'Tài khoản đã bị khóa')
+            if (user.isBan) return new ResponseData<any>({ feedback: user.feedback[0] }, 403, 'Tài khoản đã bị khóa')
             const data = await this.signJwtToken(user.id, user.email)
             return new ResponseData<any>(data, 200, 'Đăng nhập thành công')
         } catch (error) {
@@ -65,12 +78,59 @@ export class AuthService {
         }
     }
 
+    async forgotPassword(forgotPasswordDto: ForgotPasswordDto) {
+        const currentDate = new Date();
+        try {
+            const verifyCode = await this.prismaService.verifyCode.findFirst({
+                where: {
+                    email: forgotPasswordDto.email,
+                    code: forgotPasswordDto.code
+                }
+            })
+            if (!verifyCode) return new ResponseData<string>(null, 400, 'Mã xác minh không tồn tại')
+            const createdAt = new Date(verifyCode.createdAt)
+            createdAt.setMinutes(createdAt.getMinutes() + 5)
+            if (createdAt <= currentDate) return new ResponseData<string>(null, 400, 'Quá thời gian của mã xác minh')
+            const user = await this.prismaService.user.findFirst({
+                where: {
+                    email: forgotPasswordDto.email
+                }
+            })
+            if (!user) return new ResponseData<string>(null, 400, 'Tài khoản không tồn tại')
+            const hashedPassword = await argon2.hash(forgotPasswordDto.newPassword)
+            const newPassword = await this.prismaService.user.update({
+                where: {
+                    id: user.id
+                },
+                data: {
+                    password: hashedPassword
+                }
+            })
+            if (!newPassword) return new ResponseData<string>(null, 400, 'Đổi mật khẩu thất bại, thử lại')
+            await this.prismaService.verifyCode.deleteMany({
+                where: {
+                    email: user.email
+                }
+            })
+            return new ResponseData<string>(null, 200, 'Đổi mật khẩu thành công')
+        } catch (error) {
+            return new ResponseData<string>(null, 500, 'Lỗi dịch vụ, thử lại sau')
+        }
+    }
+
     async sendVerifyCode(verifyCodeDto: VerifyCodeDto) {
         try {
-            const { email } = verifyCodeDto
-            const user = await this.prismaService.user.findFirst({ where: { email }, })
+            const user = await this.prismaService.user.findFirst({
+                where: {
+                    email: verifyCodeDto.email
+                }
+            })
             if (!user) return new ResponseData<any>(null, 400, 'Email này chưa đăng ký')
-            await this.prismaService.verifyCode.deleteMany({ where: { email: email } })
+            await this.prismaService.verifyCode.deleteMany({
+                where: {
+                    email: verifyCodeDto.email
+                }
+            })
             const code = this.random6DigitNumber()
             const verifyCode = await this.prismaService.verifyCode.create({
                 data: {
@@ -80,8 +140,8 @@ export class AuthService {
             })
             if (!verifyCode) return new ResponseData<string>(null, 500, 'Lỗi dịch vụ, thử lại sau')
             const emailSend = await this.mailerService.sendMail({
-                to: email,
-                subject: 'Mã OTP để xác nhận tạo tào khoản mới cho Ứng dụng hỗ trợ tìm kiếm đồ vật bị thất lạt',
+                to: verifyCodeDto.email,
+                subject: 'Mã OTP để xác nhận tạo tài khoản mới cho Ứng dụng hỗ trợ tìm kiếm đồ vật bị thất lạt',
                 template: './verifycode',
                 context: {
                     name: user.name,
