@@ -21,7 +21,8 @@ model User {
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
-  feedback Feedback[]
+  feedback       Feedback[]
+  search_history SearchHistory[]
 
   @@map("users")
 }
@@ -44,4 +45,14 @@ model Feedback {
   userId Int
 
   @@map("feedbacks")
+}
+
+model SearchHistory {
+  id      Int    @id @default(autoincrement())
+  content String
+
+  User   User? @relation(fields: [userId], references: [id])
+  userId Int?
+
+  @@map("searchHistorys")
 }
