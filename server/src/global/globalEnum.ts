@@ -1,4 +1,4 @@
-export enum ACCOUNT_TYPES {
+export enum USER_TYPES {
     USER = 1,
     ADMIN = 0
 };

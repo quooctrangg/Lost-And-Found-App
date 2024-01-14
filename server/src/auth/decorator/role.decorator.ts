@@ -1,4 +1,4 @@
 import { SetMetadata } from "@nestjs/common";
-import { ACCOUNT_TYPES } from "../../global/globalEnum";
+import { USER_TYPES } from "../../global/globalEnum";
 
-export const Roles = (...roles: ACCOUNT_TYPES[]) => SetMetadata('roles', roles)
+export const Roles = (...roles: USER_TYPES[]) => SetMetadata('roles', roles)

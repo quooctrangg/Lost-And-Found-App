@@ -1,6 +1,6 @@
 import { CanActivate, ExecutionContext, Injectable } from "@nestjs/common";
 import { Reflector } from "@nestjs/core";
-import { ACCOUNT_TYPES } from "../../global/globalEnum";
+import { USER_TYPES } from "../../global/globalEnum";
 
 
 @Injectable()
@@ -8,7 +8,7 @@ export class RolesGuard implements CanActivate {
     constructor(private reflector: Reflector) { }
 
     canActivate(context: ExecutionContext): boolean {
-        const roles = this.reflector.getAllAndOverride<ACCOUNT_TYPES[]>('roles', [
+        const roles = this.reflector.getAllAndOverride<USER_TYPES[]>('roles', [
             context.getHandler(),
             context.getClass()
         ])
