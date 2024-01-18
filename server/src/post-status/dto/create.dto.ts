@@ -1,7 +1,7 @@
 import { IsNotEmpty, IsString } from "class-validator";
 
-export class CreateImageDto {
+export class CreatePostStatusDto {
     @IsString()
     @IsNotEmpty()
-    url: string
+    name: string
 }
