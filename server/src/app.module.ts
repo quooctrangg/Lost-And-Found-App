@@ -9,6 +9,7 @@ import { CloudinaryModule } from './cloudinary/cloudinary.module';
 import { VerifyStatusModule } from './verify-status/verify-status.module';
 import { ItemModule } from './item/item.module';
 import { ImageModule } from './image/image.module';
+import { LocationModule } from './location/location.module';
 import * as Joi from 'joi';
 
 @Module({
@@ -17,6 +18,6 @@ import * as Joi from 'joi';
     validationSchema: Joi.object({
       PORT: Joi.number().required(),
     }),
-  }), PrismaModule, AuthModule, MailingModule, SearchHistoryModule, UserModule, CloudinaryModule, VerifyStatusModule, ItemModule, ImageModule]
+  }), PrismaModule, AuthModule, MailingModule, SearchHistoryModule, UserModule, CloudinaryModule, VerifyStatusModule, ItemModule, ImageModule, LocationModule]
 })
 export class AppModule { }
