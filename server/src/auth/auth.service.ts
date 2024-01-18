@@ -60,7 +60,7 @@ export class AuthService {
                     email: loginDto.email
                 },
                 include: {
-                    feedback: {
+                    Feedback: {
                         orderBy: {
                             createdAt: 'desc'
                         }
@@ -70,7 +70,7 @@ export class AuthService {
             if (!user) return new ResponseData<string>(null, 400, 'Tài khoản không tồn tại')
             const passwordMatched = await argon2.verify(user.password, loginDto.password)
             if (!passwordMatched) return new ResponseData<string>(null, 400, 'Mật khẩu không chính xác')
-            if (user.isBan) return new ResponseData<any>({ feedback: user.feedback[0] }, 403, 'Tài khoản đã bị khóa')
+            if (user.isBan) return new ResponseData<any>({ feedback: user.Feedback[0] }, 403, 'Tài khoản đã bị khóa')
             const data = await this.signJwtToken(user.id, user.email)
             return new ResponseData<any>(data, 200, 'Đăng nhập thành công')
         } catch (error) {

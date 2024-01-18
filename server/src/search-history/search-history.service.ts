@@ -11,12 +11,8 @@ export class SearchHistoryService {
     async get(userId: number) {
         try {
             return new ResponseData<SearchHistory[]>(await this.prismaService.searchHistory.findMany({
-                include: {
-                    User: {
-                        where: {
-                            id: userId
-                        }
-                    }
+                where: {
+                    userId: userId
                 },
                 take: 5
             }), 200, 'Tìm thành công')

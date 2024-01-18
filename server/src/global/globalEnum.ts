@@ -12,3 +12,8 @@ export enum CONSTANTS_MIN {
     PASSWORD_LEN = 6,
     NAME_LEN = 1
 }
+
+export enum PAGE_SIZE {
+    PAGE_USER = 20,
+    PAGE_POST = 20
+}

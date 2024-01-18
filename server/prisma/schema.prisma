@@ -21,8 +21,16 @@ model User {
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
-  feedback       Feedback[]
-  search_history SearchHistory[]
+  Feedback      Feedback[]
+  SearchHistory SearchHistory[]
+  Message       Message[]
+  Post          Post[]
+  Request       Request[]
+
+  School         School?       @relation(fields: [schoolId], references: [id])
+  schoolId       Int?
+  Conversation   Conversation? @relation(fields: [conversationId], references: [id])
+  conversationId Int?
 
   @@map("users")
 }
@@ -51,8 +59,171 @@ model SearchHistory {
   id      Int    @id @default(autoincrement())
   content String
 
-  User   User? @relation(fields: [userId], references: [id])
-  userId Int?
+  User   User @relation(fields: [userId], references: [id])
+  userId Int
 
   @@map("searchHistorys")
+}
+
+model School {
+  id   Int    @id @default(autoincrement())
+  name String
+
+  User User[]
+
+  @@map("schools")
+}
+
+model Conversation {
+  id        Int      @id @default(autoincrement())
+  createdAt DateTime @default(now())
+
+  User    User[]
+  Message Message[]
+
+  @@map("conversations")
+}
+
+model Message {
+  id        Int      @id @default(autoincrement())
+  content   String
+  read      Boolean
+  isImage   Boolean
+  createdAt DateTime @default(now())
+
+  Conversation   Conversation @relation(fields: [conversationId], references: [id])
+  conversationId Int
+  User           User         @relation(fields: [userId], references: [id])
+  userId         Int
+
+  @@map("messages")
+}
+
+model Post {
+  id          Int      @id @default(autoincrement())
+  title       String
+  description String
+  isDelete    Boolean
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  Request  Request[]
+  Location Location[]
+  Image    Image[]
+
+  User           User         @relation(fields: [userId], references: [id])
+  userId         Int
+  Type           Type         @relation(fields: [typeId], references: [id])
+  typeId         Int
+  PostStatus     PostStatus   @relation(fields: [postStatusId], references: [id])
+  postStatusId   Int
+  Item           Item         @relation(fields: [itemId], references: [id])
+  itemId         Int
+  VerifyStatus   VerifyStatus @relation(fields: [verifyStatusId], references: [id])
+  verifyStatusId Int
+
+  @@map("posts")
+}
+
+model Request {
+  id          Int      @id @default(autoincrement())
+  description String
+  createdAt   DateTime @default(now())
+
+  User            User          @relation(fields: [userId], references: [id])
+  userId          Int
+  Post            Post          @relation(fields: [postId], references: [id])
+  postId          Int
+  RequestStatus   RequestStatus @relation(fields: [requestStatusId], references: [id])
+  requestStatusId Int
+
+  @@map("requests")
+}
+
+model RequestStatus {
+  id   Int    @id @default(autoincrement())
+  name String
+
+  Request Request[]
+
+  @@map("requestsStatus")
+}
+
+model Type {
+  id   Int    @id @default(autoincrement())
+  name String
+
+  Post Post[]
+
+  @@map("types")
+}
+
+model PostStatus {
+  id   Int    @id @default(autoincrement())
+  name String
+
+  Post Post[]
+
+  @@map("postsStatus")
+}
+
+model Location {
+  id   Int    @id @default(autoincrement())
+  name String
+
+  Post Post[]
+
+  @@map("locations")
+}
+
+model Image {
+  id  Int    @id @default(autoincrement())
+  url String
+
+  Post   Post @relation(fields: [postId], references: [id])
+  postId Int
+
+  @@map("images")
+}
+
+model Item {
+  id   Int    @id @default(autoincrement())
+  name String
+
+  Post Post[]
+
+  @@map("items")
+}
+
+model VerifyStatus {
+  id   Int    @id @default(autoincrement())
+  name String
+
+  Post Post[]
+
+  @@map("verifiesStatus")
+}
+
+model Comment {
+  id        Int      @id @default(autoincrement())
+  content   String
+  createdAt DateTime @default(now())
+
+  replies Comment[] @relation("ParentComment")
+
+  parent       Comment?      @relation("ParentComment", fields: [parentId], references: [id])
+  parentId     Int?
+  Notification Notification?
+
+  @@map("comments")
+}
+
+model Notification {
+  id   Int     @id @default(autoincrement())
+  read Boolean
+
+  Comment   Comment @relation(fields: [commentId], references: [id])
+  commentId Int     @unique
+
+  @@map("notifications")
 }

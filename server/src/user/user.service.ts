@@ -14,6 +14,7 @@ export class UserService {
     async getUser(id: number) {
         try {
             const user = await this.getUserById(id)
+            delete user.password
             return new ResponseData<User>(user, 200, 'Tài khoản tồn tại')
         } catch (error) {
             return new ResponseData<string>(null, 500, 'Lỗi dịch vụ, thử lại sau')
@@ -25,9 +26,18 @@ export class UserService {
             const users = await this.prismaService.user.findMany({
                 where: {
                     type: USER_TYPES.USER
+                },
+                select: {
+                    id: true,
+                    name: true,
+                    email: true,
+                    image: true,
+                    isBan: true,
+                    createdAt: true,
+                    Feedback: true
                 }
             })
-            return new ResponseData<User>(users, 200, 'Tìm thành công các tài khoản')
+            return new ResponseData<any>(users, 200, 'Tìm thành công các tài khoản')
         } catch (error) {
             return new ResponseData<string>(null, 500, 'Lỗi dịch vụ, thử lại sau')
         }
