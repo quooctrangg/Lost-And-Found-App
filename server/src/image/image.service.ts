@@ -1,26 +1,26 @@
 import { Injectable } from '@nestjs/common';
-import { Item } from '@prisma/client';
+import { Image } from '@prisma/client';
 import { ResponseData } from '../global';
 import { PrismaService } from '../prisma/prisma.service';
-import { CreateItemDto, UpdateItemDto } from './dto';
+import { CreateImageDto, UpdateImageDto } from './dto';
 
 @Injectable()
-export class ItemService {
+export class ImageService {
     constructor(private readonly prismaService: PrismaService) { }
 
     async get() {
         try {
-            return new ResponseData<Item>(await this.prismaService.item.findMany({}), 200, 'Tìm thành công')
+            return new ResponseData<Image>(await this.prismaService.image.findMany({}), 200, 'Tìm thành công')
         } catch (error) {
             return new ResponseData<string>(null, 500, 'Lỗi dịch vụ, thử lại sau')
         }
     }
 
-    async create(createItemDto: CreateItemDto) {
+    async create(createImageDto: CreateImageDto) {
         try {
-            await this.prismaService.item.create({
+            await this.prismaService.image.create({
                 data: {
-                    name: createItemDto.name
+                    url: createImageDto.url
                 }
             })
             return new ResponseData<any>(null, 200, 'Tạo thành công')
@@ -29,20 +29,20 @@ export class ItemService {
         }
     }
 
-    async update(id: number, updateItemDto: UpdateItemDto) {
+    async update(id: number, updateImageDto: UpdateImageDto) {
         try {
-            const data = await this.prismaService.item.findUnique({
+            const data = await this.prismaService.image.findUnique({
                 where: {
                     id: id
                 }
             })
             if (!data) return new ResponseData<any>(null, 400, 'Không tìm thấy')
-            await this.prismaService.item.update({
+            await this.prismaService.image.update({
                 where: {
                     id: id
                 },
                 data: {
-                    name: updateItemDto.name
+                    url: updateImageDto.url
                 }
             })
             return new ResponseData<any>(null, 200, 'Cập nhật thành công')
@@ -53,13 +53,13 @@ export class ItemService {
 
     async delete(id: number) {
         try {
-            const data = await this.prismaService.item.findUnique({
+            const data = await this.prismaService.image.findUnique({
                 where: {
                     id: id
                 }
             })
             if (!data) return new ResponseData<any>(null, 400, 'Không tìm thấy')
-            await this.prismaService.item.delete({
+            await this.prismaService.image.delete({
                 where: {
                     id: id
                 }
