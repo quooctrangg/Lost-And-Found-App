@@ -7,6 +7,7 @@ import { SearchHistoryModule } from './search-history/search-history.module';
 import { UserModule } from './user/user.module';
 import { CloudinaryModule } from './cloudinary/cloudinary.module';
 import { VerifyStatusModule } from './verify-status/verify-status.module';
+import { ItemModule } from './item/item.module';
 import * as Joi from 'joi';
 
 @Module({
@@ -15,6 +16,6 @@ import * as Joi from 'joi';
     validationSchema: Joi.object({
       PORT: Joi.number().required(),
     }),
-  }), PrismaModule, AuthModule, MailingModule, SearchHistoryModule, UserModule, CloudinaryModule, VerifyStatusModule]
+  }), PrismaModule, AuthModule, MailingModule, SearchHistoryModule, UserModule, CloudinaryModule, VerifyStatusModule, ItemModule]
 })
 export class AppModule { }
