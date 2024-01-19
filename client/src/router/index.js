@@ -26,6 +26,24 @@ const routes = [
     meta: { title: 'Quên Mật Khẩu' }
   },
   {
+    path: '/profile',
+    name: 'profile',
+    component: () => import('../views/ProfileView.vue'),
+    meta: { title: 'Thông tin cá nhân' },
+    children: [
+      {
+        path: '',
+        name: 'post',
+        component: () => import('../components/profile/Post.vue')
+      },
+      {
+        path: 'request',
+        name: 'request',
+        component: () => import('../components/profile/Request.vue')
+      }
+    ]
+  },
+  {
     path: "/:pathMatch(.*)",
     name: "notfound",
     component: () => import("../views/NotFound.vue")

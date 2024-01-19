@@ -14,7 +14,7 @@
                 </router-link>
             </div>
             <div class="w-[30%]">
-                <div v-if="true" class="text-xs flex gap-2 justify-end">
+                <div v-if="false" class="text-xs flex gap-2 justify-end">
                     <div class="hover:text-red-500">
                         <router-link :to="{ name: 'login' }">
                             <p>Đăng nhập</p>
