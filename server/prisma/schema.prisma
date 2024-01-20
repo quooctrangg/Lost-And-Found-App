@@ -100,27 +100,26 @@ model Message {
 }
 
 model Post {
-  id          Int      @id @default(autoincrement())
-  title       String
-  description String
-  isDelete    Boolean
-  createdAt   DateTime @default(now())
-  updatedAt   DateTime @updatedAt
+  id             Int      @id @default(autoincrement())
+  title          String
+  description    String
+  verify         Int      @default(0)
+  done           Boolean  @default(false)
+  isDelete       Boolean  @default(false)
+  sendProtection Boolean  @default(false)
+  createdAt      DateTime @default(now())
+  updatedAt      DateTime @updatedAt
 
   Request  Request[]
   Location Location[]
   Image    Image[]
 
-  User           User         @relation(fields: [userId], references: [id])
-  userId         Int
-  Type           Type         @relation(fields: [typeId], references: [id])
-  typeId         Int
-  PostStatus     PostStatus   @relation(fields: [postStatusId], references: [id])
-  postStatusId   Int
-  Item           Item         @relation(fields: [itemId], references: [id])
-  itemId         Int
-  VerifyStatus   VerifyStatus @relation(fields: [verifyStatusId], references: [id])
-  verifyStatusId Int
+  User   User? @relation(fields: [userId], references: [id])
+  userId Int?
+  Type   Type  @relation(fields: [typeId], references: [id])
+  typeId Int
+  Item   Item  @relation(fields: [itemId], references: [id])
+  itemId Int
 
   @@map("posts")
 }
@@ -158,15 +157,6 @@ model Type {
   @@map("types")
 }
 
-model PostStatus {
-  id   Int    @id @default(autoincrement())
-  name String
-
-  Post Post[]
-
-  @@map("postsStatus")
-}
-
 model Location {
   id   Int    @id @default(autoincrement())
   name String
@@ -193,15 +183,6 @@ model Item {
   Post Post[]
 
   @@map("items")
-}
-
-model VerifyStatus {
-  id   Int    @id @default(autoincrement())
-  name String
-
-  Post Post[]
-
-  @@map("verifiesStatus")
 }
 
 model Comment {
