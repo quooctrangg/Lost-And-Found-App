@@ -44,6 +44,12 @@ const routes = [
     ]
   },
   {
+    path: '/chat',
+    name: 'chat',
+    component: () => import('../views/ChatView.vue'),
+    meta: { title: 'Nhắn tin' }
+  },
+  {
     path: "/:pathMatch(.*)",
     name: "notfound",
     component: () => import("../views/NotFound.vue")
