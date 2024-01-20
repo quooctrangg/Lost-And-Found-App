@@ -1,8 +1,9 @@
-import { Body, Controller, Get, Param, ParseIntPipe, Patch, Post, UploadedFile } from '@nestjs/common';
+import { Body, Controller, Get, Param, ParseIntPipe, Patch, Post, UploadedFile, UseInterceptors } from '@nestjs/common';
 import { UserService } from './user.service';
 import { GetUser } from '../auth/decorator';
 import { User } from '@prisma/client';
 import { ForgotPasswordDto, VerifyCodeDto, toggleBanUserDto, updatePasswordDto, updateProfileDto, updateUserDto } from './dto';
+import { FileInterceptor } from '@nestjs/platform-express';
 
 @Controller('user')
 export class UserController {
@@ -24,11 +25,13 @@ export class UserController {
     }
 
     @Patch('update-profile')
+    @UseInterceptors(FileInterceptor('image'))
     updateProfile(@GetUser() user: User, @Body() updateProfileDto: updateProfileDto, @UploadedFile() image: Express.Multer.File) {
         return this.userService.updateProfile(user.id, updateProfileDto, image)
     }
 
     @Patch('update-user/:id')
+    @UseInterceptors(FileInterceptor('image'))
     updateUser(@Param('id', ParseIntPipe) id: number, updateUserDto: updateUserDto, @UploadedFile() image: Express.Multer.File) {
         return this.userService.updateUser(id, updateUserDto, image)
     }

@@ -17,3 +17,8 @@ export enum PAGE_SIZE {
     PAGE_USER = 20,
     PAGE_POST = 20
 }
+
+export enum POST_SIZE {
+    TITLE = 50,
+    DESCRIPTION = 250
+}
