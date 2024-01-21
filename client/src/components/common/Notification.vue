@@ -1,0 +1,119 @@
+<script setup>
+const emit = defineEmits(['showNofications'])
+</script>
+
+<template>
+    <div class="flex justify-between items-center bg-blue-400 p-2">
+        <h1>Thông báo</h1>
+        <button @click="emit('showNofications', false)">
+            <i class="fa-solid fa-xmark"></i>
+        </button>
+    </div>
+    <div class="p-2 bg-blue-200 max-h-[200px] overflow-y-scroll  no-scrollbar">
+        <div class="border-b-[1px] border-gray-400 text-sm p-2">
+            <span class="font-medium">
+                Quoc Trang
+            </span>
+            đã bình luận bài viết
+            <span class="font-medium">Test</span>.
+        </div>
+        <div class="border-b-[1px] border-gray-400 text-sm p-2">
+            <span class="font-medium">
+                Quoc Trang
+            </span>
+            đã trả lời bình luận
+            <span class="font-medium">Test</span>.
+        </div>
+        <div class="border-b-[1px] border-gray-400 text-sm p-2">
+            <span class="font-medium">
+                Quoc Trang
+            </span>
+            đã bình luận bài viết
+            <span class="font-medium">Test</span>.
+        </div>
+        <div class="border-b-[1px] border-gray-400 text-sm p-2">
+            <span class="font-medium">
+                Quoc Trang
+            </span>
+            đã trả lời bình luận
+            <span class="font-medium">Test</span>.
+        </div>
+        <div class="border-b-[1px] border-gray-400 text-sm p-2">
+            <span class="font-medium">
+                Quoc Trang
+            </span>
+            đã bình luận bài viết
+            <span class="font-medium">Test</span>.
+        </div>
+        <div class="border-b-[1px] border-gray-400 text-sm p-2">
+            <span class="font-medium">
+                Quoc Trang
+            </span>
+            đã trả lời bình luận
+            <span class="font-medium">Test</span>.
+        </div>
+        <div class="border-b-[1px] border-gray-400 text-sm p-2">
+            <span class="font-medium">
+                Quoc Trang
+            </span>
+            đã bình luận bài viết
+            <span class="font-medium">Test</span>.
+        </div>
+        <div class="border-b-[1px] border-gray-400 text-sm p-2">
+            <span class="font-medium">
+                Quoc Trang
+            </span>
+            đã trả lời bình luận
+            <span class="font-medium">Test</span>.
+        </div>
+        <div class="border-b-[1px] border-gray-400 text-sm p-2">
+            <span class="font-medium">
+                Quoc Trang
+            </span>
+            đã bình luận bài viết
+            <span class="font-medium">Test</span>.
+        </div>
+        <div class="border-b-[1px] border-gray-400 text-sm p-2">
+            <span class="font-medium">
+                Quoc Trang
+            </span>
+            đã trả lời bình luận
+            <span class="font-medium">Test</span>.
+        </div>
+        <div class="border-b-[1px] border-gray-400 text-sm p-2">
+            <span class="font-medium">
+                Quoc Trang
+            </span>
+            đã bình luận bài viết
+            <span class="font-medium">Test</span>.
+        </div>
+        <div class="border-b-[1px] border-gray-400 text-sm p-2">
+            <span class="font-medium">
+                Quoc Trang
+            </span>
+            đã trả lời bình luận
+            <span class="font-medium">Test</span>.
+        </div>
+        <div class="border-b-[1px] border-gray-400 text-sm p-2">
+            <span class="font-medium">
+                Quoc Trang
+            </span>
+            đã bình luận bài viết
+            <span class="font-medium">Test</span>.
+        </div>
+        <div class="border-b-[1px] border-gray-400 text-sm p-2">
+            <span class="font-medium">
+                Quoc Trang
+            </span>
+            đã trả lời bình luận
+            <span class="font-medium">Test</span>.
+        </div>
+        <div class="border-b-[1px] border-gray-400 text-sm p-2">
+            <span class="font-medium">
+                Quoc Trang
+            </span>
+            đã bình luận bài viết
+            <span class="font-medium">Test</span>.
+        </div>
+    </div>
+</template>

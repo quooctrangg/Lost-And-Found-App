@@ -8,9 +8,9 @@ const currentPage = ref('post')
     <div class="w-[80%] mx-auto">
         <div class="bg-white rounded p-4 my-4 flex gap-5">
             <div class="relative">
-                <img class="w-52 h-52 border-2 rounded-full object-cover hover:border-sky-300" src="/test.png" alt="logo">
+                <img class="w-40 h-40 border-2 rounded-full object-cover hover:border-sky-300" src="/test.png" alt="logo">
                 <div
-                    class="absolute bottom-1 right-4 mb-2 mr-2 bg-gray-300 rounded-full h-6 w-6 flex justify-center items-center text-lg hover:bg-gray-50">
+                    class="absolute bottom-0 right-3 mb-2 mr-2 bg-gray-300 rounded-full h-6 w-6 flex justify-center items-center text-lg hover:bg-gray-50">
                     <i class="fa-solid fa-camera"></i>
                 </div>
             </div>

@@ -1,4 +1,8 @@
 <script setup>
+import { ref } from 'vue';
+import Notification from '../common/Notification.vue'
+
+const showNofications = ref(false)
 </script>
 <template>
     <header class="bg-sky-300">
@@ -27,12 +31,33 @@
                         </router-link>
                     </div>
                 </div>
-                <div v-else class="flex gap-5 items-center">
-                    <div>
-                        <i class="fa-regular fa-bell"></i>
-                    </div>
-                    <div>
-                        <i class="fa-regular fa-message"></i>
+                <div v-else class="flex gap-4 items-center">
+                    <router-link :to="{ name: 'home' }" class="text-lg">
+                        <i class="fa-solid fa-house"></i>
+                    </router-link>
+                    <router-link :to="{ name: 'chat' }" class="text-lg relative">
+                        <div
+                            class="absolute right-0 top-0 bg-red-500 rounded-full w-4 h-4  flex justify-center items-center">
+                            <span class="text-[10px] text-white">5</span>
+                        </div>
+                        <div class="p-2">
+                            <i class="fa-solid fa-message"></i>
+                        </div>
+                    </router-link>
+                    <div class="relative text-lg">
+                        <div @click="showNofications = !showNofications" class="cursor-pointer relative">
+                            <div
+                                class="absolute right-0 top-0 bg-red-500 rounded-full w-4 h-4  flex justify-center items-center">
+                                <span class="text-[10px] text-white">10</span>
+                            </div>
+                            <div class="p-2">
+                                <i class="fa-solid fa-bell"></i>
+                            </div>
+                        </div>
+                        <div v-if="showNofications"
+                            class="absolute rounded-lg w-[300px] overflow-hidden mt-3 flex flex-col">
+                            <Notification @showNofications="(e) => { showNofications = e }" />
+                        </div>
                     </div>
                     <div class="group relative cursor-pointer">
                         <div class="menu-hover flex items-center gap-1">
@@ -40,15 +65,18 @@
                             <p class="text-xs truncate">Nguyen Quoc Trang</p>
                         </div>
                         <div class="group-hover:visible invisible absolute bg-white w-full shadow-xl">
-                            <a class="block border-b p-2 text-xs hover:text-gray-400">
-                                Thông tin chi tiết
-                            </a>
-                            <a class="block border-b p-2 text-xs hover:text-gray-400">
+                            <router-link :to="{ name: 'post' }" class="block border-b p-2 text-xs hover:text-gray-400">
+                                Thông tin cá nhân
+                            </router-link>
+                            <router-link :to="{ name: 'request' }" class="block border-b p-2 text-xs hover:text-gray-400">
+                                Yêu cầu
+                            </router-link>
+                            <router-link :to="{ name: '' }" class="block border-b p-2 text-xs hover:text-gray-400">
                                 Quản trị viên
-                            </a>
-                            <a class="block border-b p-2 text-xs hover:text-gray-400">
+                            </router-link>
+                            <router-link :to="{ name: 'login' }" class="block border-b p-2 text-xs hover:text-gray-400">
                                 Đăng xuất
-                            </a>
+                            </router-link>
                         </div>
                     </div>
                 </div>

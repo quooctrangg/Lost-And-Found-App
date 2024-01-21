@@ -6,6 +6,14 @@ import Input from './Input.vue'
 <template >
     <div class="basis-3/4 flex flex-col bg-slate-200 rounded-lg overflow-hidden">
         <div v-if="true" class="h-full flex flex-col justify-between">
+            <div class="bg-white py-2 px-4 flex justify-between items-center shadow-lg">
+                <router-link to="/" class="hover:underline hover:text-blue-400">
+                    <h2 class="font-medium">Quoc Trang</h2>
+                </router-link>
+                <button>
+                    <i class="fa-solid fa-xmark"></i>
+                </button>
+            </div>
             <Messages class="flex-1" />
             <Input />
         </div>
