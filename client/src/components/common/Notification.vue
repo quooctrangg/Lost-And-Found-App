@@ -5,7 +5,7 @@ const emit = defineEmits(['showNofications'])
 <template>
     <div class="flex justify-between items-center bg-blue-400 p-2">
         <h1>Thông báo</h1>
-        <button @click="emit('showNofications', false)">
+        <button @click="emit('showNofications', false)" class="hover:text-red-500">
             <i class="fa-solid fa-xmark"></i>
         </button>
     </div>

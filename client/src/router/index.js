@@ -50,6 +50,18 @@ const routes = [
     meta: { title: 'Nhắn tin' }
   },
   {
+    path: '/post-detail/:id',
+    name: 'post-detail',
+    component: () => import('../views/PostDetail.vue'),
+    meta: { title: 'Chi tiết bài đăng' }
+  },
+  {
+    path: '/manage',
+    name: 'manage',
+    component: () => import('../views/ManageView.vue'),
+    meta: { title: 'Quản lý' }
+  },
+  {
     path: "/:pathMatch(.*)",
     name: "notfound",
     component: () => import("../views/NotFound.vue")

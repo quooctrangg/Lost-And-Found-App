@@ -10,5 +10,5 @@ onMounted(() => {
 </script>
 
 <template>
-    <PostCard v-for="i of 5" class="mt-2" />
+    <PostCard class="mt-2" />
 </template>

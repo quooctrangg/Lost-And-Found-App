@@ -61,7 +61,7 @@ const showNofications = ref(false)
                     </div>
                     <div class="group relative cursor-pointer">
                         <div class="menu-hover flex items-center gap-1">
-                            <img class="h-10 w-auto" src="/logo.png" alt="logo">
+                            <img class="h-10 w-auto rounded-full" src="/test.png" alt="logo">
                             <p class="text-xs truncate">Nguyen Quoc Trang</p>
                         </div>
                         <div class="group-hover:visible invisible absolute bg-white w-full shadow-xl">
@@ -71,7 +71,7 @@ const showNofications = ref(false)
                             <router-link :to="{ name: 'request' }" class="block border-b p-2 text-xs hover:text-gray-400">
                                 Yêu cầu
                             </router-link>
-                            <router-link :to="{ name: '' }" class="block border-b p-2 text-xs hover:text-gray-400">
+                            <router-link :to="{ name: 'manage' }" class="block border-b p-2 text-xs hover:text-gray-400">
                                 Quản trị viên
                             </router-link>
                             <router-link :to="{ name: 'login' }" class="block border-b p-2 text-xs hover:text-gray-400">
