@@ -3,10 +3,10 @@
 </script>
 
 <template>
-    <div class="mt-2 overflow-y-scroll no-scrollbar shadow-lg">
-        <div v-for="i in 10" class="p-1 flex text-black mb-1 cursor-pointer gap-2 border-b-[1px]"
-            :class="i == 2 ? 'bg-slate-200' : 'bg-slate-100'">
-            <div class="h-[50px] w-[50px] rounded-full overflow-hidden border-2 shrink-0">
+    <div class="mt-2 overflow-y-scroll no-scrollbar">
+        <div v-for="i in 10" class="p-1 flex text-black mb-1 cursor-pointer gap-2 border-b-[1px] rounded    "
+            :class="i == 2 ? 'bg-slate-200' : 'bg-white'">
+            <div class="h-[45px] w-[45px] rounded-full overflow-hidden border shrink-0">
                 <img alt="avatar" class="h-full w-full" src="/test.png">
             </div>
             <div class="flex flex-col w-[100%] justify-between py-1">

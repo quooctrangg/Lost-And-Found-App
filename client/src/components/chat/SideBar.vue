@@ -1,11 +1,12 @@
 <script setup>
-import Search from '../common/Search.vue'
 import Conversations from '../chat/Conversations.vue'
+import Search from '../common/Seach.vue'
+
 </script>
 
 <template>
     <div class="baiss-1/4 flex flex-col">
-        <Search />
+        <Search class="border-sky-300 border" :title="`Tìm kiếm cuộc trò chuyện`" />
         <Conversations />
     </div>
 </template>

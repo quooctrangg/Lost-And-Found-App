@@ -4,7 +4,7 @@
 
 <template>
     <div class="my-3 flex items-center p-3 w-full" :class="true ? 'flex-row-reverse' : 'flex-row'">
-        <div class="h-10 w-10 rounded-full overflow-hidden border-indigo-600 border-2">
+        <div class="h-10 w-10 rounded-full overflow-hidden border-indigo-600 border">
             <img src="/test.png" class="h-full w-full">
         </div>
         <div class="mx-4  text-black flex flex-col rounded-lg py-1 px-3 text max-w-[85%] break-all"
@@ -19,7 +19,7 @@
         </div>
     </div>
     <div class="my-3 flex items-center p-3 w-full" :class="false ? 'flex-row-reverse' : 'flex-row'">
-        <div class="h-10 w-10 rounded-full overflow-hidden border-indigo-600 border-2">
+        <div class="h-10 w-10 rounded-full overflow-hidden border-indigo-600 border">
             <img src="/test.png" class="h-full w-full">
         </div>
         <div class="mx-4  text-black flex flex-col rounded-lg py-1 px-3 text max-w-[85%] break-all"
@@ -34,7 +34,7 @@
         </div>
     </div>
     <div class="my-3 flex items-center p-3 w-full" :class="true ? 'flex-row-reverse' : 'flex-row'">
-        <div class="h-10 w-10 rounded-full overflow-hidden border-indigo-600 border-2">
+        <div class="h-10 w-10 rounded-full overflow-hidden border-indigo-600 border">
             <img src="/test.png" class="h-full w-full">
         </div>
         <div class="mx-4  text-black flex flex-col rounded-lg py-1 px-3 text max-w-[85%] break-all"
@@ -49,7 +49,7 @@
         </div>
     </div>
     <div class="my-3 flex items-center p-3 w-full" :class="false ? 'flex-row-reverse' : 'flex-row'">
-        <div class="h-10 w-10 rounded-full overflow-hidden border-indigo-600 border-2">
+        <div class="h-10 w-10 rounded-full overflow-hidden border-indigo-600 border">
             <img src="/test.png" class="h-full w-full">
         </div>
         <div class="mx-4  text-black flex flex-col rounded-lg py-1 px-3 text max-w-[85%] break-all"
@@ -64,7 +64,7 @@
         </div>
     </div>
     <div class="my-3 flex items-center p-3 w-full" :class="true ? 'flex-row-reverse' : 'flex-row'">
-        <div class="h-10 w-10 rounded-full overflow-hidden border-indigo-600 border-2">
+        <div class="h-10 w-10 rounded-full overflow-hidden border-indigo-600 border">
             <img src="/test.png" class="h-full w-full">
         </div>
         <div class="mx-4  text-black flex flex-col rounded-lg py-1 px-3 text max-w-[85%] break-all"
@@ -79,7 +79,7 @@
         </div>
     </div>
     <div class="my-3 flex items-center p-3 w-full" :class="false ? 'flex-row-reverse' : 'flex-row'">
-        <div class="h-10 w-10 rounded-full overflow-hidden border-indigo-600 border-2">
+        <div class="h-10 w-10 rounded-full overflow-hidden border-indigo-600 border">
             <img src="/test.png" class="h-full w-full">
         </div>
         <div class="mx-4  text-black flex flex-col rounded-lg py-1 px-3 text max-w-[85%] break-all"

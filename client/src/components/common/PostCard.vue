@@ -3,7 +3,7 @@
 </script>
 
 <template>
-    <div class="bg-white rounded-md p-2 w-[70%] mx-auto mt-2">
+    <div class="bg-white rounded-md p-2 w-[70%] mx-auto mt-5 shadow">
         <div class="flex justify-between items-center mb-3 border-b-[1px]">
             <div class="flex items-center gap-1">
                 <img class="h-12 w-auto rounded-full" src="/logo.png" alt="logo">
@@ -65,7 +65,7 @@
             </div>
         </div>
     </div>
-    <div class="bg-white rounded-md p-2 w-[70%] mx-auto mt-2">
+    <div class="bg-white rounded-md p-2 w-[70%] mx-auto mt-5 shadow">
         <div class="flex justify-between items-center mb-3 border-b-[1px]">
             <div class="flex items-center gap-1">
                 <img class="h-12 w-auto rounded-full" src="/test.png" alt="logo">
@@ -123,7 +123,7 @@
             </div>
         </div>
     </div>
-    <div class="bg-white rounded-md p-2 w-[70%] mx-auto mt-2">
+    <div class="bg-white rounded-md p-2 w-[70%] mx-auto mt-5 shadow">
         <div class="flex justify-between items-center mb-3 border-b-[1px]">
             <div class="flex items-center gap-1">
                 <img class="h-12 w-auto rounded-full" src="/logo.png" alt="logo">
@@ -175,7 +175,7 @@
             </div>
         </div>
     </div>
-    <div class="bg-white rounded-md p-2 w-[70%] mx-auto mt-2">
+    <div class="bg-white rounded-md p-2 w-[70%] mx-auto mt-5 shadow">
         <div class="flex justify-between items-center mb-3 border-b-[1px]">
             <div class="flex items-center gap-1">
                 <img class="h-12 w-auto rounded-full" src="/logo.png" alt="logo">
@@ -223,7 +223,7 @@
             </div>
         </div>
     </div>
-    <div class="bg-white rounded-md p-2 w-[70%] mx-auto mt-2">
+    <div class="bg-white rounded-md p-2 w-[70%] mx-auto mt-5 shadow">
         <div class="flex justify-between items-center mb-3 border-b-[1px]">
             <div class="flex items-center gap-1">
                 <img class="h-12 w-auto rounded-full" src="/logo.png" alt="logo">

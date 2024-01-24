@@ -5,7 +5,7 @@ import Notification from '../common/Notification.vue'
 const showNofications = ref(false)
 </script>
 <template>
-    <header class="bg-sky-300">
+    <header class="bg-sky-300 sticky top-0">
         <div class="w-[80%] mx-auto flex justify-between items-center">
             <div>
                 <router-link :to="{ name: 'home' }">
@@ -17,7 +17,7 @@ const showNofications = ref(false)
                     </div>
                 </router-link>
             </div>
-            <div class="w-[30%]">
+            <div class="w-[40%]">
                 <div v-if="false" class="text-xs flex gap-2 justify-end">
                     <div class="hover:text-red-500">
                         <router-link :to="{ name: 'login' }">
@@ -31,27 +31,29 @@ const showNofications = ref(false)
                         </router-link>
                     </div>
                 </div>
-                <div v-else class="flex gap-4 items-center">
-                    <router-link :to="{ name: 'home' }" class="text-lg">
-                        <i class="fa-solid fa-house"></i>
+                <div v-else class="flex gap-5 items-center">
+                    <router-link :to="{ name: 'home' }" class="text-xl">
+                        <div class="p-2 text-gray-100 hover:text-red-400">
+                            <i class="fa-solid fa-house "></i>
+                        </div>
                     </router-link>
-                    <router-link :to="{ name: 'chat' }" class="text-lg relative">
+                    <router-link :to="{ name: 'chat' }" class="text-xl relative">
                         <div
                             class="absolute right-0 top-0 bg-red-500 rounded-full w-4 h-4  flex justify-center items-center">
                             <span class="text-[10px] text-white">5</span>
                         </div>
-                        <div class="p-2">
-                            <i class="fa-solid fa-message"></i>
+                        <div class="p-2 text-gray-100 hover:text-red-400">
+                            <i class="fa-solid fa-message "></i>
                         </div>
                     </router-link>
-                    <div class="relative text-lg">
+                    <div class="relative text-xl">
                         <div @click="showNofications = !showNofications" class="cursor-pointer relative">
                             <div
                                 class="absolute right-0 top-0 bg-red-500 rounded-full w-4 h-4  flex justify-center items-center">
                                 <span class="text-[10px] text-white">10</span>
                             </div>
-                            <div class="p-2">
-                                <i class="fa-solid fa-bell"></i>
+                            <div class="p-2 text-gray-100 hover:text-red-400">
+                                <i class="fa-solid fa-bell "></i>
                             </div>
                         </div>
                         <div v-if="showNofications"
@@ -64,17 +66,21 @@ const showNofications = ref(false)
                             <img class="h-10 w-auto rounded-full" src="/test.png" alt="logo">
                             <p class="text-xs truncate">Nguyen Quoc Trang</p>
                         </div>
-                        <div class="group-hover:visible invisible absolute bg-white w-full shadow-xl">
-                            <router-link :to="{ name: 'post' }" class="block border-b p-2 text-xs hover:text-gray-400">
+                        <div class="group-hover:visible invisible absolute bg-white w-full shadow-xl rounded-md">
+                            <router-link :to="{ name: 'post' }" class="block border-b p-2 text-sm hover:text-gray-400">
+                                <i class="fa-regular fa-user"></i>
                                 Thông tin cá nhân
                             </router-link>
-                            <router-link :to="{ name: 'request' }" class="block border-b p-2 text-xs hover:text-gray-400">
+                            <router-link :to="{ name: 'request' }" class="block border-b p-2 text-sm hover:text-gray-400">
+                                <i class="fa-regular fa-square-check"></i>
                                 Yêu cầu
                             </router-link>
-                            <router-link :to="{ name: 'manage' }" class="block border-b p-2 text-xs hover:text-gray-400">
+                            <router-link :to="{ name: 'manage' }" class="block border-b p-2 text-sm hover:text-gray-400">
+                                <i class="fa-solid fa-user-tie"></i>
                                 Quản trị viên
                             </router-link>
-                            <router-link :to="{ name: 'login' }" class="block border-b p-2 text-xs hover:text-gray-400">
+                            <router-link :to="{ name: 'login' }" class="block border-b p-2 text-sm hover:text-gray-400">
+                                <i class="fa-solid fa-arrow-right-from-bracket"></i>
                                 Đăng xuất
                             </router-link>
                         </div>
