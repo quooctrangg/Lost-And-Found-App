@@ -1,11 +1,27 @@
 <script setup>
-import { ref } from 'vue';
+import { onMounted, onUnmounted, ref } from 'vue';
 import Notification from '../common/Notification.vue'
 
-const showNofications = ref(false)
+const showNotifications = ref(false)
+
+const handleClickOutside = (event) => {
+    const notificationContainer = document.querySelector('.notification-container');
+    const notificationHeader = document.querySelector('.notification-header');
+    if (notificationContainer && !notificationContainer.contains(event.target) && !notificationHeader.contains(event.target)) {
+        showNotifications.value = false;
+    }
+}
+
+onMounted(() => {
+    document.addEventListener('click', handleClickOutside);
+})
+
+onUnmounted(() => {
+    document.removeEventListener('click', handleClickOutside);
+})
 </script>
 <template>
-    <header class="bg-sky-300 sticky top-0">
+    <header class="bg-sky-300 sticky top-0 z-50">
         <div class="w-[80%] mx-auto flex justify-between items-center">
             <div>
                 <router-link :to="{ name: 'home' }">
@@ -47,19 +63,17 @@ const showNofications = ref(false)
                         </div>
                     </router-link>
                     <div class="relative text-xl">
-                        <div @click="showNofications = !showNofications" class="cursor-pointer relative">
+                        <div @click="showNotifications = !showNotifications"
+                            class="cursor-pointer relative notification-header">
                             <div
                                 class="absolute right-0 top-0 bg-red-500 rounded-full w-4 h-4  flex justify-center items-center">
                                 <span class="text-[10px] text-white">10</span>
                             </div>
                             <div class="p-2 text-gray-100 hover:text-red-400">
-                                <i class="fa-solid fa-bell "></i>
+                                <i class="fa-solid fa-bell"></i>
                             </div>
                         </div>
-                        <div v-if="showNofications"
-                            class="absolute rounded-lg w-[300px] overflow-hidden mt-3 flex flex-col">
-                            <Notification @showNofications="(e) => { showNofications = e }" />
-                        </div>
+                        <Notification v-if="showNotifications" @showNotifications="(e) => { showNotifications = e }" />
                     </div>
                     <div class="group relative cursor-pointer">
                         <div class="menu-hover flex items-center gap-1">

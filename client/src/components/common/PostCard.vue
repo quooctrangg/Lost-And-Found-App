@@ -3,7 +3,7 @@
 </script>
 
 <template>
-    <div class="bg-white rounded-md p-2 w-[70%] mx-auto mt-5 shadow">
+    <div class="bg-white rounded-md p-2 mx-auto mt-5 shadow">
         <div class="flex justify-between items-center mb-3 border-b-[1px]">
             <div class="flex items-center gap-1">
                 <img class="h-12 w-auto rounded-full" src="/logo.png" alt="logo">
@@ -29,8 +29,10 @@
                         THẤT LẠC
                     </p>
                 </div>
-                <div class="px-4">
-                    <i class="fa-solid fa-ellipsis text-2xl"></i>
+                <div class="">
+                    <div class="px-4 cursor-pointer hover:text-red-600">
+                        <i class="fa-solid fa-ellipsis text-2xl"></i>
+                    </div>
                 </div>
             </div>
         </div>
@@ -64,8 +66,13 @@
                     alt="" class="object-none">
             </div>
         </div>
+        <router-link :to="{ name: 'post-detail', params: { id: 1 } }"
+            class="p-1 border-t mt-2 flex justify-center gap-2 items-center w-full text-center hover:bg-slate-100 rounded hover:text-blue-500">
+            <h1 class="flex">Xem chi tiết</h1>
+            <i class="fa-solid fa-arrow-right"></i>
+        </router-link>
     </div>
-    <div class="bg-white rounded-md p-2 w-[70%] mx-auto mt-5 shadow">
+    <div class="bg-white rounded-md p-2 mx-auto mt-5 shadow">
         <div class="flex justify-between items-center mb-3 border-b-[1px]">
             <div class="flex items-center gap-1">
                 <img class="h-12 w-auto rounded-full" src="/test.png" alt="logo">
@@ -123,7 +130,7 @@
             </div>
         </div>
     </div>
-    <div class="bg-white rounded-md p-2 w-[70%] mx-auto mt-5 shadow">
+    <div class="bg-white rounded-md p-2 mx-auto mt-5 shadow">
         <div class="flex justify-between items-center mb-3 border-b-[1px]">
             <div class="flex items-center gap-1">
                 <img class="h-12 w-auto rounded-full" src="/logo.png" alt="logo">
@@ -175,7 +182,7 @@
             </div>
         </div>
     </div>
-    <div class="bg-white rounded-md p-2 w-[70%] mx-auto mt-5 shadow">
+    <div class="bg-white rounded-md p-2 mx-auto mt-5 shadow">
         <div class="flex justify-between items-center mb-3 border-b-[1px]">
             <div class="flex items-center gap-1">
                 <img class="h-12 w-auto rounded-full" src="/logo.png" alt="logo">
@@ -223,7 +230,7 @@
             </div>
         </div>
     </div>
-    <div class="bg-white rounded-md p-2 w-[70%] mx-auto mt-5 shadow">
+    <div class="bg-white rounded-md p-2 mx-auto mt-5 shadow">
         <div class="flex justify-between items-center mb-3 border-b-[1px]">
             <div class="flex items-center gap-1">
                 <img class="h-12 w-auto rounded-full" src="/logo.png" alt="logo">

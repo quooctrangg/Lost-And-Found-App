@@ -10,5 +10,7 @@ onMounted(() => {
 </script>
 
 <template>
-    <PostCard class="mt-2" />
+    <div class="w-[70%] mx-auto">
+        <PostCard class="mt-2" />
+    </div>
 </template>

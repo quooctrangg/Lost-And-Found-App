@@ -1,11 +1,12 @@
 <script setup>
 import { ref } from 'vue';
+import Footer from '../components/common/Footer.vue';
 
 const currentPage = ref('post')
 </script>
 
 <template>
-    <div class="w-[80%] mx-auto">
+    <div class="w-[80%] mx-auto min-h-[100vh]">
         <div class="bg-white rounded p-4 my-4 flex gap-5">
             <div class="relative">
                 <img class="w-32 h-32 border-2 rounded-full object-cover hover:border-sky-300" src="/test.png" alt="logo">
@@ -46,4 +47,5 @@ const currentPage = ref('post')
             <router-view @currentPage="(e) => { currentPage = e }" />
         </div>
     </div>
+    <Footer />
 </template>

@@ -1,6 +1,7 @@
 <script setup>
 import SideBar from '../components/chat/SideBar.vue'
 import Conversation from '../components/chat/Conversation.vue'
+import Footer from '../components/common/Footer.vue';
 </script>
 
 <template>
@@ -8,4 +9,5 @@ import Conversation from '../components/chat/Conversation.vue'
         <SideBar />
         <Conversation />
     </div>
+    <Footer />
 </template>

@@ -4,7 +4,8 @@
 
 <template>
     <div class="flex justify-between items-center bg-white">
-        <input type="text" placeholder="Nhập tin nhắn ..." class="p-2 w-full border-none outline-none">
+        <input type="text" placeholder="Nhập tin nhắn ..."
+            class="p-2 w-full border-none outline-none border-transparent focus:border-transparent focus:ring-0">
         <div class="flex gap-3 mx-2">
             <span>
                 <label for="images">
