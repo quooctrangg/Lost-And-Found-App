@@ -7,7 +7,7 @@ const conversationStore = useConversationStore()
 </script>
 
 <template >
-    <div class="basis-3/4 flex flex-col bg-slate-200 rounded-lg overflow-hidden">
+    <div class="basis-3/4 flex flex-col bg-slate-200 rounded-lg overflow-hidden border-2 border-blue-600">
         <div v-if="conversationStore.activeIndex !== null" class="h-full flex flex-col justify-between">
             <div class="bg-white py-2 px-4 flex justify-between items-center shadow-lg">
                 <router-link to="/" class="hover:underline hover:text-blue-400">

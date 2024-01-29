@@ -5,11 +5,10 @@ const conversationStore = useConversationStore()
 </script>
 
 <template>
-    <div class="mt-2 overflow-y-scroll no-scrollbar">
-        <div v-for="(conversation, index) in 10"
-            class="p-1 flex text-black mb-1 cursor-pointer gap-2 border-b-[1px] rounded"
+    <div class="mt-2 overflow-y-scroll no-scrollbar border-2 rounded-md p-2">
+        <div v-for="(conversation, index) in 10" class="p-1 flex text-black mb-1 cursor-pointer gap-2 bg-white rounded"
             @click="conversationStore.activeIndex = index"
-            :class="conversationStore.activeIndex == index ? 'bg-slate-200' : 'bg-white'">
+            :class="conversationStore.activeIndex == index ? ' border-2 border-blue-600 ' : ' border-b-[1px]'">
             <div class="h-[45px] w-[45px] rounded-full overflow-hidden border shrink-0">
                 <img alt="avatar" class="h-full w-full" src="/test.png">
             </div>

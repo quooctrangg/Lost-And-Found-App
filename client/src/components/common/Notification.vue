@@ -3,11 +3,10 @@ const emit = defineEmits(['showNotifications'])
 </script>
 
 <template>
-    <div
-        class="shadow-2xl border border-black overflow-hidden rounded-lg absolute w-[300px] mt-1 flex flex-col notification-container">
-        <div class="flex justify-between items-center bg-blue-400 p-2">
-            <h1>Thông báo</h1>
-            <button @click="emit('showNotifications', false)" class="hover:text-red-500">
+    <div class="shadow-xl border  overflow-hidden rounded-lg absolute w-[300px] mt-1 flex flex-col notification-container">
+        <div class="flex justify-between items-center bg-blue-600 p-2 px-3">
+            <h1 class=" text-white">Thông báo</h1>
+            <button @click="emit('showNotifications', false)" class="hover:text-red-500 text-white">
                 <i class="fa-solid fa-xmark"></i>
             </button>
         </div>

@@ -2,8 +2,8 @@
 </script>
 
 <template>
-    <section class="bg-slate-100 w-[30%] mx-auto px-6 py-8">
-        <div class="flex items-center justify-center">
+    <section class="bg-slate-100 h-screen w-screen flex items-center">
+        <div class="flex items-center justify-center m-auto w-[25%]">
             <div class="w-full shadow p-6 bg-white rounded-lg">
                 <h1 class="h1-custom">
                     ĐĂNG KÝ

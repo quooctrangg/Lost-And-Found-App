@@ -23,18 +23,18 @@ const currentPage = ref('post')
                 <h2 class="text-sm">Số lượng bài viết: 10</h2>
             </div>
             <div class="flex flex-col gap-1 justify-end">
-                <button class="bg-sky-200 rounded-lg text-sm p-2 text-center text-slate-700 font-semibold hover:bg-sky-300">
+                <button class="bg-sky-400 rounded-lg text-sm p-2 text-center text-slate-700 font-semibold hover:bg-sky-500">
                     <i class="fa-solid fa-pen"></i>
                     Chỉnh sửa thông tin
                 </button>
-                <button class="bg-sky-200 rounded-lg text-sm p-2 text-center text-slate-700 font-semibold hover:bg-sky-300">
+                <button class="bg-sky-400 rounded-lg text-sm p-2 text-center text-slate-700 font-semibold hover:bg-sky-500">
                     <i class="fa-solid fa-key"></i>
                     Đổi mật khẩu
                 </button>
             </div>
         </div>
         <div>
-            <div class="flex gap-5 font-semibold text-gray-500">
+            <div class="flex gap-5 font-semibold text-gray-500 mb-4">
                 <router-link class="p-2" :class="currentPage == 'post' ? 'text-blue-500 border-b-4 border-blue-500' : ''"
                     :to="{ name: 'post' }">
                     Bài viết

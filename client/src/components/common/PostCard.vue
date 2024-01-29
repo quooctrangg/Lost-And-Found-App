@@ -3,7 +3,7 @@
 </script>
 
 <template>
-    <div class="bg-white rounded-md p-2 mx-auto mt-5 shadow">
+    <div class="bg-white rounded-md p-2 mx-auto  shadow border-2">
         <div class="flex justify-between items-center mb-3 border-b-[1px]">
             <div class="flex items-center gap-1">
                 <img class="h-12 w-auto rounded-full" src="/logo.png" alt="logo">

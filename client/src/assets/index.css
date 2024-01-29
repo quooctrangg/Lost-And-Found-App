@@ -15,7 +15,7 @@
 }
 
 .btn-custom {
-    @apply bg-sky-500 w-full rounded-lg text-sm px-5 py-2 text-center text-slate-800 font-semibold
+    @apply bg-sky-500 w-full rounded-lg text-sm px-5 py-3 text-center text-white font-semibold
 }
 
 .btn-custom:hover {
@@ -49,4 +49,8 @@
 
 .message_right {
     @apply bg-blue-500 rounded-tr-none text-left text-white
+}
+
+.active {
+    @apply bg-sky-500 text-white
 }

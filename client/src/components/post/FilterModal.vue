@@ -8,13 +8,14 @@ const postStore = usePostStore()
 const locatoins = ['Trường CNTT&TT', 'C1', 'B2', 'A3', 'Trường Nông nghệp']
 const selectedLocation = ref([])
 const isShowLocation = ref(false)
+const type = ref(null)
 
 const toggleLocation = () => {
     isShowLocation.value = !isShowLocation.value
 }
 </script>
 <template>
-    <fwb-modal v-if="postStore.isFilterModal" @close="postStore.closeFilterModal">
+    <fwb-modal v-if="postStore.isFilterModal" @close="postStore.closeFilterModal" persistent>
         <template #header>
             <div class="flex items-center gap-2 font-semibold text-2xl">
                 <i class="fa-solid fa-sliders"></i>
@@ -23,21 +24,24 @@ const toggleLocation = () => {
         </template>
         <template #body>
             <div class="flex flex-col gap-1 text-sm">
-                <label class="italic">Loại:</label>
+                <label class="italic">Loại bài viết:</label>
                 <div class="flex gap-1 items-center">
-                    <p class="border-2 border-teal-500 p-1 text-xs font-semibold text-teal-500 rounded">
+                    <button class="border-2 border-teal-500 p-1 text-xs font-semibold text-teal-500 rounded"
+                        :class="type == null ? 'bg-teal-400 text-white' : ''" @click="type = null">
                         TẤT CẢ
-                    </p>
-                    <p class="border-2 border-blue-500 p-1 text-xs font-semibold text-blue-500 rounded">
+                    </button>
+                    <button class="border-2 border-blue-500 p-1 text-xs font-semibold text-blue-500 rounded"
+                        :class="type == true ? 'bg-blue-400 text-white' : ''" @click="type = true">
                         TÌM THẤY
-                    </p>
-                    <p class="border-2 border-orange-500 p-1 text-xs font-semibold text-orange-500 rounded">
+                    </button>
+                    <button class="border-2 border-orange-500 p-1 text-xs font-semibold text-orange-500 rounded"
+                        :class="type == false ? 'bg-orange-400 text-white' : ''" @click="type = false">
                         THẤT LẠC
-                    </p>
+                    </button>
                 </div>
                 <label class="italic" for="item">Loại đồ:</label>
                 <div class="flex gap-1 items-center">
-                    <select name="item" id="item" class="rounded-lg p-1 w-full">
+                    <select name="item" id="item" class="rounded-lg  w-full">
                         <option value="all">Tất cả</option>
                         <option value="">Áo khoác</option>
                         <option value="">Điện thoại</option>
@@ -46,7 +50,7 @@ const toggleLocation = () => {
                 </div>
                 <label class="italic" for="item">Vị trí:</label>
                 <div class="relative">
-                    <div class="border p-2 cursor-pointer rounded-lg border-black flex justify-between items-center"
+                    <div class="border p-2.5 cursor-pointer rounded-lg border-black flex justify-between items-center"
                         @click="toggleLocation">
                         {{
                             selectedLocation.length > 0 ? selectedLocation.join(', ') : 'Chọn vị trí'
@@ -66,13 +70,13 @@ const toggleLocation = () => {
         </template>
         <template #footer>
             <div class="flex justify-end gap-2">
-                <button class="px-2 py-1 bg-red-500 rounded-lg text-white">
+                <button class="px-3 py-2 bg-red-500 rounded-lg text-white">
                     <i class="fa-solid fa-arrows-rotate"></i>
                     Đặt lại
                 </button>
-                <button @click="postStore.closeFilterModal" class="px-2 py-1 bg-blue-500 rounded-lg text-white">
+                <button @click="postStore.closeFilterModal" class="px-3 py-2 bg-blue-500 rounded-lg text-white">
                     <i class="fa-regular fa-circle-xmark"></i>
-                    Đóng
+                    Hoàn tất
                 </button>
             </div>
         </template>

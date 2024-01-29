@@ -5,6 +5,7 @@ export const usePostStore = defineStore('post', () => {
 
     const isFilterModal = ref(false)
     const isPostModal = ref(false)
+    const isRequestModal = ref(false)
 
     const closeFilterModal = () => {
         isFilterModal.value = false
@@ -22,5 +23,13 @@ export const usePostStore = defineStore('post', () => {
         isPostModal.value = true
     }
 
-    return { isFilterModal, isPostModal, closeFilterModal, showFilterModal, closePostModal, showPostModal }
+    const closeRequestModal = () => {
+        isRequestModal.value = false
+    }
+
+    const showRequestModal = () => {
+        isRequestModal.value = true
+    }
+
+    return { isFilterModal, isPostModal, isRequestModal, closeFilterModal, showFilterModal, closePostModal, showPostModal, closeRequestModal, showRequestModal }
 })

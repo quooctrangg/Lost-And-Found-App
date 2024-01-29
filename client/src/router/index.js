@@ -59,7 +59,39 @@ const routes = [
     path: '/manage',
     name: 'manage',
     component: () => import('../views/ManageView.vue'),
-    meta: { title: 'Quản lý' }
+    meta: { title: 'Quản lý' },
+    children: [
+      {
+        path: 'dashboard',
+        name: 'dashboard',
+        component: () => import('../components/manage/Dashboard.vue')
+      },
+      {
+        path: 'users',
+        name: 'user-manage',
+        component: () => import('../components/manage/UserManage.vue')
+      },
+      {
+        path: 'post',
+        name: 'post-manage',
+        component: () => import('../components/manage/PostManage.vue')
+      },
+      {
+        path: 'item',
+        name: 'item-manage',
+        component: () => import('../components/manage/ItemManage.vue')
+      },
+      {
+        path: 'location',
+        name: 'location-manage',
+        component: () => import('../components/manage/LocationManage.vue')
+      },
+      {
+        path: 'school',
+        name: 'school-manage',
+        component: () => import('../components/manage/SchoolManage.vue')
+      }
+    ]
   },
   {
     path: "/:pathMatch(.*)",

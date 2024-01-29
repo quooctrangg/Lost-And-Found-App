@@ -1,17 +1,18 @@
 <script setup>
-import { useRoute, useRouter } from 'vue-router'
+import { useRouter } from 'vue-router'
 import { Swiper, SwiperSlide } from 'swiper/vue'
 import { Navigation, Pagination } from 'swiper/modules'
+import { usePostStore } from '../stores/post.store'
 import Footer from '../components/common/Footer.vue';
 import SuggestCard from '../components/common/SuggestCard.vue';
+import RequestModal from '../components/post/RequestModal.vue';
 
 import 'swiper/css';
 import 'swiper/css/navigation';
 import 'swiper/css/pagination';
 
-const route = useRoute()
 const router = useRouter()
-
+const postStore = usePostStore()
 
 const goBack = () => {
     router.back()
@@ -20,12 +21,15 @@ const goBack = () => {
 
 <template>
     <div class="w-[80%] mx-auto flex gap-2 mt-2">
-        <div class="w-[70%] bg-white rounded-md p-2 shadow">
+        <div class="w-[70%] bg-white rounded-md p-4 shadow border-2">
             <div class="mb-3 grid grid-cols-3">
                 <div class="cursor-pointer hover:text-red-500 p-1" @click="goBack">
                     <i class="fa-solid fa-arrow-left"></i>
                 </div>
                 <h1 class="text-base truncate font-semibold text-center">Nguyen Quoc Trang</h1>
+                <div v-if="true" class="flex justify-end items-center">
+                    <h1 class="p-1 border-yellow-200 border-2 rounded font-medium text-yellow-300">Đang chờ duyệt</h1>
+                </div>
             </div>
             <div>
                 <swiper :centeredSlides="true" :spaceBetween="20" :pagination="{ type: 'fraction' }" :navigation="true"
@@ -63,9 +67,29 @@ const goBack = () => {
                                 1 giờ trước
                             </span>
                         </div>
+                        <div class="px-2 cursor-pointer text-2xl hover:text-red-600 text-blue-500">
+                            <i class="fa-brands fa-facebook-messenger"></i>
+                        </div>
                     </div>
                     <div class="flex gap-3 items-center">
-                        <div>
+
+
+
+                        <button class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded"
+                            @click="postStore.showRequestModal">
+                            <i class="fa-regular fa-paper-plane mr-1"></i>
+                            Nhận lại đồ vật
+                        </button>
+
+                    </div>
+                </div>
+
+                <div class="">
+                    <div class="grid grid-cols-3">
+                        <h1 class="font-semibold text-lg col-span-2">
+                            Toi tim thay 1 cai non
+                        </h1>
+                        <div class="">
                             <div v-if="true" class="flex gap-1">
                                 <p class="border-2 border-blue-500 p-1 text-xs font-semibold text-blue-500 rounded">
                                     TÌM THẤY
@@ -79,25 +103,19 @@ const goBack = () => {
                                 THẤT LẠC
                             </p>
                         </div>
-                        <div class="">
-                            <div class="px-2 cursor-pointer text-2xl hover:text-red-600 text-blue-500">
-                                <i class="fa-brands fa-facebook-messenger"></i>
-                            </div>
-                        </div>
+
                     </div>
-                </div>
-                <div class="flex flex-col gap-3">
-                    <h1 class="font-semibold text-lg">
-                        Toi tim thay 1 cai non
-                    </h1>
                     <h2 class="text-gray-500 flex gap-1 items-center text-sm">
                         <i class="fa-solid fa-location-dot"></i>
                         Trung tâm học liệu
                     </h2>
                     <div>
                         <h2 class="font-semibold text-sm">Mô tả:</h2>
-                        <p class="text-sm indent-2">
-                            Toi nhat duoc 1 cai non mau xanh nhu hinh.
+                        <p class="text-sm indent-2 text-justify  ">
+                            Toi nhat duoc 1 cai non mau xanh nhu hinh. Lorem ipsum dolor sit amet consectetur
+                            adipisicing elit. Soluta obcaecati eligendi mollitia veritatis praesentium a laborum,
+                            voluptatem quam id deserunt voluptate numquam non quasi natus distinctio omnis error eaque
+                            atque.
                         </p>
                     </div>
                     <h3 class="text-blue-600 text-sm font-semibold hover:underline cursor-pointer">
@@ -155,7 +173,7 @@ const goBack = () => {
                                 <div class="bg-gray-100 rounded-lg shadow p-1">
                                     <h1 class="text-sm font-medium">Nguyen Van C</h1>
                                     <div class="text-xs">
-                                        <span class="font-semibold">Nguyen Van A</span> Hãy nhắn tin cho tôi
+                                        <span class="font-semibold text-blue-500">Nguyen Van A</span> Hãy nhắn tin cho tôi
                                     </div>
                                 </div>
                                 <div class="flex gap-2 text-xs indent-2">
@@ -203,5 +221,6 @@ const goBack = () => {
             </div>
         </div>
     </div>
+    <RequestModal />
     <Footer />
 </template>
