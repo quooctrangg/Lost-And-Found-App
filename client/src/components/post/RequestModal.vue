@@ -5,7 +5,7 @@ import { usePostStore } from '../../stores/post.store'
 const postStore = usePostStore()
 </script>
 <template>
-    <fwb-modal v-if="postStore.isRequestModal" @close="postStore.closeRequestModal">
+    <fwb-modal v-if="postStore.isShow.request" @close="postStore.closeRequestModal">
         <template #header>
             <div class="flex items-center gap-2 font-semibold text-2xl">
                 <i class="fa-regular fa-paper-plane"></i>

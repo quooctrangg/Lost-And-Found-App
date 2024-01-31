@@ -1,35 +1,30 @@
-import { ref } from 'vue'
+import { reactive, ref } from 'vue'
 import { defineStore } from 'pinia'
 
 export const usePostStore = defineStore('post', () => {
 
-    const isFilterModal = ref(false)
-    const isPostModal = ref(false)
-    const isRequestModal = ref(false)
+    const isShow = reactive({
+        filter: false,
+        post: false,
+        request: false
+    })
 
-    const closeFilterModal = () => {
-        isFilterModal.value = false
+    const closeFilterModal = () => { isShow.filter = false }
+
+    const showFilterModal = () => { isShow.filter = true }
+
+    const closePostModal = () => { isShow.post = false }
+
+    const showPostModal = () => { isShow.post = true }
+
+    const closeRequestModal = () => { isShow.request = false }
+
+    const showRequestModal = () => { isShow.request = true }
+
+    return {
+        isShow,
+        closeFilterModal, showFilterModal,
+        closePostModal, showPostModal,
+        closeRequestModal, showRequestModal
     }
-
-    const showFilterModal = () => {
-        isFilterModal.value = true
-    }
-
-    const closePostModal = () => {
-        isPostModal.value = false
-    }
-
-    const showPostModal = () => {
-        isPostModal.value = true
-    }
-
-    const closeRequestModal = () => {
-        isRequestModal.value = false
-    }
-
-    const showRequestModal = () => {
-        isRequestModal.value = true
-    }
-
-    return { isFilterModal, isPostModal, isRequestModal, closeFilterModal, showFilterModal, closePostModal, showPostModal, closeRequestModal, showRequestModal }
 })

@@ -1,12 +1,24 @@
 <script setup>
 import { onMounted, ref } from 'vue'
 import { FwbPagination } from 'flowbite-vue'
-import Seach from '../common/Seach.vue';
+import { useManageStore } from '../../../stores/manage.store'
+import Seach from '../../common/Seach.vue';
+import RefuseModal from './RefuseModal.vue';
+
+const manageStore = useManageStore()
 
 const emit = defineEmits(['currentPage'])
 
 const totalPages = ref(1)
 const currentPage = ref(2)
+
+const acceptPost = () => {
+    confirm('Bạn có chắc chắn chấp nhận bài viết này?')
+}
+
+const deletePost = () => {
+    confirm('Bạn có chắc chắn xóa bài viết này?')
+}
 
 onMounted(() => {
     emit('currentPage', 'post')
@@ -31,9 +43,6 @@ onMounted(() => {
                         </select>
                     </div>
                 </div>
-                <!-- <button class="p-2 text-blue-500 rounded font-medium hover:text-blue-400 text-2xl">
-                    <i class="fa-solid fa-plus"></i>
-                </button> -->
             </div>
             <table class="table-fixed w-full mt-5">
                 <thead class="font-medium">
@@ -99,14 +108,15 @@ onMounted(() => {
                         <td class="">
                             <div class="flex gap-2 items-center justify-center">
                                 <div v-if="true">
-                                    <button class="p-2 text-blue-500 hover:text-blue-400 text-2xl">
+                                    <button class="p-2 text-blue-500 hover:text-blue-400 text-2xl" @click="acceptPost">
                                         <i class="fa-solid fa-check"></i>
                                     </button>
-                                    <button class="p-2 text-red-500 hover:text-red-300 text-2xl">
+                                    <button class="p-2 text-red-500 hover:text-red-300 text-2xl"
+                                        @click="manageStore.showRefuseModal">
                                         <i class="fa-solid fa-ban"></i>
                                     </button>
                                 </div>
-                                <button class="p-2 text-yellow-300 hover:text-yellow-200 text-2xl">
+                                <button class="p-2 text-yellow-300 hover:text-yellow-200 text-2xl" @click="deletePost">
                                     <i class="fa-solid fa-trash-can"></i>
                                 </button>
                             </div>
@@ -166,5 +176,6 @@ onMounted(() => {
         <div class="w-full text-center" v-if="totalPages >= 2">
             <FwbPagination v-model="currentPage" :total-pages="totalPages" :show-icons="true" :show-labels="false" />
         </div>
+        <RefuseModal />
     </div>
 </template>

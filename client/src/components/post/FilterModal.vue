@@ -15,7 +15,7 @@ const toggleLocation = () => {
 }
 </script>
 <template>
-    <fwb-modal v-if="postStore.isFilterModal" @close="postStore.closeFilterModal" persistent>
+    <fwb-modal v-if="postStore.isShow.filter" @close="postStore.closeFilterModal" persistent>
         <template #header>
             <div class="flex items-center gap-2 font-semibold text-2xl">
                 <i class="fa-solid fa-sliders"></i>

@@ -1,15 +1,24 @@
 <script setup>
 import { onMounted, ref } from 'vue'
 import { FwbPagination } from 'flowbite-vue'
-import Seach from '../common/Seach.vue';
+import { useManageStore } from '../../../stores/manage.store'
+import Seach from '../../common/Seach.vue';
+import EditLocation from './EditLocation.vue';
+import AddLocation from './AddLocation.vue';
+
+const manageStore = useManageStore()
 
 const emit = defineEmits(['currentPage'])
 
 const totalPages = ref(1)
 const currentPage = ref(2)
 
+const deleteLocation = () => {
+    confirm('Bạn có chắc chắn muốn xóa?')
+}
+
 onMounted(() => {
-    emit('currentPage', 'school')
+    emit('currentPage', 'location')
 })
 </script>
 
@@ -19,13 +28,14 @@ onMounted(() => {
             <div class="flex items-center justify-between w-full">
                 <div class="flex gap-5">
                     <div class="border border-black rounded-xl">
-                        <Seach :title="'Tìm kiếm trường'" />
+                        <Seach :title="'Tìm kiếm địa điểm'" />
                     </div>
                     <div class="flex gap-1 items-center">
 
                     </div>
                 </div>
-                <button class="p-2 text-blue-500 rounded font-medium hover:text-blue-400 text-2xl">
+                <button class="p-2 text-blue-500 rounded font-medium hover:text-blue-400 text-2xl"
+                    @click="manageStore.showAddLocationModal">
                     <i class="fa-solid fa-plus"></i>
                 </button>
             </div>
@@ -36,7 +46,7 @@ onMounted(() => {
                             STT
                         </th>
                         <th class="pb-2 w-full">
-                            Tên trường / khoa
+                            Tên vị trí
                         </th>
                         <th class="text-center pb-2">
                             Tùy chọn
@@ -49,14 +59,15 @@ onMounted(() => {
                             1
                         </td>
                         <td class="">
-                            Công nghệ thông tin và truyền thông
+                            Nhà học B1
                         </td>
                         <td class="">
                             <div class="flex gap-2 items-center justify-center">
-                                <button class="p-2 text-yellow-300 hover:text-yellow-200 text-2xl">
+                                <button class="p-2 text-yellow-300 hover:text-yellow-200 text-2xl"
+                                    @click="manageStore.showEditLocationModal">
                                     <i class="fa-solid fa-pen"></i>
                                 </button>
-                                <button class="p-2 text-red-500 hover:text-red-400 text-2xl">
+                                <button class="p-2 text-red-500 hover:text-red-400 text-2xl" @click="deleteLocation">
                                     <i class="fa-solid fa-trash-can"></i>
                                 </button>
                             </div>
@@ -67,7 +78,7 @@ onMounted(() => {
                             2
                         </td>
                         <td class="">
-                            Nông nghiệp
+                            Trường CNTT & TT
                         </td>
                         <td class="">
                             <div class="flex gap-2 items-center justify-center">
@@ -85,7 +96,7 @@ onMounted(() => {
                             3
                         </td>
                         <td class="">
-                            Thủy sản
+                            Trường Nông Nghiệp
                         </td>
                         <td class="">
                             <div class="flex gap-2 items-center justify-center">
@@ -103,7 +114,7 @@ onMounted(() => {
                             4
                         </td>
                         <td class="">
-                            Kinh tế
+                            Nhà học C2
                         </td>
                         <td class="">
                             <div class="flex gap-2 items-center justify-center">
@@ -122,5 +133,7 @@ onMounted(() => {
         <div class="w-full text-center" v-if="totalPages >= 2">
             <FwbPagination v-model="currentPage" :total-pages="totalPages" :show-icons="true" :show-labels="false" />
         </div>
+        <AddLocation />
+        <EditLocation />
     </div>
 </template>

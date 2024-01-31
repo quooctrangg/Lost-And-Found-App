@@ -40,7 +40,7 @@ const toggleShowLocation = () => {
 </script>
 
 <template>
-    <fwb-modal v-if="postStore.isPostModal" @close="postStore.closePostModal" size="5xl">
+    <fwb-modal v-if="postStore.isShow.post" @close="postStore.closePostModal" size="5xl">
         <template #header>
             <div class="flex items-center gap-2 font-semibold text-2xl">
                 <i class="fa-regular fa-clipboard"></i>

@@ -11,6 +11,6 @@ onMounted(() => {
 
 <template>
     <div class="w-[70%] mx-auto">
-        <PostCard class="mt-2" />
+        <PostCard />
     </div>
 </template>

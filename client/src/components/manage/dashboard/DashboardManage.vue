@@ -1,8 +1,8 @@
 <script setup>
 import { onMounted, reactive, ref } from 'vue'
-import ChartBar from '../chart/ChartBar.vue'
-import ChartPie from '../chart/ChartPie.vue';
-import ChartDoughnut from '../chart/ChartDoughnut.vue';
+import ChartBar from './ChartBar.vue'
+import ChartPie from './ChartPie.vue';
+import ChartDoughnut from './ChartDoughnut.vue';
 
 const emit = defineEmits(['currentPage'])
 
@@ -23,7 +23,7 @@ const dataBar = reactive({
     ]
 })
 
-const titleDoughnut = 'Biểu đồ thống kê các vị trí'
+const titleDoughnut = 'Biểu đồ thống kê theo vị trí'
 const dataDoughnut = reactive({
     labels: ['B1', 'C1', 'DI', 'NN', 'KT'],
     datasets: [{
@@ -33,7 +33,7 @@ const dataDoughnut = reactive({
     }]
 })
 
-const titlePie = 'Biểu đồ thống kê loại đồ'
+const titlePie = 'Biểu đồ thống kê theo loại đồ'
 const dataPie = reactive({
     labels: ['Điện thoại', 'Áo khoát', 'Chìa khóa', 'Cục sạc'],
     datasets: [{

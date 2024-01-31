@@ -1,12 +1,21 @@
 <script setup>
 import { onMounted, ref } from 'vue'
 import { FwbPagination } from 'flowbite-vue'
-import Seach from '../common/Seach.vue';
+import { useManageStore } from '../../../stores/manage.store'
+import Seach from '../../common/Seach.vue';
+import AddItem from './AddItem.vue';
+import EditItem from './EditItem.vue';
+
+const manageStore = useManageStore()
 
 const emit = defineEmits(['currentPage'])
 
 const totalPages = ref(1)
 const currentPage = ref(2)
+
+const deleteItem = () => {
+    confirm('Bạn có chắc chắn muốn xóa?')
+}
 
 onMounted(() => {
     emit('currentPage', 'item')
@@ -25,7 +34,8 @@ onMounted(() => {
 
                     </div>
                 </div>
-                <button class="p-2 text-blue-500 rounded font-medium hover:text-blue-400 text-2xl">
+                <button class="p-2 text-blue-500 rounded font-medium hover:text-blue-400 text-2xl"
+                    @click="manageStore.showAddItemModal">
                     <i class="fa-solid fa-plus"></i>
                 </button>
             </div>
@@ -53,10 +63,11 @@ onMounted(() => {
                         </td>
                         <td class="">
                             <div class="flex gap-2 items-center justify-center">
-                                <button class="p-2 text-yellow-300 hover:text-yellow-200 text-2xl">
+                                <button class="p-2 text-yellow-300 hover:text-yellow-200 text-2xl"
+                                    @click="manageStore.showEditItemModal">
                                     <i class="fa-solid fa-pen"></i>
                                 </button>
-                                <button class="p-2 text-red-500 hover:text-red-400 text-2xl">
+                                <button class="p-2 text-red-500 hover:text-red-400 text-2xl" @click="deleteItem">
                                     <i class="fa-solid fa-trash-can"></i>
                                 </button>
                             </div>
@@ -107,10 +118,11 @@ onMounted(() => {
                         </td>
                         <td class="">
                             <div class="flex gap-2 items-center justify-center">
-                                <button class="p-2 text-yellow-300 hover:text-yellow-200 text-2xl">
+                                <button class="p-2 text-yellow-300 hover:text-yellow-200 text-2xl"
+                                    @click="manageStore.showEditItemModal">
                                     <i class="fa-solid fa-pen"></i>
                                 </button>
-                                <button class="p-2 text-red-500 hover:text-red-400 text-2xl">
+                                <button class="p-2 text-red-500 hover:text-red-400 text-2xl" @click="deleteItem">
                                     <i class="fa-solid fa-trash-can"></i>
                                 </button>
                             </div>
@@ -122,5 +134,7 @@ onMounted(() => {
         <div class="w-full text-center" v-if="totalPages >= 2">
             <FwbPagination v-model="currentPage" :total-pages="totalPages" :show-icons="true" :show-labels="false" />
         </div>
+        <AddItem />
+        <EditItem />
     </div>
 </template>

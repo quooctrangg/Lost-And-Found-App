@@ -1,12 +1,22 @@
 <script setup>
 import { onMounted, ref } from 'vue'
 import { FwbPagination } from 'flowbite-vue'
-import Seach from '../common/Seach.vue';
+import { useManageStore } from '../../../stores/manage.store'
+import Seach from '../../common/Seach.vue';
+import AddUserModal from './AddUserModal.vue';
+import EditUserModal from './EditUserModal.vue';
+import FeedbackModal from './FeedbackModal.vue';
+
+const manageStore = useManageStore()
 
 const emit = defineEmits(['currentPage'])
 
 const totalPages = ref(1)
 const currentPage = ref(2)
+
+const unBanUser = () => {
+    confirm('Bạn có chắc chắn mở khóa?')
+}
 
 onMounted(() => {
     emit('currentPage', 'user')
@@ -30,7 +40,8 @@ onMounted(() => {
                         </select>
                     </div>
                 </div>
-                <button class="p-2 text-blue-500 rounded font-medium hover:text-blue-400 text-xl">
+                <button class="p-2 text-blue-500 rounded font-medium hover:text-blue-400 text-xl"
+                    @click="manageStore.showAddUserModal">
                     <i class="fa-solid fa-user-plus"></i>
                 </button>
             </div>
@@ -78,13 +89,15 @@ onMounted(() => {
                             01/01/2024
                         </td>
                         <td class="whitespace-nowrap px-6 py-4 flex gap-2 items-center justify-center">
-                            <button v-if="true" class="p-2 text-red-600 hover:text-red-400 text-2xl">
+                            <button v-if="true" class="p-2 text-red-600 hover:text-red-400 text-2xl"
+                                @click="manageStore.showFeedbackModal">
                                 <i class="fa-solid fa-lock"></i>
                             </button>
-                            <button v-else class="p-2 text-orange-400 hover:text-orange-300 text-2xl">
+                            <button v-else class="p-2 text-orange-400 hover:text-orange-300 text-2xl" @click="unBanUser">
                                 <i class="fa-solid fa-unlock"></i>
                             </button>
-                            <button class="p-2 text-yellow-300 hover:text-yellow-200 text-2xl">
+                            <button class="p-2 text-yellow-300 hover:text-yellow-200 text-2xl"
+                                @click="manageStore.showEditUserModal">
                                 <i class="fa-solid fa-pen"></i>
                             </button>
                         </td>
@@ -126,5 +139,8 @@ onMounted(() => {
         <div class="w-full text-center" v-if="totalPages >= 2">
             <FwbPagination v-model="currentPage" :total-pages="totalPages" :show-icons="true" :show-labels="false" />
         </div>
+        <AddUserModal />
+        <EditUserModal />
+        <FeedbackModal />
     </div>
 </template>

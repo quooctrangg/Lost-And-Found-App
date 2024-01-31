@@ -64,32 +64,32 @@ const routes = [
       {
         path: 'dashboard',
         name: 'dashboard',
-        component: () => import('../components/manage/Dashboard.vue')
+        component: () => import('../components/manage/dashboard/DashboardManage.vue')
       },
       {
         path: 'users',
         name: 'user-manage',
-        component: () => import('../components/manage/UserManage.vue')
+        component: () => import('../components/manage/user/UserManage.vue')
       },
       {
         path: 'post',
         name: 'post-manage',
-        component: () => import('../components/manage/PostManage.vue')
+        component: () => import('../components/manage/post/PostManage.vue')
       },
       {
         path: 'item',
         name: 'item-manage',
-        component: () => import('../components/manage/ItemManage.vue')
+        component: () => import('../components/manage/item/ItemManage.vue')
       },
       {
         path: 'location',
         name: 'location-manage',
-        component: () => import('../components/manage/LocationManage.vue')
+        component: () => import('../components/manage/location/LocationManage.vue')
       },
       {
         path: 'school',
         name: 'school-manage',
-        component: () => import('../components/manage/SchoolManage.vue')
+        component: () => import('../components/manage/school/SchoolManage.vue')
       }
     ]
   },

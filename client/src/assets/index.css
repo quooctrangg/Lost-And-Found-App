@@ -19,7 +19,7 @@
 }
 
 .btn-custom:hover {
-    @apply bg-sky-300 text-stone-100
+    @apply bg-sky-600 text-stone-100
 }
 
 .label-custom {

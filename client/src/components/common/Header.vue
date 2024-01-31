@@ -27,7 +27,7 @@ onUnmounted(() => {
                 <router-link :to="{ name: 'home' }">
                     <div class="flex items-center gap-2">
                         <img class="h-12 w-auto" src="/logo.png" alt="Logo">
-                        <p class="text-xl break-words italic font-medium text-amber-300 ">
+                        <p class="text-xl break-words italic font-medium text-amber-300">
                             Nơi chia sẽ đồ vật thất lạc
                         </p>
                     </div>
