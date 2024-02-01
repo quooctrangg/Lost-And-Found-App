@@ -44,20 +44,23 @@ onMounted(async () => {
         </template>
         <template #body>
             <div v-if="userStore.isLoading == false" class="w-full">
-                <label for="email" class="text-lg mx-2">Email:</label>
-                <input id="email" maxlength="50" type="email" placeholder="Nhập email"
-                    class="rounded-md w-full mb-3 bg-gray-200" v-model="email" disabled>
-                <label for="name" class="text-lg mx-2">Họ và tên:</label>
-                <input id="name" maxlength="50" type="text" placeholder="Nhập họ và tên" class="rounded-md w-full mb-3"
-                    v-model="profile.name">
-                <label for="school" class="text-lg mx-2">Trường / Khoa:</label>
-                <select name="" id="school" class="rounded-md w-full mb-3" v-model="profile.schoolId">
-                    <option v-for="school in schoolStore.schools" :key="school.id" :value="school.id">
-                        {{
-                            school.name
-                        }}
-                    </option>
-                </select>
+                <form @submit.prevent="submitUpdateProfile">
+                    <label for="email" class="text-lg mx-2">Email:</label>
+                    <input id="email" maxlength="50" type="email" placeholder="Nhập email"
+                        class="rounded-md w-full mb-3 bg-gray-200" v-model="email" disabled>
+                    <label for="name" class="text-lg mx-2">Họ và tên:</label>
+                    <input id="name" maxlength="50" minlength="1" required type="text" placeholder="Nhập họ và tên"
+                        class="rounded-md w-full mb-3" v-model="profile.name">
+                    <label for="school" class="text-lg mx-2">Trường / Khoa:</label>
+                    <select name="" id="school" class="rounded-md w-full mb-3" v-model="profile.schoolId">
+                        <option v-for="school in schoolStore.schools" :key="school.id" :value="school.id">
+                            {{
+                                school.name
+                            }}
+                        </option>
+                    </select>
+                    <button type="submit" id="btn-submit" hidden></button>
+                </form>
             </div>
             <div v-else>
                 <Loading />
@@ -68,9 +71,10 @@ onMounted(async () => {
                 <fwb-button @click="userStore.closeUpdateProfileModal" color="alternative">
                     Hủy
                 </fwb-button>
-                <fwb-button @click="async () => { await submitUpdateProfile() }" color="green">
+                <label for="btn-submit"
+                    class="bg-green-500 rounded-lg text-sm px-5 py-3 text-center text-white font-semibold cursor-pointer hover:bg-green-600">
                     Đổi
-                </fwb-button>
+                </label>
             </div>
         </template>
     </fwb-modal>

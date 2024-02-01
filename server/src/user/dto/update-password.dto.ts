@@ -11,4 +11,9 @@ export class updatePasswordDto {
     @IsNotEmpty()
     @MinLength(CONSTANTS_MIN.PASSWORD_LEN)
     newPassword: string
+
+    @IsString()
+    @IsNotEmpty()
+    @MinLength(CONSTANTS_MIN.PASSWORD_LEN)
+    confirmPassword: string
 }

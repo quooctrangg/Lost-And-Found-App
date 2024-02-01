@@ -136,9 +136,16 @@ export class UserService {
     async updatePassword(id: number, updatePasswordDto: updatePasswordDto) {
         try {
             const user = await this.getUserById(id)
-            if (!user) new ResponseData<User>(null, 400, 'Tài khoản không tồn tại')
+            if (!user) {
+                new ResponseData<User>(null, 400, 'Tài khoản không tồn tại')
+            }
             const passwordMatched = await argon2.verify(user.password, updatePasswordDto.currentPassword)
-            if (!passwordMatched) return new ResponseData<string>(null, 400, 'Mật khẩu không chính xác')
+            if (!passwordMatched) {
+                return new ResponseData<string>(null, 400, 'Mật khẩu không chính xác')
+            }
+            if (updatePasswordDto.confirmPassword !== updatePasswordDto.newPassword) {
+                return new ResponseData<string>(null, 400, 'Mật khẩu mới không khớp')
+            }
             const hashedPassword = await argon2.hash(updatePasswordDto.newPassword)
             await this.prismaService.user.update({
                 where: {
