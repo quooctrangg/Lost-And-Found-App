@@ -31,7 +31,7 @@ const logout = () => {
 onMounted(async () => {
     document.addEventListener('click', handleClickOutside);
     if (authStore.token) {
-        userStore.getMe(authStore.token)
+        userStore.getMe()
     }
 })
 

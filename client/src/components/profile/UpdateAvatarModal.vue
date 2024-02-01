@@ -2,8 +2,12 @@
 import { FwbButton, FwbModal } from 'flowbite-vue'
 import { useUserStore } from '../../stores/user.store'
 import { ref } from 'vue';
+import { useToast } from 'vue-toast-notification'
+import Loading from '../common/Loading.vue';
 
 const userStore = useUserStore()
+const $toast = useToast()
+
 const url = ref(null)
 const selectedFile = ref(null)
 
@@ -11,6 +15,22 @@ const onFileSelected = (e) => {
     selectedFile.value = e.target.files[0]
     url.value = URL.createObjectURL(selectedFile.value)
 }
+
+const submitImage = async () => {
+    if (!selectedFile.value) return
+    const data = new FormData()
+    data.append('image', selectedFile.value)
+    await userStore.updateAvatar(data)
+    if (userStore.err) {
+        $toast.error(userStore.err, { position: 'top-right' })
+        return
+    }
+    $toast.success(userStore.result.message, { position: 'top-right' })
+    userStore.user.image = url.value
+    selectedFile.value = null
+    url.value = null
+    userStore.closeUpdateAvatarModal()
+}   
 </script>
 
 <template>
@@ -22,7 +42,7 @@ const onFileSelected = (e) => {
             </div>
         </template>
         <template #body>
-            <div class="w-full flex justify-center">
+            <div v-if="userStore.isLoading == false" class="w-full flex justify-center">
                 <div class="h-36 w-36 border-dashed border-black border-2 rounded-full overflow-hidden">
                     <label for="images" class="cursor-pointer h-full w-full flex justify-center items-center">
                         <div v-if="url == null" class="flex flex-col items-center gap-2">
@@ -34,13 +54,16 @@ const onFileSelected = (e) => {
                 </div>
                 <input type="file" hidden id="images" accept="image/png, image/jpeg" @change="onFileSelected">
             </div>
+            <div v-else>
+                <Loading />
+            </div>
         </template>
         <template #footer>
             <div class="flex justify-end gap-2">
                 <fwb-button @click="userStore.closeUpdateAvatarModal" color="alternative">
                     Hủy
                 </fwb-button>
-                <fwb-button @click="userStore.closeUpdateAvatarModal" color="green">
+                <fwb-button @click="async () => { await submitImage() }" color="green">
                     Đổi
                 </fwb-button>
             </div>

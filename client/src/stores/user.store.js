@@ -1,12 +1,15 @@
 import { reactive, ref } from 'vue'
 import { defineStore } from 'pinia'
+import { useAuthStore } from '../stores/auth.store'
 import userService from '@/services/user.service'
 
 export const useUserStore = defineStore('user', () => {
+    const authStore = useAuthStore()
 
     const user = ref(null)
     const err = ref(null)
     const result = ref(null)
+    const isLoading = ref(false)
     const isShow = reactive({
         updatePassword: false,
         updateProfile: false,
@@ -25,22 +28,36 @@ export const useUserStore = defineStore('user', () => {
 
     const showUpdateAvatarModal = () => { isShow.updateAvatar = true }
 
-    const getMe = async token => {
+    const getMe = async () => {
         err.value = null
         result.value = null
         try {
-            let res = await userService.me(token)
+            let res = await userService.me(authStore.token)
             if (res.statusCode !== 200) throw new Error(res.message)
             result.value = res
             user.value = result.value.data
         } catch (error) {
-            console.log(error);
             err.value = error.message
         }
     }
 
+    const updateAvatar = async (data) => {
+        err.value = null
+        result.value = null
+        isLoading.value = true
+        try {
+            let res = await userService.updateAvatar(authStore.token, data)
+            if (res.statusCode !== 200) throw new Error(res.message)
+            result.value = res
+        } catch (error) {
+            err.value = error.message
+        } finally {
+            isLoading.value = false
+        }
+    }
+
     return {
-        isShow, user, err, result, getMe,
+        isShow, user, err, result, isLoading, getMe, updateAvatar,
         closeUpdatePasswordModal, showUpdatePasswordModal,
         closeUpdateProfileModal, showUpdateProfileModal,
         closeUpdateAvatarModal, showUpdateAvatarModal

@@ -68,22 +68,38 @@ export class UserService {
         }
     }
 
-    async updateProfile(userId: number, updateProfileDto: updateProfileDto, image: Express.Multer.File) {
+    async updateProfile(userId: number, updateProfileDto: updateProfileDto) {
         try {
-            const data: { name?: string, image?: string } = { ...updateProfileDto }
             const user = await this.getUserById(userId)
             if (!user) new ResponseData<User>(null, 400, 'Tài khoản không tồn tại')
-            if (image) {
-                const img = await this.cloudinaryService.uploadFile(image)
-                data.image = img.url
-            }
             await this.prismaService.user.update({
                 where: {
                     id: user.id
                 },
-                data: data
+                data: {
+                    ...updateProfileDto
+                }
             })
             return new ResponseData<any>(null, 200, 'Cập nhật thông tin thành công')
+        } catch (error) {
+            return new ResponseData<string>(null, 500, 'Lỗi dịch vụ, thử lại sau')
+        }
+    }
+
+    async updateAvatar(userId: number, image: Express.Multer.File) {
+        try {
+            const user = await this.getUserById(userId)
+            if (!user) new ResponseData<User>(null, 400, 'Tài khoản không tồn tại')
+            const img = await this.cloudinaryService.uploadFile(image)
+            await this.prismaService.user.update({
+                where: {
+                    id: user.id
+                },
+                data: {
+                    image: img.url
+                }
+            })
+            return new ResponseData<any>(null, 200, 'Cập nhật thành công')
         } catch (error) {
             return new ResponseData<string>(null, 500, 'Lỗi dịch vụ, thử lại sau')
         }

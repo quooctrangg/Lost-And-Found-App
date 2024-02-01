@@ -1,4 +1,4 @@
-import { IsOptional, IsString, MaxLength, MinLength } from "class-validator"
+import { IsNumber, IsOptional, IsString, MaxLength, MinLength } from "class-validator"
 import { CONSTANTS_MAX, CONSTANTS_MIN } from "../../global"
 
 export class updateProfileDto {
@@ -7,4 +7,8 @@ export class updateProfileDto {
     @MaxLength(CONSTANTS_MAX.NAME_LEN)
     @MinLength(CONSTANTS_MIN.NAME_LEN)
     name: string
+
+    @IsOptional()
+    @IsNumber()
+    schoolId: number
 }

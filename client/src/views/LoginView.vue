@@ -22,7 +22,7 @@ const submitLogin = async () => {
         return
     }
     $toast.success(authStore.result.message, { position: 'top-right' })
-    await userStore.getMe(authStore.token)
+    await userStore.getMe()
     router.push({ name: 'home' })
 
 }
