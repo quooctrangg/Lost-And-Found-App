@@ -56,8 +56,23 @@ export const useUserStore = defineStore('user', () => {
         }
     }
 
+    const updateProfile = async (data) => {
+        err.value = null
+        result.value = null
+        isLoading.value = true
+        try {
+            let res = await userService.updateProfile(authStore.token, data)
+            if (res.statusCode !== 200) throw new Error(res.message)
+            result.value = res
+        } catch (error) {
+            err.value = error.message
+        } finally {
+            isLoading.value = false
+        }
+    }
+
     return {
-        isShow, user, err, result, isLoading, getMe, updateAvatar,
+        isShow, user, err, result, isLoading, getMe, updateAvatar, updateProfile,
         closeUpdatePasswordModal, showUpdatePasswordModal,
         closeUpdateProfileModal, showUpdateProfileModal,
         closeUpdateAvatarModal, showUpdateAvatarModal
