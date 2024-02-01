@@ -1,5 +1,31 @@
 <script setup>
+import { reactive } from 'vue';
+import { useAuthStore } from '../stores/auth.store'
+import { useUserStore } from '../stores/user.store'
+import { useToast } from 'vue-toast-notification'
+import { useRouter } from "vue-router";
 
+const authStore = useAuthStore()
+const userStore = useUserStore()
+const router = useRouter()
+const $toast = useToast()
+
+const user = reactive({
+    email: '',
+    password: ''
+})
+
+const submitLogin = async () => {
+    await authStore.login(user)
+    if (authStore.err) {
+        $toast.error(authStore.err, { position: 'top-right' })
+        return
+    }
+    $toast.success(authStore.result.message, { position: 'top-right' })
+    await userStore.getMe(authStore.token)
+    router.push({ name: 'home' })
+
+}
 </script>
 
 <template>
@@ -9,12 +35,12 @@
                 <h1 class="h1-custom">
                     ĐĂNG NHẬP
                 </h1>
-                <form class="flex flex-col gap-3">
+                <form class="flex flex-col gap-3" @submit.prevent="submitLogin">
                     <div>
                         <label for="email" class="label-custom">
                             Email:
                         </label>
-                        <input type="email" name="email" id="email" class="input-custom">
+                        <input type="email" name="email" id="email" class="input-custom" v-model="user.email">
                         <span v-if="false" class="error">
                             Email không hợp lệ!
                         </span>
@@ -23,7 +49,7 @@
                         <label for="password" class="label-custom">
                             Mật khẩu:
                         </label>
-                        <input type="password" name="password" id="password" class="input-custom">
+                        <input type="password" name="password" id="password" class="input-custom" v-model="user.password">
                         <span v-if="false" class="error">
                             Tối thiểu 6 ký tự!
                         </span>

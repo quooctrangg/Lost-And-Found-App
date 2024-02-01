@@ -1,16 +1,22 @@
 import { createApp } from 'vue'
 import { createPinia } from 'pinia'
-
 import App from './App.vue'
 import router from './router'
+import piniaPluginPersistedstate from 'pinia-plugin-persistedstate'
+import dayjs from 'dayjs'
+import localizedFormat from 'dayjs/plugin/localizedFormat'
 
+import 'dayjs/locale/vi'
+import 'vue-toast-notification/dist/theme-sugar.css';
 import "@fortawesome/fontawesome-free/css/all.min.css"
 import './assets/main.css'
 import './assets/index.css'
 
-const app = createApp(App)
+dayjs.extend(localizedFormat)
+dayjs.locale('vi')
 
-app.use(createPinia())
-app.use(router)
+const pinia = createPinia()
 
-app.mount('#app')
+pinia.use(piniaPluginPersistedstate)
+
+createApp(App).use(pinia).use(router).mount('#app')

@@ -218,6 +218,10 @@ export class UserService {
         return await this.prismaService.user.findUnique({
             where: {
                 id: id
+            },
+            include: {
+                School: true,
+                Post: true
             }
         })
     }

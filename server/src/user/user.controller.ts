@@ -1,15 +1,19 @@
-import { Body, Controller, Get, Param, ParseIntPipe, Patch, Post, UploadedFile, UseInterceptors } from '@nestjs/common';
+import { Body, Controller, Get, Param, ParseIntPipe, Patch, Post, UploadedFile, UseGuards, UseInterceptors } from '@nestjs/common';
 import { UserService } from './user.service';
-import { GetUser } from '../auth/decorator';
+import { GetUser, Roles } from '../auth/decorator';
 import { User } from '@prisma/client';
 import { ForgotPasswordDto, VerifyCodeDto, toggleBanUserDto, updatePasswordDto, updateProfileDto, updateUserDto } from './dto';
 import { FileInterceptor } from '@nestjs/platform-express';
+import { MyJWTGuard, RolesGuard } from '../auth/guard';
+import { USER_TYPES } from '../global';
 
 @Controller('user')
 export class UserController {
     constructor(private readonly userService: UserService) { }
 
     @Get('me')
+    @UseGuards(MyJWTGuard, RolesGuard)
+    @Roles(USER_TYPES.USER, USER_TYPES.ADMIN)
     getUser(@GetUser() user: User) {
         return this.userService.getUser(user.id)
     }

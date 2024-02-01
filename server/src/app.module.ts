@@ -8,7 +8,6 @@ import { UserModule } from './user/user.module';
 import { CloudinaryModule } from './cloudinary/cloudinary.module';
 import { ItemModule } from './item/item.module';
 import { LocationModule } from './location/location.module';
-import { PostStatusModule } from './post-status/post-status.module';
 import { TypeModule } from './type/type.module';
 import { RequestStatusModule } from './request-status/request-status.module';
 import { ConversationModule } from './conversation/conversation.module';
@@ -29,6 +28,6 @@ import * as Joi from 'joi';
     validationSchema: Joi.object({
       PORT: Joi.number().required(),
     }),
-  }), PrismaModule, AuthModule, MailingModule, SearchHistoryModule, UserModule, CloudinaryModule, ItemModule, LocationModule, PostStatusModule, TypeModule, RequestStatusModule, ConversationModule, ImageModule, MessageModule, RequestModule, PostModule, NotificationModule, CommentModule, FeedbackModule, SchoolModule, VerifyCodeModule]
+  }), PrismaModule, AuthModule, MailingModule, SearchHistoryModule, UserModule, CloudinaryModule, ItemModule, LocationModule, TypeModule, RequestStatusModule, ConversationModule, ImageModule, MessageModule, RequestModule, PostModule, NotificationModule, CommentModule, FeedbackModule, SchoolModule, VerifyCodeModule]
 })
 export class AppModule { }

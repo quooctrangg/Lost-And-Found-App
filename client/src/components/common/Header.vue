@@ -1,6 +1,15 @@
 <script setup>
 import { onMounted, onUnmounted, ref } from 'vue';
+import { useRouter } from 'vue-router'
+import { useAuthStore } from '../../stores/auth.store'
+import { useUserStore } from '../../stores/user.store'
 import Notification from '../common/Notification.vue'
+import { useToast } from 'vue-toast-notification'
+
+const authStore = useAuthStore()
+const userStore = useUserStore()
+const router = useRouter()
+const $toast = useToast()
 
 const showNotifications = ref(false)
 
@@ -12,8 +21,18 @@ const handleClickOutside = (event) => {
     }
 }
 
-onMounted(() => {
+const logout = () => {
+    authStore.token = null
+    userStore.user = null
+    $toast.success('Đăng xuất thành công.', { position: 'top-right' })
+    router.push({ name: 'home' })
+}
+
+onMounted(async () => {
     document.addEventListener('click', handleClickOutside);
+    if (authStore.token) {
+        userStore.getMe(authStore.token)
+    }
 })
 
 onUnmounted(() => {
@@ -34,7 +53,7 @@ onUnmounted(() => {
                 </router-link>
             </div>
             <div class="">
-                <div v-if="false" class="text-xs flex gap-2 justify-end">
+                <div v-if="authStore.token == null" class="text-xs flex gap-2 justify-end">
                     <div class="hover:text-red-500">
                         <router-link :to="{ name: 'login' }">
                             <p>Đăng nhập</p>
@@ -77,8 +96,10 @@ onUnmounted(() => {
                     </div>
                     <div class="group relative cursor-pointer">
                         <div class="menu-hover flex items-center gap-1">
-                            <img class="h-10 w-auto rounded-full" src="/test.png" alt="logo">
-                            <p class="text-md truncate">Nguyen Quoc Trang</p>
+                            <img class="h-10 w-auto rounded-full" :src="userStore.user?.image" alt="logo user">
+                            <p class="text-md truncate">
+                                {{ userStore.user?.name }}
+                            </p>
                         </div>
                         <div class="group-hover:visible invisible absolute bg-white w-full shadow-xl rounded-md">
                             <router-link :to="{ name: 'post' }" class="block border-b p-2 text-sm hover:text-gray-400">
@@ -89,14 +110,15 @@ onUnmounted(() => {
                                 <i class="fa-regular fa-square-check"></i>
                                 Yêu cầu
                             </router-link>
-                            <router-link :to="{ name: 'dashboard' }" class="block border-b p-2 text-sm hover:text-gray-400">
+                            <router-link v-if="userStore.user?.type == 0" :to="{ name: 'dashboard' }"
+                                class="block border-b p-2 text-sm hover:text-gray-400">
                                 <i class="fa-solid fa-user-tie"></i>
                                 Quản trị viên
                             </router-link>
-                            <router-link :to="{ name: 'login' }" class="block border-b p-2 text-sm hover:text-gray-400">
+                            <button @click="logout" class="block border-b p-2 text-sm hover:text-gray-400">
                                 <i class="fa-solid fa-arrow-right-from-bracket"></i>
                                 Đăng xuất
-                            </router-link>
+                            </button>
                         </div>
                     </div>
                 </div>

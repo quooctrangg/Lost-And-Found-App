@@ -5,6 +5,8 @@ import Footer from '../components/common/Footer.vue';
 import UpdatePassword from '../components/profile/UpdatePassword.vue';
 import UpdateProfileModal from '../components/profile/UpdateProfileModal.vue';
 import UpdateAvatarModal from '../components/profile/UpdateAvatarModal.vue';
+import dayjs from 'dayjs'
+import 'dayjs/locale/vi'
 
 const userStore = useUserStore()
 
@@ -15,18 +17,31 @@ const currentPage = ref('post')
     <div class="w-[80%] mx-auto min-h-[100vh]">
         <div class="bg-gray-50 rounded p-4 flex gap-5 shadow">
             <div class="relative">
-                <img class="w-32 h-32 border-2 rounded-full object-cover hover:border-sky-300" src="/test.png" alt="logo">
+                <img class="w-32 h-32 border-2 rounded-full object-cover hover:border-sky-300" :src="userStore.user?.image"
+                    alt="logo">
                 <div @click="userStore.showUpdateAvatarModal"
                     class="absolute bottom-4 right-4 mb-2 mr-2 bg-gray-300 rounded-full h-6 w-6 flex justify-center items-center text-lg hover:bg-gray-50 cursor-pointer">
                     <i class="fa-solid fa-camera"></i>
                 </div>
             </div>
             <div class="flex flex-col gap-2 flex-1">
-                <h1 class="font-bold text-xl">Nguyen Quoc Trang</h1>
-                <h2 class="text-base text-gray-600 indent-3">Trường/Khoa: Công nghệ thông tin và truyền thông</h2>
-                <h2 class="text-base text-gray-600 indent-3">Email: quuoctrangg@gmail.com</h2>
-                <h2 class="text-base text-gray-600 indent-3">Tham gia vào ngày 1 tháng 1 năm 2024</h2>
-                <h2 class="text-base">Số lượng bài viết: 10</h2>
+                <h1 class="font-bold text-xl">
+                    {{
+                        userStore.user?.name
+                    }}
+                </h1>
+                <h2 class="text-base text-gray-600 indent-3">
+                    Trường/Khoa: {{ userStore.user?.School?.name }}
+                </h2>
+                <h2 class="text-base text-gray-600 indent-3">
+                    Email: {{ userStore.user?.email }}
+                </h2>
+                <h2 class="text-base text-gray-600 indent-3">
+                    Tham gia vào ngày {{ dayjs(userStore.user?.createAt).format('DD, MMMM, YYYY') }}
+                </h2>
+                <h2 class="text-base">
+                    Số lượng bài viết: {{ userStore.user?.Post.length || 0 }}
+                </h2>
             </div>
             <div class="flex flex-col gap-1 justify-end">
                 <button class="bg-sky-400 rounded-lg text-sm p-2 text-center text-slate-700 font-semibold hover:bg-sky-500"
