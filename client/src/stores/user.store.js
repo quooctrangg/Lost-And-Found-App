@@ -7,9 +7,15 @@ export const useUserStore = defineStore('user', () => {
     const authStore = useAuthStore()
 
     const user = ref(null)
+    const users = ref(null)
     const err = ref(null)
     const result = ref(null)
     const isLoading = ref(false)
+    const totalPages = ref(1)
+    const currentPage = ref(1)
+    const key = ref('')
+    const isBan = ref(null)
+    const schoolId = ref(null)
     const isShow = reactive({
         updatePassword: false,
         updateProfile: false,
@@ -86,8 +92,97 @@ export const useUserStore = defineStore('user', () => {
         }
     }
 
+    const getAllUsers = async (option) => {
+        err.value = null
+        result.value = null
+        isLoading.value = true
+        try {
+            let res = await userService.getAllUsers(authStore.token, option)
+            if (res.statusCode !== 200) throw new Error(res.message)
+            result.value = res
+            users.value = result.value.data.data
+            totalPages.value = result.value.data.totalPages
+        } catch (error) {
+            err.value = error.message
+        } finally {
+            isLoading.value = false
+        }
+    }
+
+    const createUser = async (data) => {
+        err.value = null
+        result.value = null
+        isLoading.value = true
+        try {
+            let res = await userService.createUser(authStore.token, data)
+            if (res.statusCode !== 200) throw new Error(res.message)
+            result.value = res
+        } catch (error) {
+            err.value = error.message
+        } finally {
+            isLoading.value = false
+        }
+    }
+
+    const toggleBanUser = async (data, id) => {
+        err.value = null
+        result.value = null
+        isLoading.value = true
+        try {
+
+        } catch (error) {
+            err.value = error.message
+        } finally {
+            isLoading.value = false
+        }
+    }
+
+    const updateUser = async (data, id) => {
+        err.value = null
+        result.value = null
+        isLoading.value = true
+        try {
+            let res = await userService.updateUser(authStore.token, id, data)
+            if (res.statusCode !== 200) throw new Error(res.message)
+            result.value = res
+        } catch (error) {
+            err.value = error.message
+        } finally {
+            isLoading.value = false
+        }
+    }
+
+    const forgotPassword = async (data) => {
+        err.value = null
+        result.value = null
+        isLoading.value = true
+        try {
+
+        } catch (error) {
+            err.value = error.message
+        } finally {
+            isLoading.value = false
+        }
+    }
+
+    const sendVerifyCode = async (data) => {
+        err.value = null
+        result.value = null
+        isLoading.value = true
+        try {
+
+        } catch (error) {
+            err.value = error.message
+        } finally {
+            isLoading.value = false
+        }
+    }
+
     return {
-        isShow, user, err, result, isLoading, getMe, updateAvatar, updateProfile, updatePassword,
+        isShow, user, err, result, isLoading, users, totalPages,
+        currentPage, key, isBan, schoolId, getMe, updateAvatar,
+        updateProfile, updatePassword, getAllUsers, createUser,
+        toggleBanUser, updateUser, forgotPassword, sendVerifyCode,
         closeUpdatePasswordModal, showUpdatePasswordModal,
         closeUpdateProfileModal, showUpdateProfileModal,
         closeUpdateAvatarModal, showUpdateAvatarModal

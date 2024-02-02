@@ -6,7 +6,9 @@ class schoolService {
     }
 
     async getSchool({ key, page }) {
-        return (await this.api.get(`/?key=${key}&page=${page}`)).data
+        let parameter = `&&key=${key}`
+        if (page !== undefined) parameter += `&&page=${page}`
+        return (await this.api.get(`/?${parameter}`)).data
     }
 
     async createSchool(token, data) {

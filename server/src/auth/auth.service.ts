@@ -15,6 +15,12 @@ export class AuthService {
     async register(registerDto: RegisterDto) {
         const currentDate = new Date();
         try {
+            const user = await this.prismaService.user.findFirst({
+                where: {
+                    email: registerDto.email
+                }
+            })
+            if (user) return new ResponseData<User>(null, 400, 'Email đã được sử dụng')
             const verifyCode = await this.prismaService.verifyCode.findFirst({
                 where: {
                     email: registerDto.email,
@@ -25,29 +31,21 @@ export class AuthService {
             const createdAt = new Date(verifyCode.createdAt)
             createdAt.setMinutes(createdAt.getMinutes() + 5)
             if (createdAt <= currentDate) return new ResponseData<string>(null, 400, 'Quá thời gian của mã xác minh')
-            const user = await this.prismaService.user.findFirst({
-                where: {
-                    email: registerDto.email
-                }
-            })
-            if (user) return new ResponseData<User>(null, 400, 'Email đã được sử dụng')
             const hashedPassword = await argon2.hash(registerDto.password)
-            const newuser = await this.prismaService.user.create({
+            await this.prismaService.user.create({
                 data: {
                     email: registerDto.email,
                     name: registerDto.name,
-                    password: hashedPassword
+                    password: hashedPassword,
+                    schoolId: registerDto.schoolId
                 }
             })
-            if (!newuser) return new ResponseData<User>(null, 400, 'Tạo tài khoản thất bại, thử lại')
             await this.prismaService.verifyCode.deleteMany({
                 where: {
                     email: registerDto.email
                 }
             })
-            delete newuser.password
-            delete newuser.isBan
-            return new ResponseData<User>(newuser, 200, 'Tạo tài khoản thành công')
+            return new ResponseData<User>(null, 200, 'Tạo tài khoản thành công')
         } catch (error) {
             return new ResponseData<string>(null, 500, 'Lỗi dịch vụ, thử lại sau')
         }

@@ -8,23 +8,29 @@ export class SchoolService {
     constructor(private readonly prismaService: PrismaService) { }
 
     async get(option: { page: number, key: string }) {
-        const pageSize = PAGE_SIZE.PAGE_SCHOOL
         try {
             let { page, key } = option
-            const totalCount = await this.prismaService.school.count({
-                where: {
-                    name: {
-                        contains: key
+            let totalPages = 1
+            let next = undefined
+            let pageSize = undefined
+            if (page) {
+                pageSize = PAGE_SIZE.PAGE_SCHOOL
+                const totalCount = await this.prismaService.school.count({
+                    where: {
+                        name: {
+                            contains: key,
+                            mode: 'insensitive'
+                        }
+                    },
+                    orderBy: {
+                        id: 'asc'
                     }
-                },
-                orderBy: {
-                    id: 'asc'
-                }
-            })
-            let totalPages = Math.ceil(totalCount / pageSize)
-            if (!totalPages) totalPages = 1
-            if (!page || page < 1) page = 1
-            let next = (page - 1) * pageSize
+                })
+                totalPages = Math.ceil(totalCount / pageSize)
+                if (!totalPages) totalPages = 1
+                if (!page || page < 1) page = 1
+                next = (page - 1) * pageSize
+            }
             const data = await this.prismaService.school.findMany({
                 orderBy: {
                     id: 'asc'

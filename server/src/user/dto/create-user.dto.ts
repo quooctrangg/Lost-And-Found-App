@@ -1,4 +1,4 @@
-import { IsEmail, IsNotEmpty, IsString, MaxLength, MinLength } from "class-validator"
+import { IsEmail, IsNotEmpty, IsNumber, IsString, MaxLength, MinLength } from "class-validator"
 import { CONSTANTS_MAX, CONSTANTS_MIN } from "../../global"
 
 export class createUserDto {
@@ -18,4 +18,7 @@ export class createUserDto {
     @MinLength(CONSTANTS_MIN.PASSWORD_LEN)
     password: string
 
+    @IsNumber()
+    @IsNotEmpty()
+    schoolId: number
 }

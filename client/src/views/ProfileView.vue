@@ -6,7 +6,6 @@ import UpdatePassword from '../components/profile/UpdatePassword.vue';
 import UpdateProfileModal from '../components/profile/UpdateProfileModal.vue';
 import UpdateAvatarModal from '../components/profile/UpdateAvatarModal.vue';
 import dayjs from 'dayjs'
-import 'dayjs/locale/vi'
 
 const userStore = useUserStore()
 

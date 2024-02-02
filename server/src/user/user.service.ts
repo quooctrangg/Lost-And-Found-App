@@ -1,7 +1,7 @@
 import { Injectable } from '@nestjs/common';
 import { PrismaService } from '../prisma/prisma.service';
-import { ForgotPasswordDto, VerifyCodeDto, toggleBanUserDto, updatePasswordDto, updateProfileDto, updateUserDto } from './dto';
-import { ResponseData, USER_TYPES } from '../global';
+import { ForgotPasswordDto, VerifyCodeDto, createUserDto, toggleBanUserDto, updatePasswordDto, updateProfileDto, updateUserDto } from './dto';
+import { PAGE_SIZE, ResponseData, USER_TYPES } from '../global';
 import { User } from '@prisma/client';
 import { CloudinaryService } from '../cloudinary/cloudinary.service';
 import * as argon2 from 'argon2';
@@ -21,12 +21,39 @@ export class UserService {
         }
     }
 
-    async getAllUser() {
+    async getAllUser(option: { page: number, key: string, isBan: string, schoolId: number }) {
+        const pageSize = PAGE_SIZE.PAGE_USER
         try {
-            const users = await this.prismaService.user.findMany({
-                where: {
-                    type: USER_TYPES.USER
-                },
+            let { key, page, isBan, schoolId } = option
+            let whereCondition: any = {
+                type: USER_TYPES.USER
+            }
+            if (key) {
+                whereCondition.OR = [{
+                    name: {
+                        contains: key,
+                        mode: 'insensitive'
+                    }
+                }, {
+                    email: {
+                        contains: key,
+                        mode: 'insensitive'
+                    }
+                }]
+            }
+            if (isBan !== undefined && isBan !== null) {
+                whereCondition.isBan = isBan == 'true' ? true : false
+            }
+            if (schoolId) whereCondition.schoolId = Number(schoolId)
+            const totalCount = await this.prismaService.user.count({
+                where: whereCondition,
+            })
+            let totalPages = Math.ceil(totalCount / pageSize)
+            if (!totalPages) totalPages = 1
+            if (!page || page < 1) page = 1
+            let next = (page - 1) * pageSize
+            const data = await this.prismaService.user.findMany({
+                where: whereCondition,
                 select: {
                     id: true,
                     name: true,
@@ -34,10 +61,40 @@ export class UserService {
                     image: true,
                     isBan: true,
                     createdAt: true,
-                    Feedback: true
+                    Feedback: true,
+                    schoolId: true,
+                    School: true
+                },
+                orderBy: {
+                    id: 'asc'
+                },
+                skip: next,
+                take: pageSize
+            })
+            return new ResponseData<any>({ data, totalPages }, 200, 'Tìm thành công các tài khoản')
+        } catch (error) {
+            return new ResponseData<string>(null, 500, 'Lỗi dịch vụ, thử lại sau')
+        }
+    }
+
+    async createUser(createUserDto: createUserDto) {
+        try {
+            const user = await this.prismaService.user.findFirst({
+                where: {
+                    email: createUserDto.email
                 }
             })
-            return new ResponseData<any>(users, 200, 'Tìm thành công các tài khoản')
+            if (user) return new ResponseData<User>(null, 400, 'Email đã được sử dụng')
+            const hashedPassword = await argon2.hash(createUserDto.password)
+            await this.prismaService.user.create({
+                data: {
+                    email: createUserDto.email,
+                    password: hashedPassword,
+                    name: createUserDto.name,
+                    schoolId: createUserDto.schoolId
+                }
+            })
+            return new ResponseData<User>(null, 200, 'Tạo tài khoản thành công')
         } catch (error) {
             return new ResponseData<string>(null, 500, 'Lỗi dịch vụ, thử lại sau')
         }
@@ -107,7 +164,7 @@ export class UserService {
 
     async updateUser(userId: number, updateUserDto: updateUserDto, image: Express.Multer.File) {
         try {
-            const data: { name?: string, image?: string, passwrod?: string } = {}
+            const data: { name?: string, image?: string, password?: string, schoolId?: number } = {}
             const user = await this.getUserById(userId)
             if (!user) new ResponseData<User>(null, 400, 'Tài khoản không tồn tại')
             if (updateUserDto.name) {
@@ -115,11 +172,14 @@ export class UserService {
             }
             if (updateUserDto.newPassword) {
                 const hashedPassword = await argon2.hash(updateUserDto.newPassword)
-                data.passwrod = hashedPassword
+                data.password = hashedPassword
             }
             if (image) {
                 const img = await this.cloudinaryService.uploadFile(image)
                 data.image = img.url
+            }
+            if (updateUserDto.schoolId) {
+                data.schoolId = updateUserDto.schoolId
             }
             await this.prismaService.user.update({
                 where: {
@@ -142,9 +202,6 @@ export class UserService {
             const passwordMatched = await argon2.verify(user.password, updatePasswordDto.currentPassword)
             if (!passwordMatched) {
                 return new ResponseData<string>(null, 400, 'Mật khẩu không chính xác')
-            }
-            if (updatePasswordDto.confirmPassword !== updatePasswordDto.newPassword) {
-                return new ResponseData<string>(null, 400, 'Mật khẩu mới không khớp')
             }
             const hashedPassword = await argon2.hash(updatePasswordDto.newPassword)
             await this.prismaService.user.update({
