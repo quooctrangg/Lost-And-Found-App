@@ -21,7 +21,7 @@ const updateSchool = async () => {
         return
     }
     $toast.success(schoolStore.result.message, { position: 'top-right' })
-    await schoolStore.getSchool()
+    await schoolStore.getSchool({ key: schoolStore.key, page: schoolStore.currentPage })
     manageStore.closeEditSchoolModal()
 }
 

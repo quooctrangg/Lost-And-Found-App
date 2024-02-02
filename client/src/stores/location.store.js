@@ -1,28 +1,28 @@
 import { ref } from 'vue'
 import { defineStore } from 'pinia'
 import { useAuthStore } from './auth.store'
-import schoolService from '../services/school.service'
+import locationService from '../services/location.service'
 
-export const useSchoolStore = defineStore('school', () => {
+export const useLocationStore = defineStore('location', () => {
     const authStore = useAuthStore()
 
     const err = ref(null)
     const result = ref(null)
     const isLoading = ref(false)
-    const schools = ref(null)
+    const locations = ref(null)
     const totalPages = ref(1)
     const currentPage = ref(1)
     const key = ref('')
 
-    const getSchool = async (option) => {
+    const getLocation = async (option) => {
         err.value = null
         result.value = null
         isLoading.value = true
         try {
-            let res = await schoolService.getSchool(option)
+            let res = await locationService.getLocation(option)
             if (res.statusCode !== 200) throw new Error(res.message)
             result.value = res
-            schools.value = result.value.data.data
+            locations.value = result.value.data.data
             totalPages.value = result.value.data.totalPages
             if (currentPage.value > totalPages.value) currentPage.value = totalPages.value
         } catch (error) {
@@ -32,12 +32,12 @@ export const useSchoolStore = defineStore('school', () => {
         }
     }
 
-    const createSchool = async data => {
+    const createLocation = async data => {
         err.value = null
         result.value = null
         isLoading.value = true
         try {
-            let res = await schoolService.createSchool(authStore.token, data)
+            let res = await locationService.createLocation(authStore.token, data)
             if (res.statusCode !== 200) throw new Error(res.message)
             result.value = res
         } catch (error) {
@@ -47,12 +47,12 @@ export const useSchoolStore = defineStore('school', () => {
         }
     }
 
-    const updateSchool = async (id, data) => {
+    const updateLocation = async (id, data) => {
         err.value = null
         result.value = null
         isLoading.value = true
         try {
-            let res = await schoolService.updateSchool(authStore.token, id, data)
+            let res = await locationService.updateLocation(authStore.token, id, data)
             if (res.statusCode !== 200) throw new Error(res.message)
             result.value = res
         } catch (error) {
@@ -62,12 +62,12 @@ export const useSchoolStore = defineStore('school', () => {
         }
     }
 
-    const deleteSchool = async id => {
+    const deleteLocation = async id => {
         err.value = null
         result.value = null
         isLoading.value = true
         try {
-            let res = await schoolService.deleteSchool(authStore.token, id)
+            let res = await locationService.deleteLocation(authStore.token, id)
             if (res.statusCode !== 200) throw new Error(res.message)
             result.value = res
         } catch (error) {
@@ -77,5 +77,5 @@ export const useSchoolStore = defineStore('school', () => {
         }
     }
 
-    return { err, result, isLoading, schools, totalPages, currentPage, key, getSchool, createSchool, updateSchool, deleteSchool }
+    return { err, result, isLoading, locations, totalPages, currentPage, key, getLocation, createLocation, updateLocation, deleteLocation }
 })

@@ -20,7 +20,7 @@ const createSchool = async () => {
     }
     $toast.success(schoolStore.result.message, { position: 'top-right' })
     name.value = ''
-    await schoolStore.getSchool({ key: '', page: schoolStore.currentPage })
+    await schoolStore.getSchool({ key: schoolStore.key, page: schoolStore.currentPage })
     manageStore.closeAddSchoolModal()
 }
 </script>

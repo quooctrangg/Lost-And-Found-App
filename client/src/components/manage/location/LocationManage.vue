@@ -1,24 +1,42 @@
 <script setup>
-import { onMounted, ref } from 'vue'
+import { onMounted, ref, watchEffect } from 'vue'
 import { FwbPagination } from 'flowbite-vue'
 import { useManageStore } from '../../../stores/manage.store'
+import { useLocationStore } from '../../../stores/location.store'
+import { useToast } from 'vue-toast-notification'
 import Seach from '../../common/Seach.vue';
 import EditLocation from './EditLocation.vue';
 import AddLocation from './AddLocation.vue';
+import Loading from '../../common/Loading.vue'
 
 const manageStore = useManageStore()
+const locationStore = useLocationStore()
+const $toast = useToast()
 
 const emit = defineEmits(['currentPage'])
 
-const totalPages = ref(1)
-const currentPage = ref(2)
+const currentLocation = ref(null)
 
-const deleteLocation = () => {
-    confirm('Bạn có chắc chắn muốn xóa?')
+const deleteLocation = async (id) => {
+    const conFirm = confirm('Bạn có chắc chắn muốn xóa?')
+    if (conFirm) {
+        await locationStore.deleteLocation(id)
+        if (locationStore.err) {
+            $toast.error(locationStore.err, { position: 'top-right' })
+            return
+        }
+        $toast.success(locationStore.result.message, { position: 'top-right' })
+        await locationStore.getLocation({ key: locationStore.key, page: locationStore.currentPage })
+    }
 }
 
-onMounted(() => {
+watchEffect(async () => {
+    await locationStore.getLocation({ key: locationStore.key, page: locationStore.currentPage })
+})
+
+onMounted(async () => {
     emit('currentPage', 'location')
+    await locationStore.getLocation({ key: '', page: 1 })
 })
 </script>
 
@@ -28,7 +46,7 @@ onMounted(() => {
             <div class="flex items-center justify-between w-full">
                 <div class="flex gap-5">
                     <div class="border border-black rounded-xl">
-                        <Seach :title="'Tìm kiếm địa điểm'" />
+                        <Seach :title="'Tìm kiếm địa điểm'" @key="(e) => { locationStore.key = e }" />
                     </div>
                     <div class="flex gap-1 items-center">
 
@@ -42,98 +60,73 @@ onMounted(() => {
             <table class="table-auto w-full mt-5">
                 <thead class="font-medium">
                     <tr class="text-left border-b border-black">
-                        <th class="text-center pb-2">
+                        <th class="text-center pb-2 w-[10%]">
                             STT
                         </th>
-                        <th class="pb-2 w-full">
+                        <th class="pb-2 w-[50%]">
                             Tên vị trí
                         </th>
-                        <th class="text-center pb-2">
+                        <th class="pb-2 w-[20%]">
+                            Ký hiệu
+                        </th>
+                        <th class="text-center pb-2 w-[20%]">
                             Tùy chọn
                         </th>
                     </tr>
                 </thead>
-                <tbody>
-                    <tr class="border-b transition duration-300 ease-in-out hover:bg-gray-300">
+                <tbody v-if="locationStore.isLoading == false">
+                    <tr v-if="locationStore.locations?.length" v-for="(location, i) in locationStore.locations"
+                        :key="location.id" class="border-b transition duration-300 ease-in-out hover:bg-gray-300">
                         <td class="  font-medium text-center w-[10%]">
-                            1
+                            {{
+                                i + 1
+                            }}
                         </td>
-                        <td class="">
-                            Nhà học B1
+                        <td class="w-[50%]">
+                            {{
+                                location.name
+                            }}
                         </td>
-                        <td class="">
+                        <td class="w-[20%]">
+                            {{
+                                location.symbol
+                            }}
+                        </td>
+                        <td class="w-[20%]">
                             <div class="flex gap-2 items-center justify-center">
-                                <button class="p-2 text-yellow-300 hover:text-yellow-200 text-2xl"
-                                    @click="manageStore.showEditLocationModal">
+                                <button class="p-2 text-yellow-300 hover:text-yellow-200 text-2xl" @click="() => {
+                                            manageStore.showEditLocationModal()
+                                            currentLocation = location
+                                        }">
                                     <i class="fa-solid fa-pen"></i>
                                 </button>
-                                <button class="p-2 text-red-500 hover:text-red-400 text-2xl" @click="deleteLocation">
+                                <button class="p-2 text-red-500 hover:text-red-400 text-2xl"
+                                    @click="async () => { await deleteLocation(location.id) }">
                                     <i class="fa-solid fa-trash-can"></i>
                                 </button>
                             </div>
                         </td>
                     </tr>
-                    <tr class="border-b transition duration-300 ease-in-out hover:bg-gray-300">
-                        <td class="  font-medium text-center w-[10%]">
-                            2
-                        </td>
-                        <td class="">
-                            Trường CNTT & TT
-                        </td>
-                        <td class="">
-                            <div class="flex gap-2 items-center justify-center">
-                                <button class="p-2 text-yellow-300 hover:text-yellow-200 text-2xl">
-                                    <i class="fa-solid fa-pen"></i>
-                                </button>
-                                <button class="p-2 text-red-500 hover:text-red-400 text-2xl">
-                                    <i class="fa-solid fa-trash-can"></i>
-                                </button>
-                            </div>
+                    <tr v-else class="text-center text-red-500 text-xl">
+                        <td colspan="4">
+                            Không có.
                         </td>
                     </tr>
-                    <tr class="border-b transition duration-300 ease-in-out hover:bg-gray-300">
-                        <td class="  font-medium text-center w-[10%]">
-                            3
-                        </td>
-                        <td class="">
-                            Trường Nông Nghiệp
-                        </td>
-                        <td class="">
-                            <div class="flex gap-2 items-center justify-center">
-                                <button class="p-2 text-yellow-300 hover:text-yellow-200 text-2xl">
-                                    <i class="fa-solid fa-pen"></i>
-                                </button>
-                                <button class="p-2 text-red-500 hover:text-red-400 text-2xl">
-                                    <i class="fa-solid fa-trash-can"></i>
-                                </button>
-                            </div>
-                        </td>
-                    </tr>
-                    <tr class="border-b transition duration-300 ease-in-out hover:bg-gray-300">
-                        <td class="  font-medium text-center w-[10%]">
-                            4
-                        </td>
-                        <td class="">
-                            Nhà học C2
-                        </td>
-                        <td class="">
-                            <div class="flex gap-2 items-center justify-center">
-                                <button class="p-2 text-yellow-300 hover:text-yellow-200 text-2xl">
-                                    <i class="fa-solid fa-pen"></i>
-                                </button>
-                                <button class="p-2 text-red-500 hover:text-red-400 text-2xl">
-                                    <i class="fa-solid fa-trash-can"></i>
-                                </button>
-                            </div>
+                </tbody>
+                <tbody v-else>
+                    <tr class="text-center text-red-500 text-xl">
+                        <td colspan="3" class="p-6">
+                            <Loading />
                         </td>
                     </tr>
                 </tbody>
             </table>
         </div>
-        <div class="w-full text-center" v-if="totalPages >= 2">
-            <FwbPagination v-model="currentPage" :total-pages="totalPages" :show-icons="true" :show-labels="false" />
+        <div class="w-full text-center" v-if="locationStore.totalPages >= 2">
+            <FwbPagination v-model="locationStore.currentPage" :total-pages="locationStore.totalPages" :show-icons="true"
+                :show-labels="false" />
         </div>
         <AddLocation />
-        <EditLocation />
+        <EditLocation :location="currentLocation" />
     </div>
 </template>

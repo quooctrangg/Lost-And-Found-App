@@ -1,6 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { PrismaService } from '../prisma/prisma.service';
-import { ResponseData } from '../global';
+import { PAGE_SIZE, ResponseData } from '../global';
 import { Location } from '@prisma/client';
 import { CreateLocationDto, UpdateLocationDto } from './dto';
 
@@ -8,9 +8,59 @@ import { CreateLocationDto, UpdateLocationDto } from './dto';
 export class LocationService {
     constructor(private readonly prismaService: PrismaService) { }
 
-    async get() {
+    async get(option: { page: number, key: string }) {
+        const pageSize = PAGE_SIZE.PAGE_LOCATION
         try {
-            return new ResponseData<Location[]>(await this.prismaService.location.findMany({}), 200, 'Tìm thành công')
+            let { page, key } = option
+            const totalCount = await this.prismaService.location.count({
+                where: {
+                    OR: [
+                        {
+                            name: {
+                                contains: key,
+                                mode: 'insensitive'
+                            }
+                        },
+                        {
+                            symbol: {
+                                contains: key,
+                                mode: 'insensitive'
+                            }
+                        }
+                    ]
+                },
+                orderBy: {
+                    id: 'asc'
+                }
+            })
+            let totalPages = Math.ceil(totalCount / pageSize)
+            if (!totalPages) totalPages = 1
+            if (!page || page < 1) page = 1
+            let next = (page - 1) * pageSize
+            const data = await this.prismaService.location.findMany({
+                orderBy: {
+                    id: 'asc'
+                },
+                skip: next,
+                take: pageSize,
+                where: {
+                    OR: [
+                        {
+                            name: {
+                                contains: key,
+                                mode: 'insensitive'
+                            }
+                        },
+                        {
+                            symbol: {
+                                contains: key,
+                                mode: 'insensitive'
+                            }
+                        }
+                    ]
+                }
+            })
+            return new ResponseData<any>({ data, totalPages }, 200, 'Tìm thành công')
         } catch (error) {
             return new ResponseData<string>(null, 500, 'Lỗi dịch vụ, thử lại sau')
         }
@@ -19,9 +69,7 @@ export class LocationService {
     async create(createLocationDto: CreateLocationDto) {
         try {
             await this.prismaService.location.create({
-                data: {
-                    name: createLocationDto.name
-                }
+                data: { ...createLocationDto }
             })
             return new ResponseData<any>(null, 200, 'Tạo thành công')
         } catch (error) {
@@ -41,9 +89,7 @@ export class LocationService {
                 where: {
                     id: id
                 },
-                data: {
-                    name: updateLocationDto.name
-                }
+                data: { ...updateLocationDto }
             })
             return new ResponseData<any>(null, 200, 'Cập nhật thành công')
         } catch (error) {

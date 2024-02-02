@@ -7,6 +7,7 @@ import { useToast } from 'vue-toast-notification'
 import Seach from '../../common/Seach.vue';
 import AddSchool from './AddSchool.vue';
 import EditSchool from './EditSchool.vue';
+import Loading from '../../common/Loading.vue'
 
 const manageStore = useManageStore()
 const schoolStore = useSchoolStore()
@@ -15,7 +16,6 @@ const $toast = useToast()
 const emit = defineEmits(['currentPage'])
 
 const currentSchool = ref(null)
-const key = ref('')
 
 const deleteSchool = async (id) => {
     const conFirm = confirm('Bạn có chắc chắn muốn xóa?')
@@ -26,17 +26,17 @@ const deleteSchool = async (id) => {
             return
         }
         $toast.success(schoolStore.result.message, { position: 'top-right' })
-        await schoolStore.getSchool({ key: key.value, page: schoolStore.currentPage })
+        await schoolStore.getSchool({ key: schoolStore.key, page: schoolStore.currentPage })
     }
 }
 
 watchEffect(async () => {
-    await schoolStore.getSchool({ key: key.value, page: schoolStore.currentPage })
+    await schoolStore.getSchool({ key: schoolStore.key, page: schoolStore.currentPage })
 })
 
 onMounted(async () => {
     emit('currentPage', 'school')
-    await schoolStore.getSchool({ key: key.value, page: 1 })
+    await schoolStore.getSchool({ key: '', page: 1 })
 })
 </script>
 
@@ -46,7 +46,7 @@ onMounted(async () => {
             <div class="flex items-center justify-between w-full">
                 <div class="flex gap-5">
                     <div class="border border-black rounded-xl">
-                        <Seach :title="'Tìm kiếm trường'" @key="(e) => { key = e }" />
+                        <Seach :title="'Tìm kiếm trường'" @key="(e) => { schoolStore.key = e }" />
                     </div>
                     <div class="flex gap-1 items-center">
 
@@ -71,7 +71,7 @@ onMounted(async () => {
                         </th>
                     </tr>
                 </thead>
-                <tbody>
+                <tbody v-if="schoolStore.isLoading == false">
                     <tr v-if="schoolStore.schools?.length" v-for="(school, i) in schoolStore.schools" :key="school.id"
                         class="border-b transition duration-300 ease-in-out hover:bg-gray-300">
                         <td class="  font-medium text-center w-[10%]">
@@ -102,6 +102,13 @@ onMounted(async () => {
                     <tr v-else class="text-center text-red-500 text-xl">
                         <td colspan="3">
                             Không có.
+                        </td>
+                    </tr>
+                </tbody>
+                <tbody v-else>
+                    <tr class="text-center text-red-500 text-xl">
+                        <td colspan="3" class="p-6">
+                            <Loading />
                         </td>
                     </tr>
                 </tbody>

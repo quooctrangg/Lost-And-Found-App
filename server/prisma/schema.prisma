@@ -158,8 +158,9 @@ model Type {
 }
 
 model Location {
-  id   Int    @id @default(autoincrement())
-  name String
+  id     Int    @id @default(autoincrement())
+  name   String
+  symbol String
 
   Post Post[]
 
