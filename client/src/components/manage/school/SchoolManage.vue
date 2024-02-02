@@ -74,7 +74,7 @@ onMounted(async () => {
                 <tbody v-if="schoolStore.isLoading == false">
                     <tr v-if="schoolStore.schools?.length" v-for="(school, i) in schoolStore.schools" :key="school.id"
                         class="border-b transition duration-300 ease-in-out hover:bg-gray-300">
-                        <td class="  font-medium text-center w-[10%]">
+                        <td class="font-medium text-center w-[10%]">
                             {{
                                 i + 1
                             }}
@@ -84,7 +84,7 @@ onMounted(async () => {
                                 school.name
                             }}
                         </td>
-                        <td class=" w-[20%]">
+                        <td class="w-[20%]">
                             <div class="flex gap-2 items-center justify-center">
                                 <button class="p-2 text-yellow-300 hover:text-yellow-200 text-2xl" @click="() => {
                                             manageStore.showEditSchoolModal()

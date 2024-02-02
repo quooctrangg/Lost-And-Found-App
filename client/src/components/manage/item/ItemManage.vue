@@ -1,24 +1,43 @@
 <script setup>
-import { onMounted, ref } from 'vue'
+import { onMounted, ref, watchEffect } from 'vue'
 import { FwbPagination } from 'flowbite-vue'
 import { useManageStore } from '../../../stores/manage.store'
+import { useItemStore } from '../../../stores/item.store'
+import { useToast } from 'vue-toast-notification'
 import Seach from '../../common/Seach.vue';
 import AddItem from './AddItem.vue';
 import EditItem from './EditItem.vue';
+import Loading from '@/components/common/Loading.vue'
 
 const manageStore = useManageStore()
+const itemStore = useItemStore()
+const $toast = useToast()
 
 const emit = defineEmits(['currentPage'])
 
-const totalPages = ref(1)
-const currentPage = ref(2)
+const currentItem = ref(null)
 
-const deleteItem = () => {
-    confirm('Bạn có chắc chắn muốn xóa?')
+const deleteItem = async (id) => {
+    const conFirm = confirm('Bạn có chắc chắn muốn xóa?')
+    if (conFirm) {
+        await itemStore.deleteItem(id)
+        if (itemStore.err) {
+            $toast.error(itemStore.err, { position: 'top-right' })
+            return
+        }
+        $toast.success(itemStore.result.message, { position: 'top-right' })
+        await itemStore.getItem({ key: itemStore.key, page: itemStore.currentPage })
+    }
 }
 
-onMounted(() => {
+watchEffect(async () => {
+    await itemStore.getItem({ key: itemStore.key, page: itemStore.currentPage })
+})
+
+
+onMounted(async () => {
     emit('currentPage', 'item')
+    await itemStore.getItem({ key: '', page: 1 })
 })
 </script>
 
@@ -28,7 +47,7 @@ onMounted(() => {
             <div class="flex items-center justify-between w-full">
                 <div class="flex gap-5">
                     <div class="border border-black rounded-xl">
-                        <Seach :title="'Tìm kiếm danh mục'" />
+                        <Seach :title="'Tìm kiếm danh mục'" @key="(e) => { itemStore.key = e }" />
                     </div>
                     <div class="flex gap-1 items-center">
 
@@ -42,99 +61,65 @@ onMounted(() => {
             <table class="table-auto w-full mt-5">
                 <thead class="font-medium">
                     <tr class="text-left border-b border-black">
-                        <th class="text-center pb-2">
+                        <th class="text-center pb-2 w-[10%]">
                             STT
                         </th>
-                        <th class="pb-2 w-full">
+                        <th class="pb-2 w-[70%]">
                             Tên danh mục
                         </th>
-                        <th class="text-center pb-2">
+                        <th class="text-center pb-2 w-[20%]">
                             Tùy chọn
                         </th>
                     </tr>
                 </thead>
-                <tbody>
-                    <tr class="border-b transition duration-300 ease-in-out hover:bg-gray-300">
+                <tbody v-if="itemStore.isLoading == false">
+                    <tr v-if="itemStore.items?.length" v-for="(item, i) in itemStore.items" :key="item.id"
+                        class="border-b transition duration-300 ease-in-out hover:bg-gray-300">
                         <td class="  font-medium text-center w-[10%]">
-                            1
+                            {{
+                                i + 1
+                            }}
                         </td>
                         <td class="">
-                            Quan ao
+                            {{
+                                item.name
+                            }}
                         </td>
-                        <td class="">
+                        <td class="w-[20%]">
                             <div class="flex gap-2 items-center justify-center">
-                                <button class="p-2 text-yellow-300 hover:text-yellow-200 text-2xl"
-                                    @click="manageStore.showEditItemModal">
+                                <button class="p-2 text-yellow-300 hover:text-yellow-200 text-2xl" @click="() => {
+                                            manageStore.showEditItemModal()
+                                            currentItem = item
+                                        }">
                                     <i class="fa-solid fa-pen"></i>
                                 </button>
-                                <button class="p-2 text-red-500 hover:text-red-400 text-2xl" @click="deleteItem">
+                                <button class="p-2 text-red-500 hover:text-red-400 text-2xl"
+                                    @click="async () => { await deleteItem(item.id) }">
                                     <i class="fa-solid fa-trash-can"></i>
                                 </button>
                             </div>
                         </td>
                     </tr>
-                    <tr class="border-b transition duration-300 ease-in-out hover:bg-gray-300">
-                        <td class="  font-medium text-center w-[10%]">
-                            2
-                        </td>
-                        <td class="">
-                            Dien thoai
-                        </td>
-                        <td class="">
-                            <div class="flex gap-2 items-center justify-center">
-                                <button class="p-2 text-yellow-300 hover:text-yellow-200 text-2xl">
-                                    <i class="fa-solid fa-pen"></i>
-                                </button>
-                                <button class="p-2 text-red-500 hover:text-red-400 text-2xl">
-                                    <i class="fa-solid fa-trash-can"></i>
-                                </button>
-                            </div>
+                    <tr v-else class="text-center text-red-500 text-xl">
+                        <td colspan="3">
+                            Không có.
                         </td>
                     </tr>
-                    <tr class="border-b transition duration-300 ease-in-out hover:bg-gray-300">
-                        <td class="  font-medium text-center w-[10%]">
-                            3
-                        </td>
-                        <td class="">
-                            Laptop
-                        </td>
-                        <td class="">
-                            <div class="flex gap-2 items-center justify-center">
-                                <button class="p-2 text-yellow-300 hover:text-yellow-200 text-2xl">
-                                    <i class="fa-solid fa-pen"></i>
-                                </button>
-                                <button class="p-2 text-red-500 hover:text-red-400 text-2xl">
-                                    <i class="fa-solid fa-trash-can"></i>
-                                </button>
-                            </div>
-                        </td>
-                    </tr>
-                    <tr class="border-b transition duration-300 ease-in-out hover:bg-gray-300">
-                        <td class="  font-medium text-center w-[10%]">
-                            4
-                        </td>
-                        <td class="">
-                            Chia khoa
-                        </td>
-                        <td class="">
-                            <div class="flex gap-2 items-center justify-center">
-                                <button class="p-2 text-yellow-300 hover:text-yellow-200 text-2xl"
-                                    @click="manageStore.showEditItemModal">
-                                    <i class="fa-solid fa-pen"></i>
-                                </button>
-                                <button class="p-2 text-red-500 hover:text-red-400 text-2xl" @click="deleteItem">
-                                    <i class="fa-solid fa-trash-can"></i>
-                                </button>
-                            </div>
+                </tbody>
+                <tbody v-else>
+                    <tr class="text-center text-red-500 text-xl">
+                        <td colspan="3" class="p-6">
+                            <Loading />
                         </td>
                     </tr>
                 </tbody>
             </table>
         </div>
-        <div class="w-full text-center" v-if="totalPages >= 2">
-            <FwbPagination v-model="currentPage" :total-pages="totalPages" :show-icons="true" :show-labels="false" />
+        <div class="w-full text-center" v-if="itemStore.totalPages >= 2">
+            <FwbPagination v-model="itemStore.currentPage" :total-pages="itemStore.totalPages" :show-icons="true"
+                :show-labels="false" />
         </div>
         <AddItem />
-        <EditItem />
+        <EditItem :item="currentItem" />
     </div>
 </template>

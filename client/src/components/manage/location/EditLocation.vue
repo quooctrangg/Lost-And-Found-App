@@ -3,7 +3,7 @@ import { FwbButton, FwbModal } from 'flowbite-vue'
 import { useManageStore } from '../../../stores/manage.store'
 import { useLocationStore } from '../../../stores/location.store'
 import { useToast } from 'vue-toast-notification'
-import { reactive, ref, watchEffect } from 'vue';
+import { reactive, watchEffect } from 'vue';
 import Loading from '../../common/Loading.vue';
 
 const props = defineProps(['location'])
@@ -67,7 +67,7 @@ watchEffect(async () => {
                 </fwb-button>
                 <label for="btn-submit"
                     class="bg-green-500 rounded-lg text-sm px-5 py-3 text-center text-white font-semibold cursor-pointer hover:bg-green-600">
-                    Thêm
+                    Sửa
                 </label>
             </div>
         </template>

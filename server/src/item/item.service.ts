@@ -1,6 +1,5 @@
 import { Injectable } from '@nestjs/common';
-import { Item } from '@prisma/client';
-import { ResponseData } from '../global';
+import { PAGE_SIZE, ResponseData } from '../global';
 import { PrismaService } from '../prisma/prisma.service';
 import { CreateItemDto, UpdateItemDto } from './dto';
 
@@ -8,9 +7,38 @@ import { CreateItemDto, UpdateItemDto } from './dto';
 export class ItemService {
     constructor(private readonly prismaService: PrismaService) { }
 
-    async get() {
+    async get(option: { page: number, key: string }) {
+        const pageSize = PAGE_SIZE.PAGE_SCHOOL
         try {
-            return new ResponseData<Item>(await this.prismaService.item.findMany({}), 200, 'Tìm thành công')
+            let { page, key } = option
+            const totalCount = await this.prismaService.item.count({
+                where: {
+                    name: {
+                        contains: key
+                    }
+                },
+                orderBy: {
+                    id: 'asc'
+                }
+            })
+            let totalPages = Math.ceil(totalCount / pageSize)
+            if (!totalPages) totalPages = 1
+            if (!page || page < 1) page = 1
+            let next = (page - 1) * pageSize
+            const data = await this.prismaService.item.findMany({
+                orderBy: {
+                    id: 'asc'
+                },
+                skip: next,
+                take: pageSize,
+                where: {
+                    name: {
+                        contains: key,
+                        mode: 'insensitive'
+                    }
+                }
+            })
+            return new ResponseData<any>({ totalPages, data }, 200, 'Tìm thành công')
         } catch (error) {
             return new ResponseData<string>(null, 500, 'Lỗi dịch vụ, thử lại sau')
         }

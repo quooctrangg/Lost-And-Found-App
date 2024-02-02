@@ -3,8 +3,8 @@ import { FwbButton, FwbModal } from 'flowbite-vue'
 import { useManageStore } from '../../../stores/manage.store'
 import { useLocationStore } from '../../../stores/location.store'
 import { useToast } from 'vue-toast-notification'
-import Loading from '../../common/Loading.vue'
 import { reactive } from 'vue'
+import Loading from '../../common/Loading.vue'
 
 const manageStore = useManageStore()
 const locationStore = useLocationStore()

@@ -60,7 +60,7 @@ watchEffect(async () => {
                 </fwb-button>
                 <label for="btn-submit"
                     class="bg-green-500 rounded-lg text-sm px-5 py-3 text-center text-white font-semibold cursor-pointer hover:bg-green-600">
-                    Thêm
+                    Sửa
                 </label>
             </div>
         </template>
