@@ -1,24 +1,42 @@
 <script setup>
-import { onMounted, ref } from 'vue'
+import { onMounted, ref, watch, watchEffect } from 'vue'
 import { FwbPagination } from 'flowbite-vue'
 import { useManageStore } from '../../../stores/manage.store'
+import { useSchoolStore } from '../../../stores/school.store'
+import { useToast } from 'vue-toast-notification'
 import Seach from '../../common/Seach.vue';
 import AddSchool from './AddSchool.vue';
 import EditSchool from './EditSchool.vue';
 
 const manageStore = useManageStore()
+const schoolStore = useSchoolStore()
+const $toast = useToast()
 
 const emit = defineEmits(['currentPage'])
 
-const totalPages = ref(1)
-const currentPage = ref(2)
+const currentSchool = ref(null)
+const key = ref('')
 
-const deleteSchool = () => {
-    confirm('Bạn có chắc chắn muốn xóa?')
+const deleteSchool = async (id) => {
+    const conFirm = confirm('Bạn có chắc chắn muốn xóa?')
+    if (conFirm) {
+        await schoolStore.deleteSchool(id)
+        if (schoolStore.err) {
+            $toast.error(schoolStore.err, { position: 'top-right' })
+            return
+        }
+        $toast.success(schoolStore.result.message, { position: 'top-right' })
+        await schoolStore.getSchool({ key: key.value, page: schoolStore.currentPage })
+    }
 }
 
-onMounted(() => {
+watchEffect(async () => {
+    await schoolStore.getSchool({ key: key.value, page: schoolStore.currentPage })
+})
+
+onMounted(async () => {
     emit('currentPage', 'school')
+    await schoolStore.getSchool({ key: key.value, page: 1 })
 })
 </script>
 
@@ -28,7 +46,7 @@ onMounted(() => {
             <div class="flex items-center justify-between w-full">
                 <div class="flex gap-5">
                     <div class="border border-black rounded-xl">
-                        <Seach :title="'Tìm kiếm trường'" />
+                        <Seach :title="'Tìm kiếm trường'" @key="(e) => { key = e }" />
                     </div>
                     <div class="flex gap-1 items-center">
 
@@ -40,100 +58,60 @@ onMounted(() => {
                 </button>
             </div>
             <table class="table-auto w-full mt-5">
-                <thead class="font-medium">
+                <thead class="font-medium w-full">
                     <tr class="text-left border-b border-black">
-                        <th class="text-center pb-2">
+                        <th class="text-center pb-2 w-[10%]">
                             STT
                         </th>
-                        <th class="pb-2 w-full">
+                        <th class="pb-2 w-[70%]">
                             Tên trường / khoa
                         </th>
-                        <th class="text-center pb-2">
+                        <th class="text-center pb-2 w-[20%]">
                             Tùy chọn
                         </th>
                     </tr>
                 </thead>
                 <tbody>
-                    <tr class="border-b transition duration-300 ease-in-out hover:bg-gray-300">
+                    <tr v-if="schoolStore.schools?.length" v-for="(school, i) in schoolStore.schools" :key="school.id"
+                        class="border-b transition duration-300 ease-in-out hover:bg-gray-300">
                         <td class="  font-medium text-center w-[10%]">
-                            1
+                            {{
+                                i + 1
+                            }}
                         </td>
                         <td class="">
-                            Công nghệ thông tin và truyền thông
+                            {{
+                                school.name
+                            }}
                         </td>
-                        <td class="">
+                        <td class=" w-[20%]">
                             <div class="flex gap-2 items-center justify-center">
-                                <button class="p-2 text-yellow-300 hover:text-yellow-200 text-2xl"
-                                    @click="manageStore.showEditSchoolModal">
+                                <button class="p-2 text-yellow-300 hover:text-yellow-200 text-2xl" @click="() => {
+                                            manageStore.showEditSchoolModal()
+                                            currentSchool = school
+                                        }">
                                     <i class="fa-solid fa-pen"></i>
                                 </button>
-                                <button class="p-2 text-red-500 hover:text-red-400 text-2xl" @click="deleteSchool">
+                                <button class="p-2 text-red-500 hover:text-red-400 text-2xl"
+                                    @click="async () => { await deleteSchool(school.id) }">
                                     <i class="fa-solid fa-trash-can"></i>
                                 </button>
                             </div>
                         </td>
                     </tr>
-                    <tr class="border-b transition duration-300 ease-in-out hover:bg-gray-300">
-                        <td class="  font-medium text-center w-[10%]">
-                            2
-                        </td>
-                        <td class="">
-                            Nông nghiệp
-                        </td>
-                        <td class="">
-                            <div class="flex gap-2 items-center justify-center">
-                                <button class="p-2 text-yellow-300 hover:text-yellow-200 text-2xl">
-                                    <i class="fa-solid fa-pen"></i>
-                                </button>
-                                <button class="p-2 text-red-500 hover:text-red-400 text-2xl">
-                                    <i class="fa-solid fa-trash-can"></i>
-                                </button>
-                            </div>
-                        </td>
-                    </tr>
-                    <tr class="border-b transition duration-300 ease-in-out hover:bg-gray-300">
-                        <td class="  font-medium text-center w-[10%]">
-                            3
-                        </td>
-                        <td class="">
-                            Thủy sản
-                        </td>
-                        <td class="">
-                            <div class="flex gap-2 items-center justify-center">
-                                <button class="p-2 text-yellow-300 hover:text-yellow-200 text-2xl">
-                                    <i class="fa-solid fa-pen"></i>
-                                </button>
-                                <button class="p-2 text-red-500 hover:text-red-400 text-2xl">
-                                    <i class="fa-solid fa-trash-can"></i>
-                                </button>
-                            </div>
-                        </td>
-                    </tr>
-                    <tr class="border-b transition duration-300 ease-in-out hover:bg-gray-300">
-                        <td class="  font-medium text-center w-[10%]">
-                            4
-                        </td>
-                        <td class="">
-                            Kinh tế
-                        </td>
-                        <td class="">
-                            <div class="flex gap-2 items-center justify-center">
-                                <button class="p-2 text-yellow-300 hover:text-yellow-200 text-2xl">
-                                    <i class="fa-solid fa-pen"></i>
-                                </button>
-                                <button class="p-2 text-red-500 hover:text-red-400 text-2xl">
-                                    <i class="fa-solid fa-trash-can"></i>
-                                </button>
-                            </div>
+                    <tr v-else class="text-center text-red-500 text-xl">
+                        <td colspan="3">
+                            Không có.
                         </td>
                     </tr>
                 </tbody>
             </table>
         </div>
-        <div class="w-full text-center" v-if="totalPages >= 2">
-            <FwbPagination v-model="currentPage" :total-pages="totalPages" :show-icons="true" :show-labels="false" />
+        <div class="w-full text-center" v-if="schoolStore.totalPages >= 2">
+            <FwbPagination v-model="schoolStore.currentPage" :total-pages="schoolStore.totalPages" :show-icons="true"
+                :show-labels="false" />
         </div>
         <AddSchool />
-        <EditSchool />
+        <EditSchool :school="currentSchool" />
     </div>
 </template>

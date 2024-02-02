@@ -15,7 +15,8 @@ export enum CONSTANTS_MIN {
 
 export enum PAGE_SIZE {
     PAGE_USER = 20,
-    PAGE_POST = 20
+    PAGE_POST = 20,
+    PAGE_SCHOOL = 20
 }
 
 export enum POST_SIZE {

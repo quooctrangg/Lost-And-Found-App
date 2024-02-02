@@ -103,7 +103,7 @@ const submitUpdatePassword = async () => {
                 </form>
             </div>
             <div v-else>
-                Loading
+                <Loading />
             </div>
         </template>
         <template #footer>

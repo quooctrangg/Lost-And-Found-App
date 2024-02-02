@@ -1,7 +1,7 @@
 import { reactive, ref } from 'vue'
 import { defineStore } from 'pinia'
-import { useAuthStore } from '../stores/auth.store'
-import userService from '@/services/user.service'
+import { useAuthStore } from './auth.store'
+import userService from '../services/user.service'
 
 export const useUserStore = defineStore('user', () => {
     const authStore = useAuthStore()
