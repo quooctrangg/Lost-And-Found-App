@@ -38,6 +38,8 @@ watchEffect(async () => {
 onMounted(async () => {
     emit('currentPage', 'item')
     await itemStore.getItem({ key: '', page: 1 })
+    itemStore.key = ''
+    itemStore.currentPage = 1
 })
 </script>
 

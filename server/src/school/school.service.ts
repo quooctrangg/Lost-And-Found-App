@@ -11,17 +11,19 @@ export class SchoolService {
         try {
             let { page, key } = option
             let totalPages = 1
-            let next = undefined
             let pageSize = undefined
+            let next = undefined
+            let where: any = {}
+            if (key) {
+                where.name = {
+                    contains: key,
+                    mode: 'insensitive'
+                }
+            }
             if (page) {
                 pageSize = PAGE_SIZE.PAGE_SCHOOL
                 const totalCount = await this.prismaService.school.count({
-                    where: {
-                        name: {
-                            contains: key,
-                            mode: 'insensitive'
-                        }
-                    },
+                    where: where,
                     orderBy: {
                         id: 'asc'
                     }
@@ -37,12 +39,7 @@ export class SchoolService {
                 },
                 skip: next,
                 take: pageSize,
-                where: {
-                    name: {
-                        contains: key,
-                        mode: 'insensitive'
-                    }
-                }
+                where: where
             })
             return new ResponseData<any>({ data, totalPages }, 200, 'Tìm thành công')
         } catch (error) {

@@ -37,6 +37,8 @@ watchEffect(async () => {
 onMounted(async () => {
     emit('currentPage', 'location')
     await locationStore.getLocation({ key: '', page: 1 })
+    locationStore.key = ''
+    locationStore.currentPage = 1
 })
 </script>
 

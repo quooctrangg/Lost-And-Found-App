@@ -79,8 +79,8 @@ class userService {
         })).data
     }
 
-    async toggleBanUser(token, id) {
-        return (await this.api.patch(`/toggle-ban/${id}`, {
+    async toggleBanUser(token, id, data) {
+        return (await this.api.patch(`/toggle-ban/${id}`, data, {
             headers: {
                 "Content-Type": "application/json",
                 Accept: "application/json",

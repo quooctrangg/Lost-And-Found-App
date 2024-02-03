@@ -22,8 +22,8 @@ export const useLocationStore = defineStore('location', () => {
             let res = await locationService.getLocation(option)
             if (res.statusCode !== 200) throw new Error(res.message)
             result.value = res
-            locations.value = result.value.data.data
-            totalPages.value = result.value.data.totalPages
+            locations.value = res.data.data
+            totalPages.value = res.data.totalPages
             if (currentPage.value > totalPages.value) currentPage.value = totalPages.value
         } catch (error) {
             err.value = error.message

@@ -22,8 +22,8 @@ export const useSchoolStore = defineStore('school', () => {
             let res = await schoolService.getSchool(option)
             if (res.statusCode !== 200) throw new Error(res.message)
             result.value = res
-            schools.value = result.value.data.data
-            totalPages.value = result.value.data.totalPages
+            schools.value = res.data.data
+            totalPages.value = res.data.totalPages
             if (currentPage.value > totalPages.value) currentPage.value = totalPages.value
         } catch (error) {
             err.value = error.message

@@ -103,13 +103,17 @@ export class UserService {
     async toggleBanUser(userId: number, toggleBanUserDto: toggleBanUserDto) {
         try {
             const user = await this.getUserById(userId)
-            if (!user) new ResponseData<User>(null, 400, 'Tài khoản không tồn tại')
-            if (!user.isBan) await this.prismaService.feedback.create({
-                data: {
-                    content: toggleBanUserDto.feedback,
-                    userId: user.id
-                }
-            })
+            if (!user) {
+                new ResponseData<User>(null, 400, 'Tài khoản không tồn tại')
+            }
+            if (!user.isBan) {
+                await this.prismaService.feedback.create({
+                    data: {
+                        content: toggleBanUserDto.feedback,
+                        userId: user.id
+                    }
+                })
+            }
             await this.prismaService.user.update({
                 where: {
                     id: user.id
@@ -118,7 +122,9 @@ export class UserService {
                     isBan: !user.isBan
                 }
             })
-            if (!user.isBan) return new ResponseData<any>(null, 200, 'Khóa người dùng thành công')
+            if (!user.isBan) {
+                return new ResponseData<any>(null, 200, 'Khóa người dùng thành công')
+            }
             return new ResponseData<any>(null, 200, 'Mở khóa người dùng thành công')
         } catch (error) {
             return new ResponseData<string>(null, 500, 'Lỗi dịch vụ, thử lại sau')

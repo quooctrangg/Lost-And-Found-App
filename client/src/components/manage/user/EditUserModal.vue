@@ -4,7 +4,7 @@ import { useManageStore } from '../../../stores/manage.store'
 import { useUserStore } from '../../../stores/user.store'
 import { useSchoolStore } from '../../../stores/school.store'
 import { useToast } from 'vue-toast-notification'
-import { onMounted, reactive, ref, watchEffect } from 'vue'
+import { reactive, ref, watchEffect } from 'vue'
 import Loading from '../../common/Loading.vue'
 
 const manageStore = useManageStore()
@@ -62,10 +62,6 @@ watchEffect(async () => {
         user.name = props.user.name
         user.schoolId = props.user.schoolId
     }
-})
-
-onMounted(async () => {
-    await schoolStore.getSchool({ page: 1 })
 })
 </script>
 

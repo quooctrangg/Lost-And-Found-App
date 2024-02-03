@@ -4,7 +4,7 @@ import { useManageStore } from '../../../stores/manage.store'
 import { useUserStore } from '../../../stores/user.store'
 import { useSchoolStore } from '../../../stores/school.store'
 import { useToast } from 'vue-toast-notification'
-import { onMounted, reactive } from 'vue'
+import { reactive } from 'vue'
 import Loading from '../../common/Loading.vue'
 
 const manageStore = useManageStore()
@@ -37,13 +37,10 @@ const createUser = async () => {
         user.password = ''
         user.schoolId = ''
         user.email = ''
+        await userStore.getAllUsers({ page: userStore.currentPage, key: userStore.key, isBan: userStore.isBan, schoolId: userStore.schoolId })
         manageStore.closeAddUserModal()
     }
 }
-
-onMounted(async () => {
-    await schoolStore.getSchool({ key: '' })
-})
 </script>
 
 <template>
@@ -87,7 +84,8 @@ onMounted(async () => {
                         </label>
                         <select name="school" id="school" class="input-custom" v-model="user.schoolId" required>
                             <option value="">Chọn trường / khoa</option>
-                            <option v-for="school in schoolStore.schools" :key="school.id" :value="school.id">
+                            <option v-if="schoolStore.schools?.length" v-for="school in schoolStore.schools"
+                                :key="school.id" :value="school.id">
                                 {{
                                     school.name
                                 }}

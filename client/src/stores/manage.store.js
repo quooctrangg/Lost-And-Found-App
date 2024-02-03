@@ -13,7 +13,8 @@ export const useManageStore = defineStore('manage', () => {
         editLocation: false,
         addLocation: false,
         editSchool: false,
-        addSchool: false
+        addSchool: false,
+        history: false
     })
 
     const closeAddUserModal = () => { isShow.addUser = false }
@@ -56,6 +57,10 @@ export const useManageStore = defineStore('manage', () => {
 
     const showAddSchoolModal = () => { isShow.addSchool = true }
 
+    const closeHistoryModal = () => { isShow.history = false }
+
+    const showHistoryModal = () => { isShow.history = true }
+
     return {
         isShow,
         closeAddUserModal, showAddUserModal,
@@ -67,6 +72,7 @@ export const useManageStore = defineStore('manage', () => {
         closeAddLocationModal, showAddLocationModal,
         closeEditLocationModal, showEditLocationModal,
         closeEditSchoolModal, showEditSchoolModal,
-        closeAddSchoolModal, showAddSchoolModal
+        closeAddSchoolModal, showAddSchoolModal,
+        closeHistoryModal, showHistoryModal
     }
 })

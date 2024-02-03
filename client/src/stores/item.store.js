@@ -22,8 +22,8 @@ export const useItemStore = defineStore('item', () => {
             let res = await itemService.getItem(option)
             if (res.statusCode !== 200) throw new Error(res.message)
             result.value = res
-            items.value = result.value.data.data
-            totalPages.value = result.value.data.totalPages
+            items.value = res.data.data
+            totalPages.value = res.data.totalPages
             if (currentPage.value > totalPages.value) currentPage.value = totalPages.value
         } catch (error) {
             err.value = error.message

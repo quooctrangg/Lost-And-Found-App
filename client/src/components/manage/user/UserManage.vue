@@ -9,6 +9,7 @@ import Seach from '../../common/Seach.vue';
 import AddUserModal from './AddUserModal.vue';
 import EditUserModal from './EditUserModal.vue';
 import FeedbackModal from './FeedbackModal.vue';
+import HistoryModal from './HistoryModal.vue'
 import Loading from '@/components/common/Loading.vue';
 import dayjs from 'dayjs'
 
@@ -21,8 +22,18 @@ const emit = defineEmits(['currentPage'])
 
 const currentUser = ref(null)
 
-const unBanUser = () => {
-    confirm('Bạn có chắc chắn mở khóa?')
+const toggleBanUser = async (user, feedback = null) => {
+    const conFirm = confirm(`Bạn có chắc chắn ${user.isBan ? 'mở' : ''} khóa?`)
+    if (conFirm) {
+        await userStore.toggleBanUser(user.id, { feedback: feedback })
+        if (userStore.err) {
+            $toast.error(userStore.err, { position: 'top-right' })
+            return
+        }
+        $toast.success(userStore.result.message, { position: 'top-right' })
+        await userStore.getAllUsers({ page: userStore.currentPage, key: userStore.key, isBan: userStore.isBan, schoolId: userStore.schoolId })
+        manageStore.closeFeedbackModal()
+    }
 }
 
 watchEffect(async () => {
@@ -31,12 +42,12 @@ watchEffect(async () => {
 
 onMounted(async () => {
     emit('currentPage', 'user')
-    await schoolStore.getSchool({ key: '' })
     await userStore.getAllUsers({ page: 1 })
     userStore.currentPage = 1
     userStore.key = ''
     userStore.schoolId = null
     userStore.isBan = null
+    await schoolStore.getSchool({})
 })
 </script>
 
@@ -73,7 +84,7 @@ onMounted(async () => {
                     <i class="fa-solid fa-user-plus"></i>
                 </button>
             </div>
-            <table class="table-auto w-full">
+            <table>
                 <thead class="border-b border-black font-medium">
                     <tr class="text-left">
                         <th class="px-6 py-4 text-center">
@@ -107,8 +118,8 @@ onMounted(async () => {
                                 user.id
                             }}
                         </td>
-                        <td class="whitespace-nowrap px-6 py-4 w-[10%]">
-                            <div class="w-full h-full overflow-hidden flex items-center justify-center rounded-full">
+                        <td class="whitespace-nowrap px-6 py-4">
+                            <div class="w-20 h-20 overflow-hidden flex items-center justify-center rounded-full">
                                 <img :src="user.image" alt="logo">
                             </div>
                         </td>
@@ -134,11 +145,14 @@ onMounted(async () => {
                             }}
                         </td>
                         <td class="whitespace-nowrap px-6 py-4 flex gap-2 items-center justify-center">
-                            <button v-if="true" class="p-2 text-red-600 hover:text-red-700 text-2xl"
-                                @click="manageStore.showFeedbackModal">
+                            <button v-if="!user.isBan" class="p-2 text-red-600 hover:text-red-700 text-2xl" @click="() => {
+                                manageStore.showFeedbackModal()
+                                currentUser = user
+                            }">
                                 <i class="fa-solid fa-lock"></i>
                             </button>
-                            <button v-else class="p-2 text-orange-400 hover:text-orange-500 text-2xl" @click="unBanUser">
+                            <button v-else class="p-2 text-orange-400 hover:text-orange-500 text-2xl"
+                                @click="async () => { await toggleBanUser(user) }">
                                 <i class="fa-solid fa-unlock"></i>
                             </button>
                             <button class="p-2 text-yellow-300 hover:text-yellow-400 text-2xl" @click="() => {
@@ -147,7 +161,10 @@ onMounted(async () => {
                             }">
                                 <i class="fa-solid fa-pen"></i>
                             </button>
-                            <button class="p-2 text-gray-500 hover:text-gray-600 text-2xl">
+                            <button class="p-2 text-gray-500 hover:text-gray-600 text-2xl" @click="() => {
+                                manageStore.showHistoryModal()
+                                currentUser = user
+                            }">
                                 <i class="fa-regular fa-eye"></i>
                             </button>
                         </td>
@@ -173,6 +190,7 @@ onMounted(async () => {
         </div>
         <AddUserModal />
         <EditUserModal :user="currentUser" />
-        <FeedbackModal />
+        <FeedbackModal :user="currentUser" @user="async (e) => { await toggleBanUser(e.user, e.feedback) }" />
+        <HistoryModal :user="currentUser" />
     </div>
 </template>

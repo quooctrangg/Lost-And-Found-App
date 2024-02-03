@@ -5,7 +5,8 @@ export enum USER_TYPES {
 
 export enum CONSTANTS_MAX {
     EMAIL_LEN = 100,
-    NAME_LEN = 50
+    NAME_LEN = 50,
+    FEEDBACK_LEN = 250
 }
 
 export enum CONSTANTS_MIN {

@@ -19,7 +19,7 @@ export const useUserStore = defineStore('user', () => {
     const isShow = reactive({
         updatePassword: false,
         updateProfile: false,
-        updateAvatar: false
+        updateAvatar: false,
     })
 
     const closeUpdatePasswordModal = () => { isShow.updatePassword = false }
@@ -100,8 +100,9 @@ export const useUserStore = defineStore('user', () => {
             let res = await userService.getAllUsers(authStore.token, option)
             if (res.statusCode !== 200) throw new Error(res.message)
             result.value = res
-            users.value = result.value.data.data
-            totalPages.value = result.value.data.totalPages
+            users.value = res.data.data
+            totalPages.value = res.data.totalPages
+            if (currentPage.value > totalPages.value) currentPage.value = totalPages.value
         } catch (error) {
             err.value = error.message
         } finally {
@@ -124,12 +125,14 @@ export const useUserStore = defineStore('user', () => {
         }
     }
 
-    const toggleBanUser = async (data, id) => {
+    const toggleBanUser = async (id, data) => {
         err.value = null
         result.value = null
         isLoading.value = true
         try {
-
+            let res = await userService.toggleBanUser(authStore.token, id, data)
+            if (res.statusCode !== 200) throw new Error(res.message)
+            result.value = res
         } catch (error) {
             err.value = error.message
         } finally {
@@ -185,6 +188,7 @@ export const useUserStore = defineStore('user', () => {
         toggleBanUser, updateUser, forgotPassword, sendVerifyCode,
         closeUpdatePasswordModal, showUpdatePasswordModal,
         closeUpdateProfileModal, showUpdateProfileModal,
-        closeUpdateAvatarModal, showUpdateAvatarModal
+        closeUpdateAvatarModal, showUpdateAvatarModal,
+
     }
 })

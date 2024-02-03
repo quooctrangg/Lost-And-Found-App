@@ -1,5 +1,5 @@
 <script setup>
-import { onMounted, ref, watch, watchEffect } from 'vue'
+import { onMounted, ref, watchEffect } from 'vue'
 import { FwbPagination } from 'flowbite-vue'
 import { useManageStore } from '../../../stores/manage.store'
 import { useSchoolStore } from '../../../stores/school.store'
@@ -37,6 +37,8 @@ watchEffect(async () => {
 onMounted(async () => {
     emit('currentPage', 'school')
     await schoolStore.getSchool({ key: '', page: 1 })
+    schoolStore.key = ''
+    schoolStore.currentPage = 1
 })
 </script>
 

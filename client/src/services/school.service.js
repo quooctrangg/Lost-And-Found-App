@@ -1,14 +1,26 @@
 import createService from './api.service'
 
+const createQueryString = (options) => {
+    const queryString = Object.keys(options)
+        .map(key => {
+            if (options[key] !== null && options[key] !== undefined && options[key] !== 'null' && options[key] !== '') {
+                return `${encodeURIComponent(key)}=${encodeURIComponent(options[key])}`;
+            }
+            return '';
+        })
+        .filter(Boolean)
+        .join('&');
+    return queryString.length > 0 ? `?${queryString}` : '';
+}
+
 class schoolService {
     constructor(baseUrl = '/apis/school') {
         this.api = createService(baseUrl)
     }
 
-    async getSchool({ key, page }) {
-        let parameter = `&&key=${key}`
-        if (page !== undefined) parameter += `&&page=${page}`
-        return (await this.api.get(`/?${parameter}`)).data
+    async getSchool(data) {
+        let parameter = createQueryString(data)
+        return (await this.api.get(`/${parameter}`)).data
     }
 
     async createSchool(token, data) {
