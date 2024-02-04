@@ -4,6 +4,8 @@ import { useAuthStore } from '../stores/auth.store'
 import { useUserStore } from '../stores/user.store'
 import { useToast } from 'vue-toast-notification'
 import { useRouter } from "vue-router";
+import * as yup from "yup";
+import { Form, Field, ErrorMessage } from "vee-validate";
 
 const authStore = useAuthStore()
 const userStore = useUserStore()
@@ -15,6 +17,11 @@ const user = reactive({
     password: ''
 })
 
+const formSchemaLogin = yup.object().shape({
+    email: yup.string().required("Email phải có giá trị.").email("E-mail không đúng.").max(50, "E-mail tối đa 50 ký tự."),
+    password: yup.string().required('Mật khẩu phải có giá trị.').min(6, 'Tên phải ít nhất 6 ký tự.')
+})
+
 const submitLogin = async () => {
     await authStore.login(user)
     if (authStore.err) {
@@ -24,7 +31,6 @@ const submitLogin = async () => {
     $toast.success(authStore.result.message, { position: 'top-right' })
     await userStore.getMe()
     router.push({ name: 'home' })
-
 }
 </script>
 
@@ -35,24 +41,20 @@ const submitLogin = async () => {
                 <h1 class="h1-custom">
                     ĐĂNG NHẬP
                 </h1>
-                <form class="flex flex-col gap-3" @submit.prevent="submitLogin">
+                <Form class="flex flex-col gap-3" @submit="submitLogin" :validation-schema="formSchemaLogin">
                     <div>
                         <label for="email" class="label-custom">
                             Email:
                         </label>
-                        <input type="email" name="email" id="email" class="input-custom" v-model="user.email">
-                        <span v-if="false" class="error">
-                            Email không hợp lệ!
-                        </span>
+                        <Field type="email" name="email" id="email" class="input-custom" v-model="user.email" />
+                        <ErrorMessage name="email" class="error" />
                     </div>
                     <div>
                         <label for="password" class="label-custom">
                             Mật khẩu:
                         </label>
-                        <input type="password" name="password" id="password" class="input-custom" v-model="user.password">
-                        <span v-if="false" class="error">
-                            Tối thiểu 6 ký tự!
-                        </span>
+                        <Field name="password" type="password" id="password" class="input-custom" v-model="user.password" />
+                        <ErrorMessage name="password" class="error" />
                     </div>
                     <div class="flex items-center justify-between">
                         <router-link
@@ -71,7 +73,7 @@ const submitLogin = async () => {
                             Đăng ký.
                         </router-link>
                     </p>
-                </form>
+                </Form>
             </div>
         </div>
     </section>

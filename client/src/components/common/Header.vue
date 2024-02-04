@@ -53,14 +53,13 @@ onUnmounted(() => {
                 </router-link>
             </div>
             <div class="">
-                <div v-if="authStore.token == null" class="text-xs flex gap-2 justify-end">
-                    <div class="hover:text-red-500">
+                <div v-if="authStore.token == null" class="text-base font-medium flex gap-2 justify-end">
+                    <div class="hover:bg-green-600 text-white bg-green-400 p-2 rounded-md">
                         <router-link :to="{ name: 'login' }">
                             <p>Đăng nhập</p>
                         </router-link>
                     </div>
-                    <p>|</p>
-                    <div class="hover:text-red-500">
+                    <div class="hover:bg-green-600 text-white bg-green-400 p-2 rounded-md">
                         <router-link :to="{ name: 'register' }">
                             <p>Đăng ký</p>
                         </router-link>

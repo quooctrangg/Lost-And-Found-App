@@ -5,6 +5,8 @@ import { useLocationStore } from '../../../stores/location.store'
 import { useToast } from 'vue-toast-notification'
 import { reactive, watchEffect } from 'vue';
 import Loading from '../../common/Loading.vue';
+import * as yup from "yup";
+import { Form, Field, ErrorMessage } from "vee-validate";
 
 const props = defineProps(['location'])
 
@@ -16,8 +18,13 @@ const data = reactive({
     name: '',
     symbol: ''
 })
+const formSchemaLocation = yup.object().shape({
+    name: yup.string().required('Tên phải có giá trị.').min(1, 'Tên phải ít nhất 1 ký tự.').max(50, "Tên có nhiều nhất 50 ký tự."),
+    symbol: yup.string().required('Ký hiệu phải có giá trị.').min(1, 'Tên phải ít nhất 1 ký tự.').max(10, "Tên có nhiều nhất 10 ký tự.")
+})
 
 const updateLocation = async () => {
+    if (data.name == props.location?.name && data.symbol == props.location?.symbol) return
     await locationStore.updateLocation(props.location?.id, data)
     if (locationStore.err) {
         $toast.error(locationStore.err, { position: 'top-right' })
@@ -37,7 +44,8 @@ watchEffect(async () => {
 </script>
 
 <template>
-    <fwb-modal v-if="manageStore.isShow.editLocation" @close="manageStore.closeEditLocationModal" :size="'xs'">
+    <fwb-modal v-if="manageStore.isShow.editLocation" @close="manageStore.closeEditLocationModal" :size="'xs'"
+        :persistent="true">
         <template #header>
             <div class="flex items-center text-xl gap-2">
                 <i class="fa-solid fa-plus"></i>
@@ -46,15 +54,22 @@ watchEffect(async () => {
         </template>
         <template #body>
             <div class="w-full">
-                <form @submit.prevent="updateLocation" v-if="locationStore.isLoading == false">
+                <Form @submit="updateLocation" v-if="locationStore.isLoading == false"
+                    :validation-schema="formSchemaLocation">
                     <label for="name" class="text-lg mx-2">Tên vị trí:</label>
-                    <input id="name" minlength="1" maxlength="50" required type="text" placeholder="Nhập tên vị trí"
-                        class="rounded-md w-full mb-2" v-model="data.name">
+                    <div class="mb-3">
+                        <Field type="text" name="name" id="name" class="rounded-md w-full" v-model="data.name"
+                            placeholder="Nhập tên vị trí" />
+                        <ErrorMessage name="name" class="error" />
+                    </div>
                     <label for="symbol" class="text-lg mx-2">Ký hiệu:</label>
-                    <input id="symbol" minlength="1" maxlength="50" required type="text" placeholder="Nhập tên ký hiệu"
-                        class="rounded-md w-full" v-model="data.symbol">
+                    <div class="mb-3">
+                        <Field type="text" name="symbol" id="symbol" class="rounded-md w-full" v-model="data.symbol"
+                            placeholder="Nhập tên ký hiệu" />
+                        <ErrorMessage name="symbol" class="error" />
+                    </div>
                     <button type="submit" hidden id="btn-submit"></button>
-                </form>
+                </Form>
                 <div v-else>
                     <Loading />
                 </div>

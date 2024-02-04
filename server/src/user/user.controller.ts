@@ -15,7 +15,7 @@ export class UserController {
     @UseGuards(MyJWTGuard, RolesGuard)
     @Role(USER_TYPES.USER)
     getUser(@GetUser() user: User) {
-        return this.userService.getUser(user.id)
+        return this.userService.getUser(user)
     }
 
     @Get()
@@ -23,6 +23,13 @@ export class UserController {
     @Role(USER_TYPES.ADMIN)
     getAllUser(@Query() option: { page: number, key: string, isBan: string, schoolId: number }) {
         return this.userService.getAllUser(option)
+    }
+
+    @Get('profile/:id')
+    @UseGuards(MyJWTGuard, RolesGuard)
+    @Role(USER_TYPES.USER)
+    getProfileUser(@Param('id', ParseIntPipe) id: number) {
+        return this.userService.getProfileUser(id)
     }
 
     @Post()

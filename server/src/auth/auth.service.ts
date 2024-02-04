@@ -100,7 +100,7 @@ export class AuthService {
                     code: code
                 }
             })
-            return new ResponseData<string>(null, 200, 'Gửi mã thành công')
+            return new ResponseData<string>(null, 200, 'Gửi mã đến email của bạn')
         } catch (error) {
             return new ResponseData<string>(null, 500, 'Lỗi dịch vụ, thử lại sau')
         }

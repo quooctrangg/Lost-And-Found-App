@@ -11,10 +11,31 @@ import { MailerService } from '@nestjs-modules/mailer';
 export class UserService {
     constructor(private readonly prismaService: PrismaService, private readonly cloudinaryService: CloudinaryService, private readonly mailerService: MailerService) { }
 
-    async getUser(id: number) {
+    async getUser(user: User) {
         try {
-            const user = await this.getUserById(id)
+            return new ResponseData<User>(user, 200, 'Tài khoản tồn tại')
+        } catch (error) {
+            return new ResponseData<string>(null, 500, 'Lỗi dịch vụ, thử lại sau')
+        }
+    }
+
+    async getProfileUser(id: number) {
+        try {
+            const user = await this.prismaService.user.findUnique({
+                where: {
+                    id: id
+                },
+                include: {
+                    Post: true,
+                    School: true
+                }
+            })
+            if (!user) {
+                return new ResponseData<User>(null, 400, 'Tài khoản không tồn tại')
+            }
             delete user.password
+            delete user.type
+            delete user.updatedAt
             return new ResponseData<User>(user, 200, 'Tài khoản tồn tại')
         } catch (error) {
             return new ResponseData<string>(null, 500, 'Lỗi dịch vụ, thử lại sau')
@@ -84,7 +105,9 @@ export class UserService {
                     email: createUserDto.email
                 }
             })
-            if (user) return new ResponseData<User>(null, 400, 'Email đã được sử dụng')
+            if (user) {
+                return new ResponseData<User>(null, 400, 'Email đã được sử dụng')
+            }
             const hashedPassword = await argon2.hash(createUserDto.password)
             await this.prismaService.user.create({
                 data: {
@@ -104,7 +127,7 @@ export class UserService {
         try {
             const user = await this.getUserById(userId)
             if (!user) {
-                new ResponseData<User>(null, 400, 'Tài khoản không tồn tại')
+                return new ResponseData<User>(null, 400, 'Tài khoản không tồn tại')
             }
             if (!user.isBan) {
                 await this.prismaService.feedback.create({
@@ -134,7 +157,9 @@ export class UserService {
     async updateProfile(userId: number, updateProfileDto: updateProfileDto) {
         try {
             const user = await this.getUserById(userId)
-            if (!user) new ResponseData<User>(null, 400, 'Tài khoản không tồn tại')
+            if (!user) {
+                return new ResponseData<User>(null, 400, 'Tài khoản không tồn tại')
+            }
             await this.prismaService.user.update({
                 where: {
                     id: user.id
@@ -152,7 +177,9 @@ export class UserService {
     async updateAvatar(userId: number, image: Express.Multer.File) {
         try {
             const user = await this.getUserById(userId)
-            if (!user) new ResponseData<User>(null, 400, 'Tài khoản không tồn tại')
+            if (!user) {
+                return new ResponseData<User>(null, 400, 'Tài khoản không tồn tại')
+            }
             const img = await this.cloudinaryService.uploadFile(image)
             await this.prismaService.user.update({
                 where: {
@@ -172,7 +199,9 @@ export class UserService {
         try {
             const data: { name?: string, image?: string, password?: string, schoolId?: number } = {}
             const user = await this.getUserById(userId)
-            if (!user) new ResponseData<User>(null, 400, 'Tài khoản không tồn tại')
+            if (!user) {
+                return new ResponseData<User>(null, 400, 'Tài khoản không tồn tại')
+            }
             if (updateUserDto.name) {
                 data.name = updateUserDto.name
             }
@@ -203,7 +232,7 @@ export class UserService {
         try {
             const user = await this.getUserById(id)
             if (!user) {
-                new ResponseData<User>(null, 400, 'Tài khoản không tồn tại')
+                return new ResponseData<User>(null, 400, 'Tài khoản không tồn tại')
             }
             const passwordMatched = await argon2.verify(user.password, updatePasswordDto.currentPassword)
             if (!passwordMatched) {
@@ -233,16 +262,22 @@ export class UserService {
                     code: forgotPasswordDto.code
                 }
             })
-            if (!verifyCode) return new ResponseData<string>(null, 400, 'Mã xác minh không tồn tại')
+            if (!verifyCode) {
+                return new ResponseData<string>(null, 400, 'Mã xác minh không tồn tại')
+            }
             const createdAt = new Date(verifyCode.createdAt)
             createdAt.setMinutes(createdAt.getMinutes() + 5)
-            if (createdAt <= currentDate) return new ResponseData<string>(null, 400, 'Quá thời gian của mã xác minh')
+            if (createdAt <= currentDate) {
+                return new ResponseData<string>(null, 400, 'Quá thời gian của mã xác minh')
+            }
             const user = await this.prismaService.user.findFirst({
                 where: {
                     email: forgotPasswordDto.email
                 }
             })
-            if (!user) return new ResponseData<string>(null, 400, 'Tài khoản không tồn tại')
+            if (!user) {
+                return new ResponseData<string>(null, 400, 'Tài khoản không tồn tại')
+            }
             const hashedPassword = await argon2.hash(forgotPasswordDto.newPassword)
             const newPassword = await this.prismaService.user.update({
                 where: {
@@ -252,7 +287,9 @@ export class UserService {
                     password: hashedPassword
                 }
             })
-            if (!newPassword) return new ResponseData<string>(null, 400, 'Đổi mật khẩu thất bại, thử lại')
+            if (!newPassword) {
+                return new ResponseData<string>(null, 400, 'Đổi mật khẩu thất bại, thử lại')
+            }
             await this.prismaService.verifyCode.deleteMany({
                 where: {
                     email: user.email
@@ -271,7 +308,9 @@ export class UserService {
                     email: verifyCodeDto.email
                 }
             })
-            if (!user) return new ResponseData<any>(null, 400, 'Email này chưa đăng ký')
+            if (!user) {
+                return new ResponseData<any>(null, 400, 'Email này chưa đăng ký')
+            }
             await this.prismaService.verifyCode.deleteMany({
                 where: {
                     email: user.email
@@ -284,7 +323,9 @@ export class UserService {
                     code: parseInt(code)
                 }
             })
-            if (!verifyCode) return new ResponseData<string>(null, 500, 'Lỗi dịch vụ, thử lại sau')
+            if (!verifyCode) {
+                return new ResponseData<string>(null, 500, 'Lỗi dịch vụ, thử lại sau')
+            }
             await this.mailerService.sendMail({
                 to: user.email,
                 subject: 'Mã OTP để xác nhận đổi mật khẩu tài khoản cho Ứng dụng hỗ trợ tìm kiếm đồ vật bị thất lạc',
@@ -304,10 +345,6 @@ export class UserService {
         return await this.prismaService.user.findUnique({
             where: {
                 id: id
-            },
-            include: {
-                School: true,
-                Post: true
             }
         })
     }

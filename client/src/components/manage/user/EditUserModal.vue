@@ -6,6 +6,8 @@ import { useSchoolStore } from '../../../stores/school.store'
 import { useToast } from 'vue-toast-notification'
 import { reactive, ref, watchEffect } from 'vue'
 import Loading from '../../common/Loading.vue'
+import * as yup from "yup";
+import { Form, Field, ErrorMessage } from "vee-validate";
 
 const manageStore = useManageStore()
 const userStore = useUserStore()
@@ -19,6 +21,10 @@ const user = reactive({
     password: '',
     schoolId: ''
 })
+const formSchemaUser = yup.object().shape({
+    name: yup.string().required("Tên phải có giá trị.").min(1, 'Tên phải ít nhất 1 ký tự.').max(50, "Tên có nhiều nhất 50 ký tự."),
+    schoolId: yup.string().required('Yêu cầu chọn trường / khoa.')
+})
 
 const url = ref(null)
 const selectedFile = ref(null)
@@ -28,8 +34,14 @@ const onFileSelected = (e) => {
     url.value = URL.createObjectURL(selectedFile.value)
 }
 
+const removeImage = () => {
+    selectedFile.value = null
+    url.value = null
+}
+
 const editUser = async () => {
     const data = new FormData()
+    if (!selectedFile.value && user.password == '' && user.schoolId === props.user.schoolId && user.name == props.user.name) return
     if (selectedFile.value) {
         data.append('image', selectedFile.value)
     }
@@ -66,7 +78,7 @@ watchEffect(async () => {
 </script>
 
 <template>
-    <fwb-modal v-if="manageStore.isShow.editUser" @close="manageStore.closeEditUserModal">
+    <fwb-modal v-if="manageStore.isShow.editUser" @close="manageStore.closeEditUserModal" :persistent="true">
         <template #header>
             <div class="flex items-center text-xl gap-2">
                 <i class="fa-solid fa-pen"></i>
@@ -75,7 +87,7 @@ watchEffect(async () => {
         </template>
         <template #body>
             <div class="w-full">
-                <form v-if="userStore.isLoading == false" @submit.prevent="editUser">
+                <Form v-if="userStore.isLoading == false" @submit="editUser" :validation-schema="formSchemaUser">
                     <div>
                         <label for="email" class="label-custom">
                             Email:
@@ -83,7 +95,7 @@ watchEffect(async () => {
                         <input type="email" maxlength="50" name="email" id="email" class="input-custom"
                             v-model="props.user.email" disabled>
                     </div>
-                    <div class="flex justify-center mt-4">
+                    <div class="flex flex-col items-center justify-center gap-2 mt-4">
                         <div class="h-36 w-36 border-dashed border-black border-2 rounded-full overflow-hidden">
                             <label for="images" class="cursor-pointer h-full w-full flex justify-center items-center">
                                 <div v-if="url == null" class="flex flex-col items-center gap-2">
@@ -93,26 +105,33 @@ watchEffect(async () => {
                                 <img v-else :src="url" alt="" class="object-cover">
                             </label>
                         </div>
+                        <button type="button" v-if="url != null" @click="removeImage"
+                            class="border border-red-500 p-1 rounded text-red-500 text-sm">
+                            Xóa
+                        </button>
                     </div>
                     <input type="file" hidden id="images" accept="image/png, image/jpeg" @change="onFileSelected">
                     <div class="mt-4">
-                        <label for="firstname" class="label-custom">
+                        <label for="name" class="label-custom">
                             Họ và tên:
                         </label>
-                        <input type="text" maxlength="50" name="firstname" id="firstname" class="input-custom"
-                            v-model="user.name">
+                        <Field name="name" type="text" class="input-custom" id="name" v-model="user.name" />
+                        <ErrorMessage name="name" class="error" />
                     </div>
                     <div class="mt-4">
-                        <label for="school" class="label-custom">
+                        <label for="schoolId" class="label-custom">
                             Trường / Khoa:
                         </label>
-                        <select name="school" id="school" class="input-custom" v-model="user.schoolId">
-                            <option v-for="school in schoolStore.schools" :key="school.id" :value="school.id">
+                        <Field as="select" name="schoolId" id="schoolId" class="input-custom" v-model="user.schoolId">
+                            <option value="">Chọn trường / khoa</option>
+                            <option v-if="schoolStore.schools?.length" v-for="school in schoolStore.schools"
+                                :key="school.id" :value="school.id">
                                 {{
                                     school.name
                                 }}
                             </option>
-                        </select>
+                        </Field>
+                        <ErrorMessage name="schoolId" class="error" />
                     </div>
                     <div class="mt-4">
                         <label for="password" class="label-custom">
@@ -122,7 +141,7 @@ watchEffect(async () => {
                             v-model="user.password">
                     </div>
                     <button type="submit" hidden id="btn-submit"></button>
-                </form>
+                </Form>
                 <div v-else>
                     <Loading />
                 </div>
@@ -135,7 +154,7 @@ watchEffect(async () => {
                 </fwb-button>
                 <label for="btn-submit"
                     class="bg-green-500 rounded-lg text-sm px-5 py-3 text-center text-white font-semibold cursor-pointer hover:bg-green-600">
-                    Thêm
+                    Cập nhật
                 </label>
             </div>
         </template>

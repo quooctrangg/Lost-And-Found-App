@@ -26,9 +26,9 @@ const routes = [
     meta: { title: 'Quên Mật Khẩu' }
   },
   {
-    path: '/profile',
-    name: 'profile',
-    component: () => import('../views/ProfileView.vue'),
+    path: '/me',
+    name: 'me',
+    component: () => import('../views/MeView.vue'),
     meta: { title: 'Thông tin cá nhân' },
     children: [
       {
@@ -42,6 +42,12 @@ const routes = [
         component: () => import('../components/profile/Request.vue')
       }
     ]
+  },
+  {
+    path: '/profile/:id',
+    name: 'profile',
+    component: () => import('../views/ProfileView.vue'),
+    meta: { title: 'Thông tin cá nhân' }
   },
   {
     path: '/chat',

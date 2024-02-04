@@ -57,7 +57,7 @@ onMounted(async () => {
             <div class="flex items-center justify-between w-full">
                 <div class="flex gap-5">
                     <div class="border border-black rounded-xl">
-                        <Seach :title="'Tìm kiếm người dùng'" @key="(e) => { userStore.key = e }" />
+                        <Seach :title="'Nhập tên hoặc email'" @key="(e) => { userStore.key = e }" />
                     </div>
                     <div class="flex gap-1 items-center">
                         <label for="isban">Trạng thái: </label>
@@ -84,7 +84,7 @@ onMounted(async () => {
                     <i class="fa-solid fa-user-plus"></i>
                 </button>
             </div>
-            <table>
+            <table class="table-fixed w-full">
                 <thead class="border-b border-black font-medium">
                     <tr class="text-left">
                         <th class="px-6 py-4 text-center">
@@ -114,9 +114,10 @@ onMounted(async () => {
                     <tr v-if="userStore.users?.length" v-for="user in userStore.users" :key="user.id"
                         class="border-b transition duration-300 ease-in-out hover:bg-gray-300">
                         <td class="whitespace-nowrap px-6 py-4 font-medium text-center">
-                            {{
-                                user.id
-                            }}
+                            <router-link :to="{ name: 'profile', params: { id: `${user.id}` } }"
+                                class="text-lg text-blue-500 underline p-2 hover:text-blue-600">
+                                {{ user.id }}
+                            </router-link>
                         </td>
                         <td class="whitespace-nowrap px-6 py-4">
                             <div class="w-20 h-20 overflow-hidden flex items-center justify-center rounded-full">

@@ -28,6 +28,16 @@ class userService {
         })).data
     }
 
+    async getProfileUser(token, id) {
+        return (await this.api.get(`profile/${id}`, {
+            headers: {
+                "Content-Type": "application/json",
+                Accept: "application/json",
+                Authorization: `Bearer ${token}`
+            }
+        })).data
+    }
+
     async updateAvatar(token, data) {
         return (await this.api.patchForm('/update-avatar', data, {
             headers: {

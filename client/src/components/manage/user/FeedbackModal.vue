@@ -2,6 +2,8 @@
 import { FwbButton, FwbModal } from 'flowbite-vue'
 import { useManageStore } from '../../../stores/manage.store'
 import { ref } from 'vue';
+import * as yup from "yup";
+import { Form, Field, ErrorMessage } from "vee-validate";
 
 const manageStore = useManageStore()
 
@@ -9,6 +11,9 @@ const props = defineProps(['user'])
 const emits = defineEmits(['user'])
 
 const feedback = ref('')
+const formSchemaFeedback = yup.object().shape({
+    feedback: yup.string().required("Phải có giá trị.").min(10, 'Tên phải ít nhất 10 ký tự.').max(250, "Tên có nhiều nhất 250 ký tự."),
+})
 
 const sumitFeedback = () => {
     emits('user', { user: props.user, feedback: feedback.value })
@@ -24,7 +29,7 @@ const sumitFeedback = () => {
             </div>
         </template>
         <template #body>
-            <form @submit.prevent="sumitFeedback">
+            <Form @submit="sumitFeedback" :validation-schema="formSchemaFeedback">
                 <div class="w-full">
                     <div class="flex gap-2 items-center">
                         <label for="email" class="label-custom">
@@ -34,12 +39,13 @@ const sumitFeedback = () => {
                             v-model="props.user.email" disabled>
                     </div>
                     <div class="mt-3">
-                        <textarea maxlength="250" rows="5" class="w-full rounded-md" placeholder="Nhập lý do khóa"
-                            v-model="feedback" required></textarea>
+                        <Field name="feedback" id="feedback" as="textarea" class="w-full rounded-md"
+                            placeholder="Nhập lý do khóa" v-model="feedback" rows="5" />
+                        <ErrorMessage name="feedback" class="error" />
                     </div>
                     <button type="submit" hidden id="btn-submit"></button>
                 </div>
-            </form>
+            </Form>
         </template>
         <template #footer>
             <div class="flex justify-end gap-2">

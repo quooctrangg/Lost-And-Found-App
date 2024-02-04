@@ -5,6 +5,8 @@ import { useSchoolStore } from '../../../stores/school.store'
 import { useToast } from 'vue-toast-notification'
 import { ref, watchEffect } from 'vue';
 import Loading from '../../common/Loading.vue';
+import * as yup from "yup";
+import { Form, Field, ErrorMessage } from "vee-validate";
 
 const props = defineProps(['school'])
 
@@ -13,6 +15,9 @@ const schoolStore = useSchoolStore()
 const $toast = useToast()
 
 const name = ref('')
+const formSchemaSchool = yup.object().shape({
+    name: yup.string().required('Tên phải có giá trị.').min(1, 'Tên phải ít nhất 1 ký tự.').max(50, "Tên có nhiều nhất 50 ký tự.")
+})
 
 const updateSchool = async () => {
     await schoolStore.updateSchool(props.school?.id, { name: name.value })
@@ -33,7 +38,8 @@ watchEffect(async () => {
 </script>
 
 <template>
-    <fwb-modal v-if="manageStore.isShow.editSchool" @close="manageStore.closeEditSchoolModal" :size="'sm'">
+    <fwb-modal v-if="manageStore.isShow.editSchool" @close="manageStore.closeEditSchoolModal" :size="'sm'"
+        :persistent="true">
         <template #header>
             <div class="flex items-center text-xl gap-2">
                 <i class="fa-solid fa-plus"></i>
@@ -42,12 +48,12 @@ watchEffect(async () => {
         </template>
         <template #body>
             <div class="w-full">
-                <form @submit.prevent="updateSchool" v-if="schoolStore.isLoading == false">
-                    <label for="name" class="text-lg mx-2">Tên trường / khoa:</label>
-                    <input id="name" minlength="1" maxlength="50" required type="text" placeholder="Nhập tên trường / khoa"
-                        class="rounded-md w-full" v-model="name">
+                <Form @submit="updateSchool" v-if="schoolStore.isLoading == false" :validation-schema="formSchemaSchool">
+                    <Field type="text" name="name" id="name" class="rounded-md w-full" v-model="name"
+                        placeholder="Nhập tên trường / khoa" />
+                    <ErrorMessage name="name" class="error" />
                     <button type="submit" hidden id="btn-submit"></button>
-                </form>
+                </Form>
                 <div v-else>
                     <Loading />
                 </div>
