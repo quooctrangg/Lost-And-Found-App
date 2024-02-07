@@ -83,9 +83,23 @@ export class ConversationService {
               name: true,
               image: true
             }
+          },
+          Message: {
+            select: {
+              id: true,
+              content: true,
+              createdAt: true,
+              userId: true,
+              isImage: true
+            },
+            orderBy: {
+              createdAt: 'desc'
+            },
+            take: 1
           }
         }
       })
+      conversations.sort((a, b) => b.Message[0].id - a.Message[0].id)
       return new ResponseData<Conversation[]>(conversations, 200, 'Tất cả liên hệ')
     } catch (error) {
       return new ResponseData<string>(null, 500, 'Lỗi dịch vụ, thử lại sau')

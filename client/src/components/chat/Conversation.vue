@@ -2,23 +2,86 @@
 import Messages from './Messages.vue'
 import Input from './Input.vue'
 import { useConversationStore } from '../../stores/conversation.store'
+import { useMessageStore } from '../../stores/message.store'
+import { useUserStore } from '../../stores/user.store'
+import { onMounted, watchEffect } from 'vue';
+import { getSender } from '../../untils'
+import io from "socket.io-client";
+
+const ENDPOINT = import.meta.env.VITE_URL_API
+
+let socket
 
 const conversationStore = useConversationStore()
+const messageStore = useMessageStore()
+const userStore = useUserStore()
+
+const sendMessage = async content => {
+    await messageStore.sendMessage({ content: content, conversationId: conversationStore.conversations[conversationStore.activeIndex].id })
+    await conversationStore.fetchConversations()
+    socket.emit('new message', { data: messageStore.newMessage, userRecievedId: getSender(userStore.user, conversationStore.conversations[conversationStore.activeIndex].User).id })
+    conversationStore.activeIndex = 0
+}
+
+const sendImage = async files => {
+    const data = new FormData()
+    for (let i = 0; i < files.length; i++) {
+        data.append('images', files[i])
+    }
+    data.append('conversationId', conversationStore.conversations[conversationStore.activeIndex].id)
+    await messageStore.sendImage(data)
+    await conversationStore.fetchConversations()
+    socket.emit('new image', { data: messageStore.newMessage, userRecievedId: getSender(userStore.user, conversationStore.conversations[conversationStore.activeIndex].User).id })
+    conversationStore.activeIndex = 0
+}
+
+onMounted(async () => {
+    socket = io(ENDPOINT)
+    socket.on('message recieved', async newMessageRecieved => {
+        await conversationStore.fetchConversations()
+        if (conversationStore.activeIndex !== null) {
+            if (conversationStore.conversations[conversationStore.activeIndex].id == newMessageRecieved.conversationId) {
+                messageStore.messages.push(newMessageRecieved)
+                console.log(newMessageRecieved);
+            }
+        }
+    })
+    socket.on('image recieved', async newImageRecieved => {
+        await conversationStore.fetchConversations()
+        if (conversationStore.activeIndex !== null) {
+            if (conversationStore.conversations[conversationStore.activeIndex].id == newImageRecieved[0].conversationId) {
+                messageStore.messages.push(...newImageRecieved)
+            }
+        }
+    })
+    watchEffect(async () => {
+        socket.emit('setup', { userId: userStore.user.id })
+        if (conversationStore.activeIndex !== null) {
+            await messageStore.getAllMessages(conversationStore.conversations[conversationStore.activeIndex].id)
+        }
+    })
+})
 </script>
 
 <template >
-    <div class="basis-3/4 flex flex-col bg-slate-200 rounded-lg overflow-hidden border-2 border-blue-600">
+    <div class="w-[75%] flex-1 flex flex-col bg-slate-200 rounded-lg overflow-hidden border-2 border-blue-600">
         <div v-if="conversationStore.activeIndex !== null" class="h-full flex flex-col justify-between">
             <div class="bg-white py-2 px-4 flex justify-between items-center shadow-lg">
-                <router-link to="/" class="hover:underline hover:text-blue-400">
-                    <h2 class="font-medium">Quoc Trang {{ conversationStore.activeIndex }}</h2>
+                <router-link
+                    :to="{ name: 'profile', params: { id: getSender(userStore.user, conversationStore.conversations[conversationStore.activeIndex].User)?.id } }"
+                    class="hover:underline hover:text-blue-400">
+                    <h2 class="font-medium">
+                        {{
+                            getSender(userStore.user, conversationStore.conversations[conversationStore.activeIndex].User)?.name
+                        }}
+                    </h2>
                 </router-link>
                 <button @click="conversationStore.activeIndex = null">
                     <i class="fa-solid fa-xmark"></i>
                 </button>
             </div>
             <Messages class="flex-1" />
-            <Input />
+            <Input :sendImage="sendImage" :sendMessage="sendMessage" />
         </div>
         <div v-else class="w-full h-full flex justify-center items-center font-semibold text-2xl text-gray-400">
             Mở một cuộc trò chuyện để bắt đầu.

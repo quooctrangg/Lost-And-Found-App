@@ -5,6 +5,7 @@ import router from './router'
 import piniaPluginPersistedstate from 'pinia-plugin-persistedstate'
 import dayjs from 'dayjs'
 import localizedFormat from 'dayjs/plugin/localizedFormat'
+import relativeTime from 'dayjs/plugin/relativeTime'
 
 import 'dayjs/locale/vi'
 import 'vue-toast-notification/dist/theme-sugar.css';
@@ -13,6 +14,7 @@ import './assets/main.css'
 import './assets/index.css'
 
 dayjs.extend(localizedFormat)
+dayjs.extend(relativeTime)
 dayjs.locale('vi')
 
 const pinia = createPinia()
