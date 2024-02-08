@@ -2,9 +2,11 @@ import { ref } from 'vue'
 import { defineStore } from 'pinia'
 import messageService from '../services/message.service'
 import { useAuthStore } from './auth.store'
+import { useConversationStore } from './conversation.store'
 
 export const useMessageStore = defineStore('message', () => {
     const authStore = useAuthStore()
+    const conversationStore = useConversationStore()
 
     const activeIndex = ref(null)
     const err = ref(null)
@@ -60,11 +62,12 @@ export const useMessageStore = defineStore('message', () => {
         }
     }
 
-    const readMessages = async data => {
+    const readMessages = async conversationId => {
         isLoading.value = true
         err.value = null
         try {
-
+            const res = await messageService.readMessages(authStore.token, conversationId)
+            if (res.statusCode !== 200) throw new Error(res.message)
         } catch (error) {
             err.value = error.message
         } finally {

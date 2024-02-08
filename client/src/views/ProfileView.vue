@@ -1,7 +1,9 @@
 <script setup>
 import { onMounted, ref } from 'vue';
 import { useUserStore } from '../stores/user.store'
+import { useConversationStore } from '../stores/conversation.store'
 import { useRoute, useRouter } from 'vue-router'
+import { useToast } from 'vue-toast-notification'
 import Footer from '../components/common/Footer.vue';
 import Loading from '@/components/common/Loading.vue';
 import PostCard from '@/components/common/PostCard.vue';
@@ -9,8 +11,10 @@ import ScrollToTop from '@/components/common/ScrollToTop.vue';
 import dayjs from 'dayjs'
 
 const userStore = useUserStore()
+const conversationStore = useConversationStore()
 const route = useRoute()
 const router = useRouter()
+const $toast = useToast()
 
 const profile = ref(null)
 
@@ -29,6 +33,16 @@ const getProfileUser = async () => {
 
 const goBack = () => {
     router.back()
+}
+
+const goMessage = async () => {
+    await conversationStore.accessConversation({ userId: profile.value?.id })
+    if (conversationStore.err) {
+        $toast.error(conversationStore.err, { position: 'top-right' })
+        return
+    }
+    $toast.success(conversationStore.result.message, { position: 'top-right' })
+    router.push({ name: 'chat' })
 }
 
 onMounted(async () => {
@@ -62,7 +76,8 @@ onMounted(async () => {
                 </h2>
             </div>
             <div class="flex flex-col gap-1 justify-end">
-                <button class="border-2 border-blue-600 rounded-lg text-sm p-2 text-center text-blue-600 font-semibold">
+                <button class="border-2 border-blue-600 rounded-lg text-sm p-2 text-center text-blue-600 font-semibold"
+                    @click="goMessage">
                     <i class="fa-brands fa-facebook-messenger"></i>
                     Nhắn tin
                 </button>

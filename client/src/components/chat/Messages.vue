@@ -20,7 +20,6 @@ watch(messageStore.messages, () => {
 
 onMounted(() => {
     scrollToBottom()
-    scrollToBottom()
 })
 
 const scrollToBottom = () => {

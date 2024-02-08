@@ -10,7 +10,8 @@ export const useConversationStore = defineStore('conversation', () => {
     const err = ref(null)
     const result = ref(null)
     const isLoading = ref(false)
-    const conversations = ref(null)
+    const conversations = ref([])
+    const totalReadMessage = ref(0)
 
     const fetchConversations = async () => {
         isLoading.value = true
@@ -18,7 +19,12 @@ export const useConversationStore = defineStore('conversation', () => {
         try {
             const res = await conversationService.fetchConversations(authStore.token)
             if (res.statusCode !== 200) throw new Error(res.message)
-            conversations.value = res.data
+            conversations.value = res.data.result
+            if (res.data.totalReadMessage < 100) {
+                totalReadMessage.value = res.data.totalReadMessage
+            } else {
+                totalReadMessage.value = 99
+            }
         } catch (error) {
             err.value = error.message
         } finally {
@@ -32,10 +38,11 @@ export const useConversationStore = defineStore('conversation', () => {
         try {
             const res = await conversationService.accessConversation(authStore.token, data)
             if (res.statusCode !== 200) throw new Error(res.message)
+            result.value = res
             const isExist = conversations.value.findIndex(tes => tes.id === res.data.id)
             if (isExist === -1) {
-                conversations.value.push(res.data)
-                activeIndex.value = conversations.value.length - 1
+                conversations.value.unshift(res.data)
+                activeIndex.value = 0
             } else {
                 activeIndex.value = isExist
             }
@@ -46,5 +53,5 @@ export const useConversationStore = defineStore('conversation', () => {
         }
     }
 
-    return { activeIndex, err, result, isLoading, conversations, fetchConversations, accessConversation }
+    return { activeIndex, err, result, isLoading, conversations, totalReadMessage, fetchConversations, accessConversation }
 })

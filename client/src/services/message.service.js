@@ -36,7 +36,7 @@ class messageService {
     }
 
     async readMessages(token, conversationId) {
-        return (await this.api.patch(`/${conversationId}`, {
+        return (await this.api.patch(`/${conversationId}`, {}, {
             headers: {
                 "Content-Type": "application/json",
                 Accept: "application/json",

@@ -36,6 +36,9 @@ export class MessageService {
               name: true
             }
           }
+        },
+        orderBy: {
+          createdAt: 'asc'
         }
       })
       return new ResponseData<Message[]>(messages, 200, 'Tất cả tin nhắn')

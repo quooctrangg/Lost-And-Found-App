@@ -4,7 +4,7 @@ import Input from './Input.vue'
 import { useConversationStore } from '../../stores/conversation.store'
 import { useMessageStore } from '../../stores/message.store'
 import { useUserStore } from '../../stores/user.store'
-import { onMounted, watchEffect } from 'vue';
+import { onMounted, onUpdated, watchEffect } from 'vue';
 import { getSender } from '../../untils'
 import io from "socket.io-client";
 
@@ -35,6 +35,14 @@ const sendImage = async files => {
     conversationStore.activeIndex = 0
 }
 
+onUpdated(async () => {
+    await messageStore.readMessages(conversationStore.conversations[conversationStore.activeIndex].id)
+    if (conversationStore.conversations[conversationStore.activeIndex].Message[0].read == false && conversationStore.conversations[conversationStore.activeIndex].Message[0].userId !== userStore.user.id) {
+        conversationStore.conversations[conversationStore.activeIndex].Message[0].read = true
+        conversationStore.totalReadMessage = conversationStore.totalReadMessage - 1
+    }
+})
+
 onMounted(async () => {
     socket = io(ENDPOINT)
     socket.on('message recieved', async newMessageRecieved => {
@@ -42,7 +50,6 @@ onMounted(async () => {
         if (conversationStore.activeIndex !== null) {
             if (conversationStore.conversations[conversationStore.activeIndex].id == newMessageRecieved.conversationId) {
                 messageStore.messages.push(newMessageRecieved)
-                console.log(newMessageRecieved);
             }
         }
     })
@@ -68,7 +75,7 @@ onMounted(async () => {
         <div v-if="conversationStore.activeIndex !== null" class="h-full flex flex-col justify-between">
             <div class="bg-white py-2 px-4 flex justify-between items-center shadow-lg">
                 <router-link
-                    :to="{ name: 'profile', params: { id: getSender(userStore.user, conversationStore.conversations[conversationStore.activeIndex].User)?.id } }"
+                    :to="{ name: 'profile', params: { id: getSender(userStore.user, conversationStore.conversations[conversationStore.activeIndex]?.User)?.id } }"
                     class="hover:underline hover:text-blue-400">
                     <h2 class="font-medium">
                         {{

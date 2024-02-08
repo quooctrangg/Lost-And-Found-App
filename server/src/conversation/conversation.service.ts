@@ -90,7 +90,8 @@ export class ConversationService {
               content: true,
               createdAt: true,
               userId: true,
-              isImage: true
+              isImage: true,
+              read: true
             },
             orderBy: {
               createdAt: 'desc'
@@ -99,8 +100,15 @@ export class ConversationService {
           }
         }
       })
-      conversations.sort((a, b) => b.Message[0].id - a.Message[0].id)
-      return new ResponseData<Conversation[]>(conversations, 200, 'Tất cả liên hệ')
+      const result = conversations.filter((e) => e.Message.length > 0)
+      result.sort((a, b) => b.Message[0].id - a.Message[0].id)
+      let totalReadMessage = 0
+      result.forEach(e => {
+        if (e.Message[0].userId !== userId && e.Message[0].read == false) {
+          totalReadMessage = totalReadMessage + 1
+        }
+      })
+      return new ResponseData<any>({ result, totalReadMessage }, 200, 'Tất cả liên hệ')
     } catch (error) {
       return new ResponseData<string>(null, 500, 'Lỗi dịch vụ, thử lại sau')
     }

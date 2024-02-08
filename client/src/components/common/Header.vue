@@ -3,11 +3,13 @@ import { onMounted, onUnmounted, ref } from 'vue';
 import { useRouter } from 'vue-router'
 import { useAuthStore } from '../../stores/auth.store'
 import { useUserStore } from '../../stores/user.store'
+import { useConversationStore } from '../../stores/conversation.store'
 import Notification from '../common/Notification.vue'
 import { useToast } from 'vue-toast-notification'
 
 const authStore = useAuthStore()
 const userStore = useUserStore()
+const conversationStore = useConversationStore()
 const router = useRouter()
 const $toast = useToast()
 
@@ -31,7 +33,8 @@ const logout = () => {
 onMounted(async () => {
     document.addEventListener('click', handleClickOutside);
     if (authStore.token) {
-        userStore.getMe()
+        await userStore.getMe()
+        await conversationStore.fetchConversations()
     }
 })
 
@@ -72,9 +75,13 @@ onUnmounted(() => {
                         </div>
                     </router-link>
                     <router-link :to="{ name: 'chat' }" class="text-xl relative">
-                        <div
+                        <div v-if="conversationStore.totalReadMessage !== 0"
                             class="absolute right-0 top-0 bg-red-500 rounded-full w-4 h-4  flex justify-center items-center">
-                            <span class="text-[10px] text-white">5</span>
+                            <span class="text-[10px] text-white">
+                                {{
+                                    conversationStore.totalReadMessage !== 0 ? conversationStore.totalReadMessage : ''
+                                }}
+                            </span>
                         </div>
                         <div class="p-2 text-gray-100 hover:text-gray-300">
                             <i class="fa-solid fa-message "></i>
