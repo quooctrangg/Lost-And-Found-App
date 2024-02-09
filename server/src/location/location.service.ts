@@ -8,56 +8,48 @@ export class LocationService {
     constructor(private readonly prismaService: PrismaService) { }
 
     async get(option: { page: number, key: string }) {
-        const pageSize = PAGE_SIZE.PAGE_LOCATION
         try {
             let { page, key } = option
-            const totalCount = await this.prismaService.location.count({
-                where: {
-                    OR: [
-                        {
-                            name: {
-                                contains: key,
-                                mode: 'insensitive'
-                            }
-                        },
-                        {
-                            symbol: {
-                                contains: key,
-                                mode: 'insensitive'
-                            }
+            let totalPages = 1
+            let pageSize = undefined
+            let next = undefined
+            let where: any = {}
+            if (key) {
+                where.OR = [
+                    {
+                        name: {
+                            contains: key,
+                            mode: 'insensitive'
                         }
-                    ]
-                },
-                orderBy: {
-                    id: 'asc'
-                }
-            })
-            let totalPages = Math.ceil(totalCount / pageSize)
-            if (!totalPages) totalPages = 1
-            if (!page || page < 1) page = 1
-            let next = (page - 1) * pageSize
+                    },
+                    {
+                        symbol: {
+                            contains: key,
+                            mode: 'insensitive'
+                        }
+                    }
+                ]
+            }
+            if (page) {
+                pageSize = PAGE_SIZE.PAGE_LOCATION
+                const totalCount = await this.prismaService.location.count({
+                    where: where,
+                    orderBy: {
+                        id: 'asc'
+                    }
+                })
+                totalPages = Math.ceil(totalCount / pageSize)
+                if (!totalPages) totalPages = 1
+                if (!page || page < 1) page = 1
+                next = (page - 1) * pageSize
+            }
             const data = await this.prismaService.location.findMany({
                 orderBy: {
                     id: 'asc'
                 },
                 skip: next,
                 take: pageSize,
-                where: {
-                    OR: [
-                        {
-                            name: {
-                                contains: key,
-                                mode: 'insensitive'
-                            }
-                        },
-                        {
-                            symbol: {
-                                contains: key,
-                                mode: 'insensitive'
-                            }
-                        }
-                    ]
-                }
+                where: where
             })
             return new ResponseData<any>({ data, totalPages }, 200, 'Tìm thành công')
         } catch (error) {

@@ -1,16 +1,34 @@
 <script setup>
 import { FwbModal } from 'flowbite-vue'
 import { usePostStore } from '../../stores/post.store'
-import { ref } from 'vue';
+import { useItemStore } from '../../stores/item.store'
+import { useLocationStore } from '../../stores/location.store'
+import { onMounted, reactive, ref } from 'vue';
+import * as yup from "yup";
+import { Form, Field, ErrorMessage } from "vee-validate";
 
 const postStore = usePostStore()
+const itemStore = useItemStore()
+const locationStore = useLocationStore()
 
 const maxAllowedFiles = 5
-const selectedLocation = ref([])
-const locatoins = ['Trường CNTT&TT', 'C1', 'B2', 'A3', 'Trường Nông nghệp']
-const isShowLocation = ref(false)
 const selectedFile = ref([])
 const urls = ref([])
+const data = reactive({
+    title: '',
+    description: '',
+    typeId: '',
+    itemId: '',
+    locations: [],
+    sendProtection: false
+})
+const formDataSchema = yup.object().shape({
+    title: yup.string().required("Tiêu đề phải có giá trị.").min(1, 'Tiêu đề phải ít nhất 1 ký tự.').max(50, "Tiêu đề có nhiều nhất 50 ký tự."),
+    typeId: yup.string().required('Yêu cầu chọn loại bài viết.'),
+    itemId: yup.string().required('Yêu cầu chọn loại đồ vật.'),
+    description: yup.string().required("Miêu tả phải có giá trị.").min(1, 'Miêu tả phải ít nhất 1 ký tự.').max(250, "Miêu tả có nhiều nhất 250 ký tự."),
+    locations: yup.array().required("Ít nhất 1 địa điểm.")
+})
 
 const onFileSelected = (e) => {
     const currentQuantity = selectedFile.value.length | 0
@@ -34,9 +52,14 @@ const deleteImage = (i) => {
     previewImage()
 }
 
-const toggleShowLocation = () => {
-    isShowLocation.value = !isShowLocation.value
+const submitPost = async () => {
+
 }
+
+onMounted(async () => {
+    await itemStore.getItem({})
+    await locationStore.getLocation({})
+})
 </script>
 
 <template>
@@ -48,78 +71,89 @@ const toggleShowLocation = () => {
             </div>
         </template>
         <template #body>
-            <div class="flex flex-col gap-3">
-                <div class="grid grid-cols-2 gap-5">
-                    <div class=" flex flex-col">
-                        <label class="mt-2 mb-1" for="title">Tiêu đề</label>
-                        <input id="title" maxlength="50" type="text" placeholder="Nhập tiêu đề ..." class="rounded-md ">
-                        <label class="mt-2 mb-1" for="description">Mô tả</label>
-                        <textarea maxlength="250" id="description" type="text" placeholder="Nhập mô tả ..." rows="4"
-                            class="rounded-md"></textarea>
-                    </div>
-                    <div class="flex flex-col">
-                        <label class="mt-2 mb-1" for="type">Loại bài viết</label>
-                        <select name="" id="type" class="rounded-md">
-                            <option value="">Chọn loại bài viết</option>
-                            <option value="">Tìm thấy</option>
-                            <option value="">Thất lạc</option>
-                        </select>
-                        <label class="mt-2 mb-1" for="item">Loại đồ vật</label>
-                        <select name="" id="item" class="rounded-md">
-                            <option value="">Chọn loại đồ vật</option>
-                            <option value="">Quần áo</option>
-                            <option value="">Trang sức</option>
-                            <option value="">Điện thoại</option>
-                        </select>
-                        <label class="mt-2 mb-1" for="item">Vị trí</label>
-                        <div class="relative">
-                            <div class="border p-2 cursor-pointer rounded-lg border-black flex justify-between items-center"
-                                @click="toggleShowLocation">
-                                {{
-                                    selectedLocation.length > 0 ? selectedLocation.join(', ') : 'Chọn vị trí'
-                                }}
-                                <i class="fa-solid fa-chevron-down"></i>
+            <Form @submit="submitPost" :validation-schema="formDataSchema">
+                <div class="flex flex-col gap-3">
+                    <div class="grid grid-cols-2 gap-5">
+                        <div class=" flex flex-col">
+                            <label class="mt-2 mb-1" for="title">Tiêu đề</label>
+                            <Field type="text" name="title" id="title" placeholder="Nhập tiêu đề ..." class="input-custom"
+                                v-model="data.title" />
+                            <ErrorMessage name="title" class="error" />
+                            <label class="mt-2 mb-1" for="description">Mô tả</label>
+                            <Field type="text" name="description" id="description" as="textarea" class="w-full rounded-md"
+                                placeholder="Nhập mô tả ..." v-model="data.description" rows="4" />
+                            <ErrorMessage name="description" class="error" />
+                            <div class="flex gap-2 items-center mt-5 text-lg text-red-600 font-medium">
+                                <input type="checkbox" name="sendProtection" id="sendProtection"
+                                    class="w-5 h-5 text-blue-600 bg-gray-100 border-gray-300 rounded cursor-pointer "
+                                    v-model="data.sendProtection">
+                                <label for="sendProtection">Đã gửi lại ban quản lý tòa nhà</label>
                             </div>
-                            <div v-if="isShowLocation" class="absolute z-10 bg-white border mt-2 p-2 w-full rounded-lg">
-                                <label v-for="(option, index) in locatoins" :for="option" :key="index"
+                        </div>
+                        <div class="flex flex-col">
+                            <label class="mt-2 mb-1" for="typeId">Loại bài viết</label>
+                            <Field as="select" name="typeId" id="typeId" class="input-custom" v-model="data.typeId">
+                                <option value="">Chọn loại bài viết</option>
+                                <option :value="true">Tìm thấy</option>
+                                <option :value="false">Thất lạc</option>
+                            </Field>
+                            <ErrorMessage name="typeId" class="error" />
+                            <label class="mt-2 mb-1" for="itemId">Loại đồ vật</label>
+                            <Field as="select" name="itemId" id="itemId" class="input-custom" v-model="data.itemId">
+                                <option value="">Chọn loại đồ vật</option>
+                                <option v-if="itemStore.items?.length" v-for="item in itemStore.items" :key="item.id"
+                                    :value="item.id">
+                                    {{
+                                        item.name
+                                    }}
+                                </option>
+                            </Field>
+                            <ErrorMessage name="itemId" class="error" />
+                            <label class="mt-2 mb-1" for="item">Vị trí</label>
+                            <div class="text-sm flex flex-wrap-reverse gap-4">
+                                <label v-for="location in locationStore.locations" :key="location.id" :for="location.id"
                                     class="flex items-center gap-1">
-                                    <input :id="option" type="checkbox" :value="option" v-model="selectedLocation"
-                                        class="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 rounded" />
-                                    {{ option }}
+                                    <input :id="location.id" type="checkbox" :value="location.id" v-model="data.locations"
+                                        class="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 rounded cursor-pointer " />
+                                    {{
+                                        location.name
+                                    }}
                                 </label>
                             </div>
                         </div>
                     </div>
-                </div>
-                <div class="flex flex-col gap-2">
-                    <label>Hình ảnh</label>
-                    <div class="grid grid-cols-5 gap-2 h-[100px]">
-                        <label for="images" v-if="urls.length < 5"
-                            class="mt-2 mb-1 border-dashed border-black border-2 rounded-lg p-5 flex items-center flex-col gap-1 cursor-pointer">
-                            <i class="fa-solid fa-cloud-arrow-up text-2xl"></i>
-                            Chọn hình ảnh
-                        </label>
-                        <div v-if="urls.length" v-for="(url, i) of urls"
-                            class="border-2 border-black  rounded-lg overflow-hidden relative flex items-center justify-center">
-                            <i class="fa-solid fa-xmark absolute top-0 text-lg right-2 cursor-pointer text-red-600 hover:text-red-700"
-                                @click="deleteImage(i)"></i>
-                            <img :src="url" alt="" :key="i" class="object-cover">
+                    <div class="flex flex-col gap-2">
+                        <label>Hình ảnh</label>
+                        <div class="grid grid-cols-5 gap-2 h-[100px]">
+                            <label for="images" v-if="urls.length < 5"
+                                class="mt-2 mb-1 border-dashed border-black border-2 rounded-lg p-5 flex items-center flex-col gap-1 cursor-pointer">
+                                <i class="fa-solid fa-cloud-arrow-up text-2xl"></i>
+                                Chọn hình ảnh
+                            </label>
+                            <div v-if="urls.length" v-for="(url, i) of urls"
+                                class="border-2 border-black  rounded-lg overflow-hidden relative flex items-center justify-center">
+                                <i class="fa-solid fa-xmark absolute top-0 text-lg right-2 cursor-pointer text-red-600 hover:text-red-700"
+                                    @click="deleteImage(i)"></i>
+                                <img :src="url" alt="" :key="i" class="object-cover">
+                            </div>
                         </div>
+                        <input type="file" multiple hidden id="images" accept="image/png, image/jpeg"
+                            @change="onFileSelected">
                     </div>
-                    <input type="file" multiple hidden id="images" accept="image/png, image/jpeg" @change="onFileSelected">
                 </div>
-            </div>
+                <button type="submit" hidden id="btn-submit"></button>
+            </Form>
         </template>
         <template #footer>
             <div class="flex justify-end gap-2">
-                <button class="px-3 py-2 bg-red-500 rounded-lg text-white">
+                <button class="px-3 py-2 bg-red-500 rounded-lg text-white hover:bg-red-600">
                     <i class="fa-solid fa-arrows-rotate"></i>
                     Đặt lại
                 </button>
-                <button @click="postStore.closePostModal" class="px-3 py-2 bg-blue-500 rounded-lg text-white">
-                    <i class="fa-solid fa-plus"></i>
+                <label for="btn-submit"
+                    class="bg-green-500 rounded-lg text-sm px-5 py-3 text-center text-white font-semibold cursor-pointer hover:bg-green-600">
                     Đăng
-                </button>
+                </label>
             </div>
         </template>
     </fwb-modal>

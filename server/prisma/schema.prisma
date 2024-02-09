@@ -104,6 +104,7 @@ model Post {
   title          String
   description    String
   verify         Int      @default(0)
+  type           Boolean
   done           Boolean  @default(false)
   isDelete       Boolean  @default(false)
   sendProtection Boolean  @default(false)

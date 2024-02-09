@@ -1,12 +1,14 @@
 import createService from './api.service'
+import { createQueryString } from '../untils'
 
 class itemService {
     constructor(baseUrl = '/apis/item') {
         this.api = createService(baseUrl)
     }
 
-    async getItem({ key, page }) {
-        return (await this.api.get(`/?key=${key}&page=${page}`)).data
+    async getItem(data) {
+        let parameter = createQueryString(data)
+        return (await this.api.get(`/${parameter}`)).data
     }
 
     async createItem(token, data) {
