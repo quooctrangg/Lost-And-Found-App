@@ -13,8 +13,8 @@ export class CreatPostDto {
     description: string
 
     @IsNotEmpty()
-    @IsNumber()
-    typeId: number
+    @IsBoolean()
+    type: boolean
 
     @IsNotEmpty()
     @IsNumber()
