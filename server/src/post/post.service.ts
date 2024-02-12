@@ -1,8 +1,9 @@
 import { Injectable } from '@nestjs/common';
 import { PrismaService } from '../prisma/prisma.service';
 import { CreatPostDto, VerifyPostDto } from './dto';
-import { PAGE_SIZE, ResponseData } from '../global';
+import { PAGE_SIZE, ResponseData, USER_TYPES } from '../global';
 import { CloudinaryService } from '../cloudinary/cloudinary.service';
+import { Post, User } from '@prisma/client';
 
 @Injectable()
 export class PostService {
@@ -112,7 +113,10 @@ export class PostService {
             const where: any = {
                 verify: 1,
                 done: false,
-                isDelete: false
+                isDelete: false,
+                User: {
+                    isBan: false
+                }
             }
             if (itemId) {
                 where.itemId = itemId
@@ -131,6 +135,9 @@ export class PostService {
                     contains: key,
                     mode: 'insensitive'
                 }
+            }
+            if (type !== undefined || type !== null) {
+                where.type = type
             }
             const totalCount = await this.prismaService.post.count({
                 where: where,
@@ -190,6 +197,55 @@ export class PostService {
                 }
             })
             return new ResponseData<string>(null, 200, 'Cập nhật thành công')
+        } catch (error) {
+            return new ResponseData<string>(null, 500, 'Lỗi dịch vụ, thử lại sau')
+        }
+    }
+
+    async deletePost(user: User, id: number) {
+        try {
+            const isPost = await this.prismaService.post.findUnique({
+                where: {
+                    id: id
+                }
+            })
+            if (!isPost) {
+                return new ResponseData<string>(null, 400, 'Bài viết không tồn tại')
+            }
+            if (user.type !== USER_TYPES.ADMIN && user.id !== isPost.userId) {
+                return new ResponseData<string>(null, 400, 'Bạn không có quyền xóa bài viết này')
+            }
+            await this.prismaService.post.update({
+                where: {
+                    id: id
+                },
+                data: {
+                    isDelete: true
+                }
+            })
+            return new ResponseData<string>(null, 200, 'Xóa thành công')
+        } catch (error) {
+            return new ResponseData<string>(null, 500, 'Lỗi dịch vụ, thử lại sau')
+        }
+    }
+
+    async getPostById(id: number) {
+        try {
+            const data = await this.prismaService.post.findUnique({
+                where: {
+                    id: id
+                },
+                include: {
+                    User: true,
+                    Image: true,
+                    Item: true,
+                    Location: true
+                }
+            })
+            if (!data) {
+                return new ResponseData<string>(null, 400, 'Bài viết không tồn tại')
+            }
+            return new ResponseData<Post>(data, 400, 'Tìm thấy bài viết')
         } catch (error) {
             return new ResponseData<string>(null, 500, 'Lỗi dịch vụ, thử lại sau')
         }
