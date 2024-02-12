@@ -6,11 +6,6 @@ import { useMessageStore } from '../../stores/message.store'
 import { useUserStore } from '../../stores/user.store'
 import { onMounted, onUpdated, watchEffect } from 'vue';
 import { getSender } from '../../untils'
-import io from "socket.io-client";
-
-const ENDPOINT = import.meta.env.VITE_URL_API
-
-let socket
 
 const conversationStore = useConversationStore()
 const messageStore = useMessageStore()
@@ -19,7 +14,6 @@ const userStore = useUserStore()
 const sendMessage = async content => {
     await messageStore.sendMessage({ content: content, conversationId: conversationStore.conversations[conversationStore.activeIndex].id })
     await conversationStore.fetchConversations()
-    socket.emit('new message', { data: messageStore.newMessage, userRecievedId: getSender(userStore.user, conversationStore.conversations[conversationStore.activeIndex].User).id })
     conversationStore.activeIndex = 0
 }
 
@@ -31,7 +25,6 @@ const sendImage = async files => {
     data.append('conversationId', conversationStore.conversations[conversationStore.activeIndex].id)
     await messageStore.sendImage(data)
     await conversationStore.fetchConversations()
-    socket.emit('new image', { data: messageStore.newMessage, userRecievedId: getSender(userStore.user, conversationStore.conversations[conversationStore.activeIndex].User).id })
     conversationStore.activeIndex = 0
 }
 
@@ -43,30 +36,10 @@ onUpdated(async () => {
     }
 })
 
-onMounted(async () => {
-    socket = io(ENDPOINT)
-    socket.on('message recieved', async newMessageRecieved => {
-        await conversationStore.fetchConversations()
-        if (conversationStore.activeIndex !== null) {
-            if (conversationStore.conversations[conversationStore.activeIndex].id == newMessageRecieved.conversationId) {
-                messageStore.messages.push(newMessageRecieved)
-            }
-        }
-    })
-    socket.on('image recieved', async newImageRecieved => {
-        await conversationStore.fetchConversations()
-        if (conversationStore.activeIndex !== null) {
-            if (conversationStore.conversations[conversationStore.activeIndex].id == newImageRecieved[0].conversationId) {
-                messageStore.messages.push(...newImageRecieved)
-            }
-        }
-    })
-    watchEffect(async () => {
-        socket.emit('setup', { userId: userStore.user.id })
-        if (conversationStore.activeIndex !== null) {
-            await messageStore.getAllMessages(conversationStore.conversations[conversationStore.activeIndex].id)
-        }
-    })
+watchEffect(async () => {
+    if (conversationStore.activeIndex !== null) {
+        await messageStore.getAllMessages(conversationStore.conversations[conversationStore.activeIndex].id)
+    }
 })
 </script>
 

@@ -1,11 +1,17 @@
 import { ref } from 'vue'
 import { defineStore } from 'pinia'
-import messageService from '../services/message.service'
 import { useAuthStore } from './auth.store'
-import { useConversationStore } from './conversation.store'
+import { useUserStore } from './user.store'
+import { useConversationStore } from '../stores/conversation.store'
+import { getSender } from '../untils/'
+import messageService from '../services/message.service'
+import io from "socket.io-client";
+
+const ENDPOINT = import.meta.env.VITE_URL_API
 
 export const useMessageStore = defineStore('message', () => {
     const authStore = useAuthStore()
+    const userStore = useUserStore()
     const conversationStore = useConversationStore()
 
     const activeIndex = ref(null)
@@ -14,6 +20,28 @@ export const useMessageStore = defineStore('message', () => {
     const isLoading = ref(false)
     const messages = ref([])
     const newMessage = ref(null)
+
+    const socket = io(ENDPOINT)
+
+    const setupSocket = () => {
+        socket.emit('setup', { userId: userStore.user.id })
+        socket.on('message recieved', async newMessageRecieved => {
+            await conversationStore.fetchConversations()
+            if (conversationStore.activeIndex !== null) {
+                if (conversationStore.conversations[conversationStore.activeIndex].id == newMessageRecieved.conversationId) {
+                    messages.value.push(newMessageRecieved)
+                }
+            }
+        })
+        socket.on('image recieved', async newImageRecieved => {
+            await conversationStore.fetchConversations()
+            if (conversationStore.activeIndex !== null) {
+                if (conversationStore.conversations[conversationStore.activeIndex].id == newImageRecieved[0].conversationId) {
+                    messages.value.push(...newImageRecieved)
+                }
+            }
+        })
+    }
 
     const getAllMessages = async conversationId => {
         isLoading.value = true
@@ -39,6 +67,8 @@ export const useMessageStore = defineStore('message', () => {
             if (res.statusCode !== 200) throw new Error(res.message)
             newMessage.value = res.data
             messages.value.push(res.data)
+            socket.emit('new message', { data: newMessage.value, userRecievedId: getSender(userStore.user, conversationStore.conversations[conversationStore.activeIndex].User).id })
+
         } catch (error) {
             err.value = error.message
         } finally {
@@ -55,6 +85,7 @@ export const useMessageStore = defineStore('message', () => {
             if (res.statusCode !== 200) throw new Error(res.message)
             newMessage.value = res.data
             messages.value.push(...res.data)
+            socket.emit('new image', { data: newMessage.value, userRecievedId: getSender(userStore.user, conversationStore.conversations[conversationStore.activeIndex].User).id })
         } catch (error) {
             err.value = error.message
         } finally {
@@ -75,5 +106,5 @@ export const useMessageStore = defineStore('message', () => {
         }
     }
 
-    return { activeIndex, err, result, isLoading, messages, newMessage, getAllMessages, sendMessage, sendImage, readMessages }
+    return { activeIndex, err, result, isLoading, messages, newMessage, setupSocket, getAllMessages, sendMessage, sendImage, readMessages }
 })

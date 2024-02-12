@@ -1,17 +1,13 @@
 <script setup>
 import { reactive } from 'vue';
 import { useAuthStore } from '../stores/auth.store'
-import { useUserStore } from '../stores/user.store'
-import { useConversationStore } from '../stores/conversation.store'
 import { useToast } from 'vue-toast-notification'
 import { useRouter } from "vue-router";
 import * as yup from "yup";
 import { Form, Field, ErrorMessage } from "vee-validate";
 
 const authStore = useAuthStore()
-const userStore = useUserStore()
 const router = useRouter()
-const conversationStore = useConversationStore()
 const $toast = useToast()
 
 const user = reactive({
@@ -31,8 +27,6 @@ const submitLogin = async () => {
         return
     }
     $toast.success(authStore.result.message, { position: 'top-right' })
-    await userStore.getMe()
-    await conversationStore.fetchConversations()
     router.push({ name: 'home' })
 }
 </script>

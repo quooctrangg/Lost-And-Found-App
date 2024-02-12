@@ -1,15 +1,17 @@
 <script setup>
-import { onMounted, onUnmounted, ref } from 'vue';
+import { onMounted, onUnmounted, ref, watchEffect } from 'vue';
 import { useRouter } from 'vue-router'
 import { useAuthStore } from '../../stores/auth.store'
 import { useUserStore } from '../../stores/user.store'
+import { useMessageStore } from '../../stores/message.store'
 import { useConversationStore } from '../../stores/conversation.store'
-import Notification from '../common/Notification.vue'
 import { useToast } from 'vue-toast-notification'
+import Notification from '../common/Notification.vue'
 
 const authStore = useAuthStore()
 const userStore = useUserStore()
 const conversationStore = useConversationStore()
+const messageStore = useMessageStore()
 const router = useRouter()
 const $toast = useToast()
 
@@ -32,14 +34,20 @@ const logout = () => {
 
 onMounted(async () => {
     document.addEventListener('click', handleClickOutside);
-    if (authStore.token) {
-        await userStore.getMe()
-        await conversationStore.fetchConversations()
-    }
 })
 
 onUnmounted(() => {
     document.removeEventListener('click', handleClickOutside);
+})
+
+watchEffect(async () => {
+    if (authStore.token) {
+        await userStore.getMe()
+    }
+    if (userStore.user !== null) {
+        messageStore.setupSocket()
+        await conversationStore.fetchConversations()
+    }
 })
 </script>
 <template>
