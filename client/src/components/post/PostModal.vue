@@ -3,13 +3,16 @@ import { FwbModal } from 'flowbite-vue'
 import { usePostStore } from '../../stores/post.store'
 import { useItemStore } from '../../stores/item.store'
 import { useLocationStore } from '../../stores/location.store'
-import { onMounted, reactive, ref } from 'vue';
+import { onMounted, reactive, ref, watch } from 'vue';
 import * as yup from "yup";
 import { Form, Field, ErrorMessage } from "vee-validate";
+import { useToast } from 'vue-toast-notification'
+import Loading from '../common/Loading.vue';
 
 const postStore = usePostStore()
 const itemStore = useItemStore()
 const locationStore = useLocationStore()
+const $toast = useToast()
 
 const maxAllowedFiles = 5
 const selectedFile = ref([])
@@ -17,17 +20,18 @@ const urls = ref([])
 const data = reactive({
     title: '',
     description: '',
-    typeId: '',
+    type: '',
     itemId: '',
     locations: [],
     sendProtection: false
 })
+
 const formDataSchema = yup.object().shape({
     title: yup.string().required("Tiêu đề phải có giá trị.").min(1, 'Tiêu đề phải ít nhất 1 ký tự.').max(50, "Tiêu đề có nhiều nhất 50 ký tự."),
-    typeId: yup.string().required('Yêu cầu chọn loại bài viết.'),
+    type: yup.string().required('Yêu cầu chọn loại bài viết.'),
     itemId: yup.string().required('Yêu cầu chọn loại đồ vật.'),
     description: yup.string().required("Miêu tả phải có giá trị.").min(1, 'Miêu tả phải ít nhất 1 ký tự.').max(250, "Miêu tả có nhiều nhất 250 ký tự."),
-    locations: yup.array().required("Ít nhất 1 địa điểm.")
+    locations: yup.array().min(1, 'Chọn ít nhất 1 địa điểm')
 })
 
 const onFileSelected = (e) => {
@@ -53,7 +57,45 @@ const deleteImage = (i) => {
 }
 
 const submitPost = async () => {
+    data.type = data.type == 'true' ? true : false
+    const dataForm = new FormData()
+    dataForm.append('title', data.title)
+    dataForm.append('description', data.description)
+    dataForm.append('itemId', data.itemId)
+    dataForm.append('type', Number(data.type))
+    dataForm.append('sendProtection', data.sendProtection)
+    if (data.locations.length > 1) {
+        data.locations.forEach(e => {
+            dataForm.append('locations', e)
+        });
+    } else {
+        dataForm.append('locations', data.locations[0])
+        dataForm.append('locations', data.locations[0])
+    }
+    if (selectedFile.value.length) {
+        selectedFile.value.forEach(e => {
+            dataForm.append('images', e)
+        })
+    }
+    await postStore.createPost(dataForm)
+    if (postStore.err) {
+        $toast.error(postStore.err, { position: 'top-right' })
+        return
+    }
+    $toast.success(postStore.result.message, { position: 'top-right' })
+    reset()
+    postStore.closePostModal()
+}
 
+const reset = () => {
+    data.title = ''
+    data.description = ''
+    data.type = ''
+    data.itemId = ''
+    data.locations = []
+    data.sendProtection = false
+    selectedFile.value = []
+    urls.value = []
 }
 
 onMounted(async () => {
@@ -67,11 +109,11 @@ onMounted(async () => {
         <template #header>
             <div class="flex items-center gap-2 font-semibold text-2xl">
                 <i class="fa-regular fa-clipboard"></i>
-                Soạn bài
+                Đăng bài
             </div>
         </template>
         <template #body>
-            <Form @submit="submitPost" :validation-schema="formDataSchema">
+            <Form v-if="postStore.isLoading == false" @submit="submitPost" :validation-schema="formDataSchema">
                 <div class="flex flex-col gap-3">
                     <div class="grid grid-cols-2 gap-5">
                         <div class=" flex flex-col">
@@ -91,13 +133,13 @@ onMounted(async () => {
                             </div>
                         </div>
                         <div class="flex flex-col">
-                            <label class="mt-2 mb-1" for="typeId">Loại bài viết</label>
-                            <Field as="select" name="typeId" id="typeId" class="input-custom" v-model="data.typeId">
+                            <label class="mt-2 mb-1" for="type">Loại bài viết</label>
+                            <Field as="select" name="type" id="type" class="input-custom" v-model="data.type">
                                 <option value="">Chọn loại bài viết</option>
-                                <option :value="true">Tìm thấy</option>
-                                <option :value="false">Thất lạc</option>
+                                <option value="0">Tìm thấy</option>
+                                <option value="1">Thất lạc</option>
                             </Field>
-                            <ErrorMessage name="typeId" class="error" />
+                            <ErrorMessage name="type" class="error" />
                             <label class="mt-2 mb-1" for="itemId">Loại đồ vật</label>
                             <Field as="select" name="itemId" id="itemId" class="input-custom" v-model="data.itemId">
                                 <option value="">Chọn loại đồ vật</option>
@@ -109,17 +151,19 @@ onMounted(async () => {
                                 </option>
                             </Field>
                             <ErrorMessage name="itemId" class="error" />
-                            <label class="mt-2 mb-1" for="item">Vị trí</label>
-                            <div class="text-sm flex flex-wrap-reverse gap-4">
+                            <label class="mt-2 mb-1">Vị trí</label>
+                            <div class="text-sm flex flex-wrap-reverse gap-4 mb-2">
                                 <label v-for="location in locationStore.locations" :key="location.id" :for="location.id"
                                     class="flex items-center gap-1">
-                                    <input :id="location.id" type="checkbox" :value="location.id" v-model="data.locations"
-                                        class="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 rounded cursor-pointer " />
+                                    <Field name="locations" :id="location.id" type="checkbox" :value="location.id"
+                                        v-model="data.locations"
+                                        class="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 rounded cursor-pointer" />
                                     {{
                                         location.name
                                     }}
                                 </label>
                             </div>
+                            <ErrorMessage name="locations" class="error" />
                         </div>
                     </div>
                     <div class="flex flex-col gap-2">
@@ -143,10 +187,11 @@ onMounted(async () => {
                 </div>
                 <button type="submit" hidden id="btn-submit"></button>
             </Form>
+            <Loading v-else />
         </template>
         <template #footer>
             <div class="flex justify-end gap-2">
-                <button class="px-3 py-2 bg-red-500 rounded-lg text-white hover:bg-red-600">
+                <button @click="reset" class="px-3 py-2 bg-red-500 rounded-lg text-white hover:bg-red-600">
                     <i class="fa-solid fa-arrows-rotate"></i>
                     Đặt lại
                 </button>

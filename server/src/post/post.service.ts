@@ -15,7 +15,9 @@ export class PostService {
             for (const file of files) {
                 const result = await this.cloudinaryService.uploadFile(file)
                 const data = await this.prismaService.image.create({
-                    data: result.url
+                    data: {
+                        url: result.url
+                    }
                 })
                 uploadedImages.push(data.id)
             }
@@ -27,28 +29,27 @@ export class PostService {
 
     async createPost(userId: number, createPostDto: CreatPostDto, images: Express.Multer.File[]) {
         try {
-            const { title, description, itemId, sendProtection, locations, type } = createPostDto
-            const imagesId: number[] = await this.uploadFiles(images)
-            await this.prismaService.post.create({
-                data: {
-                    userId: userId,
-                    title: title,
-                    description: description,
-                    itemId: itemId,
-                    type: type,
-                    sendProtection: sendProtection,
-                    Location: {
-                        connect: locations.map((id) => ({ id }))
-                    },
-                    Image: {
-                        connect: imagesId.map((id) => ({ id }))
-                    }
+            let { title, description, itemId, sendProtection, locations, type } = createPostDto
+            locations = locations.map(id => Number(id))
+            const data: any = {
+                userId: userId,
+                title: title,
+                description: description,
+                itemId: itemId,
+                type: type == 1 ? true : false,
+                sendProtection: sendProtection,
+                Location: {
+                    connect: locations.map((id) => ({ id }))
                 },
-                include: {
-                    Location: true,
-                    Image: true,
-                    Item: true
+            }
+            if (images.length) {
+                const imagesId: number[] = await this.uploadFiles(images)
+                data.Image = {
+                    connect: imagesId.map((id) => ({ id }))
                 }
+            }
+            await this.prismaService.post.create({
+                data: data
             })
             return new ResponseData<string>(null, 200, 'Tạo thành công')
         } catch (error) {

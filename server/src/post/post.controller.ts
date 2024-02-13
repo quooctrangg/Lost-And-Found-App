@@ -15,7 +15,7 @@ export class PostController {
     @UseGuards(MyJWTGuard, RolesGuard)
     @Role(USER_TYPES.USER)
     @UseInterceptors(FilesInterceptor('images', 5))
-    createPost(@GetUser() user: User, createPostDto: CreatPostDto, @UploadedFiles() images: Express.Multer.File[]) {
+    createPost(@GetUser() user: User, @Body() createPostDto: CreatPostDto, @UploadedFiles() images: Express.Multer.File[]) {
         return this.postService.createPost(user.id, createPostDto, images)
     }
 
