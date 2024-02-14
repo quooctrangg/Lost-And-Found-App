@@ -5,6 +5,7 @@ import Footer from '../components/common/Footer.vue';
 import UpdatePassword from '../components/profile/UpdatePassword.vue';
 import UpdateProfileModal from '../components/profile/UpdateProfileModal.vue';
 import UpdateAvatarModal from '../components/profile/UpdateAvatarModal.vue';
+import ScrollToTop from '@/components/common/ScrollToTop.vue';
 import dayjs from 'dayjs'
 
 const userStore = useUserStore()
@@ -73,4 +74,5 @@ const currentPage = ref('post')
     <UpdatePassword />
     <UpdateProfileModal />
     <UpdateAvatarModal />
+    <ScrollToTop />
 </template>

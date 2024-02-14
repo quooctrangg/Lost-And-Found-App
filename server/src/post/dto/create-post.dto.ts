@@ -8,12 +8,12 @@ export class CreatPostDto {
     title: string
 
     @IsString()
-    @IsOptional()
+    @IsNotEmpty()
     @MaxLength(POST_SIZE.DESCRIPTION)
     description: string
 
-    @IsNotEmpty()
     @IsNumber()
+    @IsNotEmpty()
     type: number
 
     @IsNotEmpty()
@@ -24,7 +24,7 @@ export class CreatPostDto {
     @IsNotEmpty()
     locations: number[]
 
-    @IsOptional()
-    @IsBoolean()
-    sendProtection: boolean
+    @IsNumber()
+    @IsNotEmpty()
+    sendProtection: number
 }

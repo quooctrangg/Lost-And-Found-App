@@ -57,13 +57,12 @@ const deleteImage = (i) => {
 }
 
 const submitPost = async () => {
-    data.type = data.type == 'true' ? true : false
     const dataForm = new FormData()
     dataForm.append('title', data.title)
     dataForm.append('description', data.description)
     dataForm.append('itemId', data.itemId)
     dataForm.append('type', Number(data.type))
-    dataForm.append('sendProtection', data.sendProtection)
+    dataForm.append('sendProtection', data.sendProtection == true ? 1 : 0)
     if (data.locations.length > 1) {
         data.locations.forEach(e => {
             dataForm.append('locations', e)
@@ -125,7 +124,8 @@ onMounted(async () => {
                             <Field type="text" name="description" id="description" as="textarea" class="w-full rounded-md"
                                 placeholder="Nhập mô tả ..." v-model="data.description" rows="4" />
                             <ErrorMessage name="description" class="error" />
-                            <div class="flex gap-2 items-center mt-5 text-lg text-red-600 font-medium">
+                            <div v-if="data.type && data.type == 1"
+                                class="flex gap-2 items-center mt-5 text-lg text-red-600 font-medium">
                                 <input type="checkbox" name="sendProtection" id="sendProtection"
                                     class="w-5 h-5 text-blue-600 bg-gray-100 border-gray-300 rounded cursor-pointer "
                                     v-model="data.sendProtection">
@@ -136,8 +136,8 @@ onMounted(async () => {
                             <label class="mt-2 mb-1" for="type">Loại bài viết</label>
                             <Field as="select" name="type" id="type" class="input-custom" v-model="data.type">
                                 <option value="">Chọn loại bài viết</option>
-                                <option value="0">Tìm thấy</option>
-                                <option value="1">Thất lạc</option>
+                                <option :value="1">Tìm thấy</option>
+                                <option :value="0">Thất lạc</option>
                             </Field>
                             <ErrorMessage name="type" class="error" />
                             <label class="mt-2 mb-1" for="itemId">Loại đồ vật</label>

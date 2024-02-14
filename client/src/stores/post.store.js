@@ -94,9 +94,24 @@ export const usePostStore = defineStore('post', () => {
         }
     }
 
+    const getAllPostsByUserId = async (userId) => {
+        err.value = null
+        result.value = null
+        isLoading.value = true
+        try {
+            let res = await postService.getAllPostsByUserId(authStore.token, userId)
+            if (res.statusCode !== 200) throw new Error(res.message)
+            result.value = res
+        } catch (error) {
+            err.value = error.message
+        } finally {
+            isLoading.value = false
+        }
+    }
+
     return {
         isShow, err, result, isLoading, totalPages, currentPage, key, posts,
-        createPost, getAllPostsForAdmin, verifyPost, deletePost,
+        createPost, getAllPostsForAdmin, verifyPost, deletePost, getAllPostsByUserId,
         closeFilterModal, showFilterModal,
         closePostModal, showPostModal,
         closeRequestModal, showRequestModal

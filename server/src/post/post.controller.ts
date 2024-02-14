@@ -51,4 +51,11 @@ export class PostController {
     getPostById(@Param('id', ParseIntPipe) id: number) {
         return this.postService.getPostById(id)
     }
+
+    @Get('post-by-user/:userId')
+    @UseGuards(MyJWTGuard, RolesGuard)
+    @Role(USER_TYPES.USER)
+    getAllPostsByUserId(@GetUser() user: User, @Param('userId', ParseIntPipe) userId: number) {
+        return this.postService.getAllPostsByUserId(user.id, userId)
+    }
 }

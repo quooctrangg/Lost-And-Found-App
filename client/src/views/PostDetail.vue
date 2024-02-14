@@ -72,18 +72,13 @@ const goBack = () => {
                         </div>
                     </div>
                     <div class="flex gap-3 items-center">
-
-
-
                         <button class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded"
                             @click="postStore.showRequestModal">
                             <i class="fa-regular fa-paper-plane mr-1"></i>
                             Nhận lại đồ vật
                         </button>
-
                     </div>
                 </div>
-
                 <div class="">
                     <div class="grid grid-cols-3">
                         <h1 class="font-semibold text-lg col-span-2">

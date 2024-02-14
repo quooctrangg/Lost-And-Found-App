@@ -36,8 +36,8 @@ export class PostService {
                 title: title,
                 description: description,
                 itemId: itemId,
-                type: type == 1 ? true : false,
-                sendProtection: sendProtection,
+                type: Number(type) == 1 ? true : false,
+                sendProtection: Number(sendProtection) == 1 ? true : false,
                 Location: {
                     connect: locations.map((id) => ({ id }))
                 },
@@ -254,7 +254,13 @@ export class PostService {
                     id: id
                 },
                 include: {
-                    User: true,
+                    User: {
+                        select: {
+                            id: true,
+                            name: true,
+                            image: true
+                        }
+                    },
                     Image: true,
                     Item: true,
                     Location: true
@@ -264,6 +270,39 @@ export class PostService {
                 return new ResponseData<string>(null, 400, 'Bài viết không tồn tại')
             }
             return new ResponseData<Post>(data, 400, 'Tìm thấy bài viết')
+        } catch (error) {
+            return new ResponseData<string>(null, 500, 'Lỗi dịch vụ, thử lại sau')
+        }
+    }
+
+    async getAllPostsByUserId(reqUserId: number, userId: number) {
+        try {
+            let where: any = {
+                userId: userId,
+                isDelete: false
+            }
+            if (userId !== reqUserId) {
+                where.verify = 1
+            }
+            const data = await this.prismaService.post.findMany({
+                where: where,
+                include: {
+                    User: {
+                        select: {
+                            id: true,
+                            name: true,
+                            image: true
+                        }
+                    },
+                    Image: true,
+                    Item: true,
+                    Location: true
+                },
+                orderBy: {
+                    createdAt: 'desc'
+                }
+            })
+            return new ResponseData<Post[]>(data, 200, 'Tìm thấy các bài viết')
         } catch (error) {
             return new ResponseData<string>(null, 500, 'Lỗi dịch vụ, thử lại sau')
         }

@@ -11,7 +11,7 @@ class postService {
             headers: {
                 "Content-Type": "application/json",
                 Accept: "application/json",
-                Authorization: `Bearer ${token}`
+                Authorization: `Bearer ${token}`,
             }
         })).data
     }
@@ -60,6 +60,16 @@ class postService {
 
     async getPostById(id) {
         return (await this.api.get(`/details/${id}`, {
+            headers: {
+                "Content-Type": "application/json",
+                Accept: "application/json",
+                Authorization: `Bearer ${token}`
+            }
+        })).data
+    }
+
+    async getAllPostsByUserId(token, userId) {
+        return (await this.api.get(`/post-by-user/${userId}`, {
             headers: {
                 "Content-Type": "application/json",
                 Accept: "application/json",
