@@ -2,26 +2,65 @@
 import { onMounted, ref } from 'vue'
 import { FwbPagination } from 'flowbite-vue'
 import { useManageStore } from '../../../stores/manage.store'
+import { usePostStore } from '../../../stores/post.store'
 import Seach from '../../common/Seach.vue';
 import RefuseModal from './RefuseModal.vue';
+import HistoryModal from './HistoryModal.vue'
+import Loading from '@/components/common/Loading.vue';
+import dayjs from 'dayjs'
+import { useToast } from 'vue-toast-notification'
 
 const manageStore = useManageStore()
+const postStore = usePostStore()
+const $toast = useToast()
 
 const emit = defineEmits(['currentPage'])
 
-const totalPages = ref(1)
-const currentPage = ref(2)
+const currentPostId = ref(null)
+const currentFeedback = ref(null)
+const isShow = ref(false)
 
-const acceptPost = () => {
-    confirm('Bạn có chắc chắn chấp nhận bài viết này?')
+const verifyPost = async (id, data) => {
+    const conFirm = confirm('Bạn có chắc chắn xác nhận bài viết này?')
+    if (conFirm) {
+        await postStore.verifyPost(id, data)
+        if (postStore.err) {
+            $toast.error(postStore.err, { position: 'top-right' })
+            return
+        }
+        $toast.success(postStore.result.message, { position: 'top-right' })
+        await getAllPostForAdmin()
+    }
 }
 
-const deletePost = () => {
-    confirm('Bạn có chắc chắn xóa bài viết này?')
+const deletePost = async (id) => {
+    const conFirm = confirm('Bạn có chắc chắn xóa bài viết này?')
+    if (conFirm) {
+        await postStore.deletePost(id)
+        if (postStore.err) {
+            $toast.error(postStore.err, { position: 'top-right' })
+            return
+        }
+        $toast.success(postStore.result.message, { position: 'top-right' })
+        await getAllPostForAdmin()
+    }
 }
 
-onMounted(() => {
+const getAllPostForAdmin = async () => {
+    await postStore.getAllPostsForAdmin({ sort: 'desc' })
+}
+
+const showHistory = () => {
+    isShow.value = true
+}
+
+const closeHistory = () => {
+    isShow.value = false
+}
+
+onMounted(async () => {
     emit('currentPage', 'post')
+    await getAllPostForAdmin()
 })
 </script>
 
@@ -48,16 +87,13 @@ onMounted(() => {
                 <thead class="font-medium">
                     <tr class="text-left border-b border-black">
                         <th class="text-center w-[5%] pb-2">
-                            ID
+                            STT
                         </th>
-                        <th class="w-[10%] text-center pb-2">
-                            Hình
-                        </th>
-                        <th class="w-[15%] text-center pb-2">
+                        <th class="w-[15%] pb-2">
                             Tiêu đề
                         </th>
-                        <th class="w-[30%] text-center pb-2">
-                            Nội dung
+                        <th class="w-[25%] pb-2">
+                            Mô tả
                         </th>
                         <th class="text-center pb-2">
                             Trạng thái
@@ -65,117 +101,107 @@ onMounted(() => {
                         <th class="text-center pb-2">
                             Ngày đăng
                         </th>
-                        <th class=" text-center pb-2">
+                        <th colspan="3" class="text-center pb-2 w-[15%]">
                             Tùy chọn
                         </th>
                     </tr>
                 </thead>
-                <tbody>
-                    <tr class="border-b transition duration-300 ease-in-out hover:bg-gray-300">
+                <tbody v-if="postStore.isLoading == false">
+                    <tr v-if="postStore.posts.length" v-for="(post, i) in postStore.posts" :key="post.id"
+                        class="border-b transition duration-300 ease-in-out hover:bg-gray-300">
                         <td class="  font-medium text-center w-[10%]">
-                            <router-link :to="{ name: 'post-detail', params: { id: 1 } }"
+                            <router-link :to="{ name: 'post-detail', params: { id: post.id } }"
                                 class="hover:text-blue-500 hover:underline p-2">
-                                1
+                                {{ i + 1 }}
                             </router-link>
-                        </td>
-                        <td class=" overflow-hidden p-1">
-                            <img class="w-[100px]" src="/test.png" alt="">
                         </td>
                         <td class="">
                             <div class="font-medium line-clamp-2 p-2">
-                                Toi tim thay 1 cai non
+                                {{
+                                    post.title
+                                }}
                             </div>
                         </td>
                         <td>
                             <div class="line-clamp-2 text-sm">
-                                Lorem ipsum dolor, sit amet consectetur adipisicing elit. Illum maiores iure voluptas quidem
-                                tempore neque, nulla corporis provident? Incidunt quae accusantium quisquam enim corporis
-                                expedita blanditiis, perferendis molestias similique illo!
+                                {{
+                                    post.description
+                                }}
                             </div>
                         </td>
-                        <td v-if="0 == 0" class=" text-yellow-300 text-center">
+                        <td v-if="post.verify == 0" class=" text-yellow-300 text-center">
                             Chờ duyệt
                         </td>
-                        <td v-else-if="0 == 1" class=" text-blue-500 text-center">
+                        <td v-else-if="post.verify == 1" class=" text-blue-500 text-center">
                             Đã duyệt
                         </td>
                         <td v-else class=" text-red-500 text-center">
                             Từ chối
                         </td>
                         <td class="text-center text-sm">
-                            01/01/2024
+                            {{
+                                dayjs(post.createdAt).format('LT DD/MM/YYYY')
+                            }}
+                        </td>
+                        <td v-if="post.verify !== -1">
+                            <div class="" v-if="post.verify == 0">
+                                <button class="p-2 text-blue-500 hover:text-blue-400 text-2xl"
+                                    @click="async () => { await verifyPost(post.id, { verify: 1 }) }">
+                                    <i class="fa-solid fa-check"></i>
+                                </button>
+                            </div>
+                        </td>
+                        <td v-if="post.verify !== -1">
+                            <div class="" v-if="post.verify == 0">
+                                <button class="p-2 text-red-500 hover:text-red-300 text-2xl" @click="() => {
+                                    manageStore.showRefuseModal()
+                                    currentPostId = post.id
+                                }">
+                                    <i class="fa-solid fa-ban"></i>
+                                </button>
+                            </div>
+                        </td>
+                        <td colspan="2" v-if="post.verify == -1" class="">
+                            <div class="text-center text-2xl text-orange-500 cursor-pointer" @click="() => {
+                                currentFeedback = post.feedback
+                                showHistory()
+                            }">
+                                <i class="fa-regular fa-eye"></i>
+                            </div>
                         </td>
                         <td class="">
-                            <div class="flex gap-2 items-center justify-center">
-                                <div v-if="true">
-                                    <button class="p-2 text-blue-500 hover:text-blue-400 text-2xl" @click="acceptPost">
-                                        <i class="fa-solid fa-check"></i>
-                                    </button>
-                                    <button class="p-2 text-red-500 hover:text-red-300 text-2xl"
-                                        @click="manageStore.showRefuseModal">
-                                        <i class="fa-solid fa-ban"></i>
-                                    </button>
-                                </div>
-                                <button class="p-2 text-yellow-300 hover:text-yellow-200 text-2xl" @click="deletePost">
+                            <div class="">
+                                <button class="p-2 text-yellow-300 hover:text-yellow-200 text-2xl" @click="async () => {
+                                    await deletePost(post.id)
+                                }">
                                     <i class="fa-solid fa-trash-can"></i>
                                 </button>
                             </div>
                         </td>
                     </tr>
-                    <tr class="border-b transition duration-300 ease-in-out hover:bg-gray-300">
-                        <td class="font-medium text-center w-[10%]">
-                            <router-link :to="{ name: 'post-detail', params: { id: 2 } }"
-                                class="hover:text-blue-500 hover:underline p-2">
-                                2
-                            </router-link>
+                    <tr v-else class="text-center text-red-500 text-xl">
+                        <td colspan="5">
+                            Danh sách trống.
                         </td>
-                        <td class="overflow-hidden p-1">
-                            <img class="w-[100px]" src="/logo.png" alt="">
-                        </td>
-                        <td class="">
-                            <div class="font-medium line-clamp-2 p-2">
-                                Toi tim thay 1 cai non
-                            </div>
-                        </td>
-                        <td>
-                            <div class="line-clamp-2 text-sm">
-                                Toi nhat duoc 1 cai non mau xanh nhu hinh.
-                            </div>
-                        </td>
-                        <td v-if="1 == 0" class=" text-yellow-300 text-center">
-                            Chờ duyệt
-                        </td>
-                        <td v-else-if="1 == 1" class=" text-blue-500 text-center">
-                            Đã duyệt
-                        </td>
-                        <td v-else class=" text-red-500 text-center">
-                            Từ chối
-                        </td>
-                        <td class="text-center text-sm">
-                            01/01/2024
-                        </td>
-                        <td class="">
-                            <div class="flex gap-2 items-center justify-center">
-                                <div v-if="false">
-                                    <button class="p-2 text-blue-500 hover:text-blue-400 text-2xl">
-                                        <i class="fa-solid fa-check"></i>
-                                    </button>
-                                    <button class="p-2 text-red-500 hover:text-red-300 text-2xl">
-                                        <i class="fa-solid fa-ban"></i>
-                                    </button>
-                                </div>
-                                <button class="p-2 text-yellow-300 hover:text-yellow-200 text-2xl">
-                                    <i class="fa-solid fa-trash-can"></i>
-                                </button>
-                            </div>
+                    </tr>
+                </tbody>
+                <tbody v-else>
+                    <tr>
+                        <td colspan="5">
+                            <Loading />
                         </td>
                     </tr>
                 </tbody>
             </table>
         </div>
-        <div class="w-full text-center" v-if="totalPages >= 2">
-            <FwbPagination v-model="currentPage" :total-pages="totalPages" :show-icons="true" :show-labels="false" />
+        <div class="w-full text-center" v-if="postStore.totalPages >= 2">
+            <FwbPagination v-model="postStore.currentPage" :total-pages="postStore.totalPages" :show-icons="true"
+                :show-labels="false" />
         </div>
-        <RefuseModal />
+        <RefuseModal @submitFeedback="async (e) => {
+            await verifyPost(currentPostId, { verify: -1, feedback: e })
+            manageStore.closeRefuseModal()
+        }" />
+        <HistoryModal :isShow="isShow" :currentFeedback="currentFeedback" @closeHistory="closeHistory" />
     </div>
 </template>

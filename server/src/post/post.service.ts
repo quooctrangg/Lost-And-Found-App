@@ -61,7 +61,9 @@ export class PostService {
         const pageSize = PAGE_SIZE.PAGE_POST
         try {
             let { page, key, itemId, type, verify, sort } = option
-            let where: any = {}
+            let where: any = {
+                isDelete: false
+            }
             if (itemId) {
                 where.itemId = itemId
             }
@@ -93,7 +95,13 @@ export class PostService {
                     createdAt: sort
                 },
                 include: {
-                    User: true,
+                    User: {
+                        select: {
+                            id: true,
+                            name: true,
+                            image: true
+                        }
+                    },
                     Image: true,
                     Item: true,
                     Location: true
@@ -189,13 +197,22 @@ export class PostService {
             if (verifyPostDto.verify > 1 || verifyPostDto.verify < -1) {
                 return new ResponseData<string>(null, 400, 'Kiểu xác thực không tồn tại')
             }
+            if (isPost.verify !== 0) {
+                return new ResponseData<string>(null, 400, 'Bài viết đã được xác thực')
+            }
+            let data: any = {
+                verify: verifyPostDto.verify,
+            }
+            if (verifyPostDto.verify == -1) {
+                data.feedback = verifyPostDto.feedback
+            }
+            console.log(data.feedback);
+
             await this.prismaService.post.update({
                 where: {
                     id: id
                 },
-                data: {
-                    verify: verifyPostDto.verify
-                }
+                data: data
             })
             return new ResponseData<string>(null, 200, 'Cập nhật thành công')
         } catch (error) {

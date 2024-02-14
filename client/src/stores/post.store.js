@@ -46,9 +46,57 @@ export const usePostStore = defineStore('post', () => {
         }
     }
 
+    const getAllPostsForAdmin = async (option) => {
+        err.value = null
+        result.value = null
+        isLoading.value = true
+        try {
+            let res = await postService.getAllPostsForAdmin(authStore.token, option)
+            if (res.statusCode !== 200) throw new Error(res.message)
+            result.value = res
+            totalPages.value = res.data.totalPages
+            posts.value = res.data.data
+            if (currentPage.value > totalPages.value) currentPage.value = totalPages.value
+        } catch (error) {
+            err.value = error.message
+        } finally {
+            isLoading.value = false
+        }
+    }
+
+    const verifyPost = async (id, data) => {
+        err.value = null
+        result.value = null
+        isLoading.value = true
+        try {
+            let res = await postService.verifyPost(authStore.token, id, data)
+            if (res.statusCode !== 200) throw new Error(res.message)
+            result.value = res
+        } catch (error) {
+            err.value = error.message
+        } finally {
+            isLoading.value = false
+        }
+    }
+
+    const deletePost = async (id) => {
+        err.value = null
+        result.value = null
+        isLoading.value = true
+        try {
+            let res = await postService.deletePost(authStore.token, id)
+            if (res.statusCode !== 200) throw new Error(res.message)
+            result.value = res
+        } catch (error) {
+            err.value = error.message
+        } finally {
+            isLoading.value = false
+        }
+    }
+
     return {
         isShow, err, result, isLoading, totalPages, currentPage, key, posts,
-        createPost,
+        createPost, getAllPostsForAdmin, verifyPost, deletePost,
         closeFilterModal, showFilterModal,
         closePostModal, showPostModal,
         closeRequestModal, showRequestModal

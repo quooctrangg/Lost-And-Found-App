@@ -22,8 +22,7 @@ export class RequestService {
         data: {
           description: createRequestDto.description,
           userId: userId,
-          postId: id,
-          requestStatusId: 0
+          postId: id
         }
       })
       return new ResponseData<string>(null, 200, 'Gửi yêu cầu thành công')
@@ -45,7 +44,7 @@ export class RequestService {
       if (!isRequest) {
         return new ResponseData<string>(null, 400, 'Yêu cầu không tồn tại')
       }
-      if (isRequest.requestStatusId !== 0) {
+      if (isRequest.status !== 0) {
         return new ResponseData<string>(null, 400, 'Yêu cầu đã được trả lời')
       }
       if (user.id !== isRequest.Post.userId) {
@@ -56,7 +55,7 @@ export class RequestService {
           id: acceptRequestDto.idRequest
         },
         data: {
-          requestStatusId: 1
+          status: 1
         }
       })
       await this.prismaService.request.updateMany({
@@ -64,7 +63,7 @@ export class RequestService {
           postId: isRequest.postId
         },
         data: {
-          requestStatusId: 2
+          status: -1
         }
       })
       return new ResponseData<string>(null, 200, 'Trả lời thành công')
@@ -86,7 +85,7 @@ export class RequestService {
       if (!isRequest) {
         return new ResponseData<string>(null, 400, 'Yêu cầu không tồn tại')
       }
-      if (isRequest.requestStatusId !== 0) {
+      if (isRequest.status !== 0) {
         return new ResponseData<string>(null, 400, 'Yêu cầu đã được trả lời')
       }
       if (user.id !== isRequest.Post.userId) {
@@ -97,7 +96,7 @@ export class RequestService {
           id: rejectRequestDto.idRequest
         },
         data: {
-          requestStatusId: 2
+          status: -1
         }
       })
       return new ResponseData<string>(null, 200, 'Trả lời thành công')
@@ -110,8 +109,7 @@ export class RequestService {
     try {
       const data = await this.prismaService.request.findMany({
         where: {
-          userId: userId,
-          requestStatusId: 0
+          userId: userId
         }
       })
       return new ResponseData<Request[]>(data, 200, 'Tìm thấy thành công')

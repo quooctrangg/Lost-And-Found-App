@@ -108,6 +108,7 @@ model Post {
   done           Boolean  @default(false)
   isDelete       Boolean  @default(false)
   sendProtection Boolean  @default(false)
+  feedback       String?
   createdAt      DateTime @default(now())
   updatedAt      DateTime @updatedAt
 
@@ -128,23 +129,13 @@ model Request {
   description String
   createdAt   DateTime @default(now())
 
-  User            User          @relation(fields: [userId], references: [id])
-  userId          Int
-  Post            Post          @relation(fields: [postId], references: [id])
-  postId          Int
-  RequestStatus   RequestStatus @relation(fields: [requestStatusId], references: [id])
-  requestStatusId Int
+  User   User @relation(fields: [userId], references: [id])
+  userId Int
+  Post   Post @relation(fields: [postId], references: [id])
+  postId Int
+  status Int  @default(0)
 
   @@map("requests")
-}
-
-model RequestStatus {
-  id   Int    @id @default(autoincrement())
-  name String
-
-  Request Request[]
-
-  @@map("requestsStatus")
 }
 
 model Location {
