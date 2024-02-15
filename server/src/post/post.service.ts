@@ -269,7 +269,7 @@ export class PostService {
             if (!data) {
                 return new ResponseData<string>(null, 400, 'Bài viết không tồn tại')
             }
-            return new ResponseData<Post>(data, 400, 'Tìm thấy bài viết')
+            return new ResponseData<Post>(data, 200, 'Tìm thấy bài viết')
         } catch (error) {
             return new ResponseData<string>(null, 500, 'Lỗi dịch vụ, thử lại sau')
         }

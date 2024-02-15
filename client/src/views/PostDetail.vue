@@ -1,57 +1,89 @@
 <script setup>
-import { useRouter } from 'vue-router'
+import { useRouter, useRoute } from 'vue-router'
 import { Swiper, SwiperSlide } from 'swiper/vue'
 import { Navigation, Pagination } from 'swiper/modules'
 import { usePostStore } from '../stores/post.store'
+import { useToast } from 'vue-toast-notification'
+import { useConversationStore } from '../stores/conversation.store'
+import { useUserStore } from '../stores/user.store'
 import Footer from '../components/common/Footer.vue';
 import SuggestCard from '../components/common/SuggestCard.vue';
 import RequestModal from '../components/post/RequestModal.vue';
+import Loading from '@/components/common/Loading.vue'
+import dayjs from 'dayjs';
 
 import 'swiper/css';
 import 'swiper/css/navigation';
 import 'swiper/css/pagination';
+import { ref } from 'vue';
+import { onMounted } from 'vue';
 
 const router = useRouter()
+const route = useRoute()
+const conversationStore = useConversationStore()
 const postStore = usePostStore()
+const userStore = useUserStore()
+const $toast = useToast()
+
+const post = ref(null)
 
 const goBack = () => {
     router.back()
 }
+
+const getPostById = async () => {
+    await postStore.getPostById(route.params.id)
+    if (postStore.err) {
+        goBack()
+    }
+    post.value = postStore.result.data
+}
+
+const goMessage = async (userId) => {
+    await conversationStore.accessConversation({ userId: userId })
+    if (conversationStore.err) {
+        $toast.error(conversationStore.err, { position: 'top-right' })
+        return
+    }
+    $toast.success(conversationStore.result.message, { position: 'top-right' })
+    router.push({ name: 'chat' })
+}
+
+onMounted(async () => {
+    await getPostById()
+})
 </script>
 
 <template>
-    <div class="w-[80%] mx-auto flex gap-2 mt-2">
+    <div v-if="postStore.isLoading == false" class="w-[80%] mx-auto flex gap-2 mt-2">
         <div class="w-[70%] bg-white rounded-md p-4 shadow border-2">
             <div class="mb-3 grid grid-cols-3">
                 <div class="cursor-pointer hover:text-red-500 p-1" @click="goBack">
                     <i class="fa-solid fa-arrow-left"></i>
                 </div>
-                <h1 class="text-base truncate font-semibold text-center">Nguyen Quoc Trang</h1>
-                <div v-if="true" class="flex justify-end items-center">
+                <router-link v-if="userStore?.user.id !== post?.User?.id"
+                    :to="{ name: 'profile', params: { id: post?.User?.id } }">
+                    <h1 class="text-base truncate font-semibold text-center hover:underline">
+                        {{
+                            post?.User?.name
+                        }}
+                    </h1>
+                </router-link>
+                <h1 v-else class="text-base truncate font-semibold text-center">
+                    {{
+                        post?.User?.name
+                    }}
+                </h1>
+                <div v-if="post?.verify == 0" class="flex justify-end items-center">
                     <h1 class="p-1 border-yellow-200 border-2 rounded font-medium text-yellow-300">Đang chờ duyệt</h1>
                 </div>
             </div>
-            <div>
+            <div v-if="post?.Image.length">
                 <swiper :centeredSlides="true" :spaceBetween="20" :pagination="{ type: 'fraction' }" :navigation="true"
                     :modules="[Navigation, Pagination]" class="mySwiper">
-                    <swiper-slide>
+                    <swiper-slide v-for="image in post?.Image">
                         <div class="bg-slate-400 rounded overflow-hidden flex justify-center items-center">
-                            <img class="h-[300px]" src="/test.png" alt="">
-                        </div>
-                    </swiper-slide>
-                    <swiper-slide>
-                        <div class="bg-slate-400 rounded overflow-hidden flex justify-center items-center">
-                            <img class="h-[300px]" src="/logo.png" alt="">
-                        </div>
-                    </swiper-slide>
-                    <swiper-slide>
-                        <div class="bg-slate-400 rounded overflow-hidden flex justify-center items-center">
-                            <img class="h-[300px]" src="/test.png" alt="">
-                        </div>
-                    </swiper-slide>
-                    <swiper-slide>
-                        <div class="bg-slate-400 rounded overflow-hidden flex justify-center items-center">
-                            <img class="h-[300px]" src="/logo.png" alt="">
+                            <img class="h-[300px]" :src="image.url" :alt="image.id">
                         </div>
                     </swiper-slide>
                 </swiper>
@@ -59,20 +91,38 @@ const goBack = () => {
             <div class="flex flex-col gap-2">
                 <div class="flex justify-between items-center my-1 border-b-[1px]">
                     <div class="flex items-center gap-1">
-                        <img class="h-12 w-auto rounded-full" src="/logo.png" alt="logo">
+                        <img class="h-12 w-auto rounded-full" :src="post?.User?.image" alt="logo">
                         <div class="flex flex-col">
-                            <p class="text-base truncate font-semibold">Nguyen Quoc Trang</p>
+                            <router-link v-if="userStore?.user.id !== post?.User?.id"
+                                :to="{ name: 'profile', params: { id: post?.User?.id } }">
+                                <p class="text-base truncate font-semibold hover:underline">
+                                    {{
+                                        post?.User?.name
+                                    }}
+                                </p>
+                            </router-link>
+                            <p v-else class="text-base truncate font-semibold">
+                                {{
+                                    post?.User?.name
+                                }}
+                            </p>
                             <span class="text-xs italic">
                                 <i class=" fa-regular fa-clock"></i>
-                                1 giờ trước
+                                {{
+                                    dayjs(post?.createdAt).fromNow()
+                                }}
                             </span>
                         </div>
-                        <div class="px-2 cursor-pointer text-2xl hover:text-red-600 text-blue-500">
+                        <div v-if="userStore?.user.id !== post?.User?.id"
+                            class="px-2 cursor-pointer text-2xl hover:text-red-600 text-blue-500" @click="async () => {
+                                await goMessage(post?.User?.id)
+                            }">
                             <i class="fa-brands fa-facebook-messenger"></i>
                         </div>
                     </div>
                     <div class="flex gap-3 items-center">
-                        <button class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded"
+                        <button v-if="userStore?.user.id !== post?.User?.id"
+                            class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded"
                             @click="postStore.showRequestModal">
                             <i class="fa-regular fa-paper-plane mr-1"></i>
                             Nhận lại đồ vật
@@ -82,16 +132,18 @@ const goBack = () => {
                 <div class="">
                     <div class="grid grid-cols-3">
                         <h1 class="font-semibold text-lg col-span-2">
-                            Toi tim thay 1 cai non
+                            {{
+                                post?.title
+                            }}
                         </h1>
-                        <div class="">
-                            <div v-if="true" class="flex gap-1">
-                                <p class="border-2 border-blue-500 p-1 text-xs font-semibold text-blue-500 rounded">
-                                    TÌM THẤY
-                                </p>
-                                <p v-if="true"
+                        <div class="flex justify-end items-center">
+                            <div v-if="post?.type" class="flex gap-1">
+                                <p v-if="post?.sendProtection"
                                     class="border-2 border-red-500 p-1 text-xs font-semibold text-red-500 rounded">
                                     GỬI LẠI BAN QUẢN LÝ TÒA NHÀ
+                                </p>
+                                <p class="border-2 border-blue-500 p-1 text-xs font-semibold text-blue-500 rounded">
+                                    TÌM THẤY
                                 </p>
                             </div>
                             <p v-else class="border-2 border-orange-500 p-1 text-xs font-semibold text-orange-500 rounded">
@@ -102,27 +154,33 @@ const goBack = () => {
                     </div>
                     <h2 class="text-gray-500 flex gap-1 items-center text-sm">
                         <i class="fa-solid fa-location-dot"></i>
-                        Trung tâm học liệu
+                        <div v-for="(location, i) in post?.Location">
+                            {{ location.name }} {{ post?.Location.length - 1 !== i ? '-' : '' }}
+                        </div>
                     </h2>
                     <div>
                         <h2 class="font-semibold text-sm">Mô tả:</h2>
                         <p class="text-sm indent-2 text-justify  ">
-                            Toi nhat duoc 1 cai non mau xanh nhu hinh. Lorem ipsum dolor sit amet consectetur
-                            adipisicing elit. Soluta obcaecati eligendi mollitia veritatis praesentium a laborum,
-                            voluptatem quam id deserunt voluptate numquam non quasi natus distinctio omnis error eaque
-                            atque.
+                            {{
+                                post?.description
+                            }}
                         </p>
                     </div>
                     <h3 class="text-blue-600 text-sm font-semibold hover:underline cursor-pointer">
-                        #Dụng cụ học tập
+                        {{
+                            `#${post?.Item?.name}`
+                        }}
                     </h3>
                 </div>
             </div>
         </div>
         <div class="w-[30%] bg-white rounded-md p-2 shadow">
             <h1 class="text-center font-semibold text-xl italic border-b">Gợi ý</h1>
-            <SuggestCard />
+            <SuggestCard v-if="userStore?.user.id !== post?.User?.id" />
         </div>
+    </div>
+    <div v-else class="h-screen">
+        <Loading />
     </div>
     <div class="w-[80%] mx-auto mt-2">
         <div class="w-[70%] bg-white rounded-md p-2 shadow">

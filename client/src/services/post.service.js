@@ -61,8 +61,7 @@ class postService {
         return (await this.api.get(`/details/${id}`, {
             headers: {
                 "Content-Type": "application/json",
-                Accept: "application/json",
-                Authorization: `Bearer ${token}`
+                Accept: "application/json"
             }
         })).data
     }

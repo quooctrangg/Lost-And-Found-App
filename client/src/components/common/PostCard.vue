@@ -1,5 +1,8 @@
 <script setup>
 import dayjs from 'dayjs';
+import { useUserStore } from '../../stores/user.store'
+
+const userStore = useUserStore()
 
 const props = defineProps(['post'])
 </script>
@@ -10,7 +13,15 @@ const props = defineProps(['post'])
             <div class="flex items-center gap-1">
                 <img class="h-12 w-auto rounded-full" :src="props.post?.User?.image" alt="logo">
                 <div class="flex flex-col">
-                    <p class="text-base truncate">
+                    <router-link v-if="userStore?.user.id !== props.post?.User?.id"
+                        :to="{ name: 'profile', params: { id: post?.User?.id } }">
+                        <p class="text-base truncate hover:underline">
+                            {{
+                                props.post?.User?.name
+                            }}
+                        </p>
+                    </router-link>
+                    <p v-else class="text-base truncate">
                         {{
                             props.post?.User?.name
                         }}
@@ -37,11 +48,6 @@ const props = defineProps(['post'])
                     <p v-else class="border-2 border-orange-500 p-1 text-xs font-semibold text-orange-500 rounded">
                         THẤT LẠC
                     </p>
-                </div>
-                <div class="">
-                    <div class="px-4 cursor-pointer hover:text-red-600">
-                        <i class="fa-solid fa-ellipsis text-2xl"></i>
-                    </div>
                 </div>
             </div>
         </div>

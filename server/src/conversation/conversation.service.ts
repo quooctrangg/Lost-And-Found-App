@@ -10,6 +10,9 @@ export class ConversationService {
 
   async accessConversation(reqUserId: number, accessConversationDto: AccessConversationDto) {
     try {
+      if (reqUserId == accessConversationDto.userId) {
+        return new ResponseData<string>(null, 400, 'Bạn không thể nhắn tin với chính mình.')
+      }
       const isConversation = await this.prismaService.conversation.findFirst({
         where: {
           AND: [

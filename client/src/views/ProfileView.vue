@@ -21,14 +21,14 @@ const profile = ref(null)
 const posts = ref([])
 
 const getProfileUser = async () => {
-    if (route.params.id == profile?.id) {
-        router.push({ name: 'post' })
-        return
-    }
     await userStore.getProfileUser(route.params.id)
     profile.value = userStore.result?.data
     if (!profile.value) {
         router.back()
+        return
+    }
+    if (route.params.id == userStore.user.id) {
+        router.push({ name: 'post' })
         return
     }
 }

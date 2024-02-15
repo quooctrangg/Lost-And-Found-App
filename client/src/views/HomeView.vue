@@ -17,7 +17,6 @@ const getAllPostsForUser = async () => {
     await postStore.getAllPostsForUser({})
     if (postStore.err) return
     posts.value = [...postStore.posts]
-    console.log(posts.value);
 }
 
 onMounted(async () => {
