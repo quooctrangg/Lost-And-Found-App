@@ -50,6 +50,8 @@ export const usePostStore = defineStore('post', () => {
         err.value = null
         result.value = null
         isLoading.value = true
+        posts.value = []
+        totalPages.value = 1
         try {
             let res = await postService.getAllPostsForAdmin(authStore.token, option)
             if (res.statusCode !== 200) throw new Error(res.message)
@@ -109,9 +111,29 @@ export const usePostStore = defineStore('post', () => {
         }
     }
 
+    const getAllPostsForUser = async (option) => {
+        err.value = null
+        result.value = null
+        isLoading.value = true
+        posts.value = []
+        totalPages.value = 1
+        try {
+            let res = await postService.getAllPostsForUser(option)
+            if (res.statusCode !== 200) throw new Error(res.message)
+            result.value = res
+            totalPages.value = res.data.totalPages
+            posts.value = res.data.data
+            if (currentPage.value > totalPages.value) currentPage.value = totalPages.value
+        } catch (error) {
+            err.value = error.message
+        } finally {
+            isLoading.value = false
+        }
+    }
+
     return {
         isShow, err, result, isLoading, totalPages, currentPage, key, posts,
-        createPost, getAllPostsForAdmin, verifyPost, deletePost, getAllPostsByUserId,
+        createPost, getAllPostsForAdmin, verifyPost, deletePost, getAllPostsByUserId, getAllPostsForUser,
         closeFilterModal, showFilterModal,
         closePostModal, showPostModal,
         closeRequestModal, showRequestModal

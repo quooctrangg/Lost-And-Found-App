@@ -27,8 +27,6 @@ export class PostController {
     }
 
     @Get('post-for-user')
-    @UseGuards(MyJWTGuard, RolesGuard)
-    @Role(USER_TYPES.USER)
     getAllPostsForUser(@Query() option: { key: string, page: number, type: boolean, itemId: number, locations: number[] }) {
         return this.postService.getAllPostsForUser(option)
     }

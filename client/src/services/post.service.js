@@ -27,13 +27,12 @@ class postService {
         })).data
     }
 
-    async getAllPostsForUser(token, option) {
+    async getAllPostsForUser(option) {
         let parameter = createQueryString(option)
         return (await this.api.get(`/post-for-user${parameter}`, {
             headers: {
                 "Content-Type": "application/json",
                 Accept: "application/json",
-                Authorization: `Bearer ${token}`
             }
         })).data
     }
