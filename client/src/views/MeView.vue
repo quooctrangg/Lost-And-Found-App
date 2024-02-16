@@ -7,10 +7,24 @@ import UpdateProfileModal from '../components/profile/UpdateProfileModal.vue';
 import UpdateAvatarModal from '../components/profile/UpdateAvatarModal.vue';
 import ScrollToTop from '@/components/common/ScrollToTop.vue';
 import dayjs from 'dayjs'
+import { onMounted } from 'vue';
 
 const userStore = useUserStore()
 
+const total = ref(0)
 const currentPage = ref('post')
+
+const totalPost = (posts) => {
+    posts?.forEach(e => {
+        if (e.verify == 1) {
+            total.value = total.value + 1
+        }
+    })
+}
+
+onMounted(() => {
+    totalPost(userStore.user.Post)
+})
 </script>
 
 <template>
@@ -31,16 +45,28 @@ const currentPage = ref('post')
                     }}
                 </h1>
                 <h2 class="text-base text-gray-600 indent-3">
-                    Trường/Khoa: {{ userStore.user?.School?.name }}
+                    Trường/Khoa:
+                    {{
+                        userStore.user?.School?.name
+                    }}
                 </h2>
                 <h2 class="text-base text-gray-600 indent-3">
-                    Email: {{ userStore.user?.email }}
+                    Email:
+                    {{
+                        userStore.user?.email
+                    }}
                 </h2>
                 <h2 class="text-base text-gray-600 indent-3">
-                    Tham gia vào ngày {{ dayjs(userStore.user?.createAt).format('DD, MMMM, YYYY') }}
+                    Tham gia vào ngày
+                    {{
+                        dayjs(userStore.user?.createAt).format('DD, MMMM, YYYY')
+                    }}
                 </h2>
                 <h2 class="text-base">
-                    Số lượng bài viết: {{ userStore.user?.Post.length || 0 }}
+                    Số lượng bài viết:
+                    {{
+                        total
+                    }}
                 </h2>
             </div>
             <div class="flex flex-col gap-1 justify-end">

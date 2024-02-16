@@ -11,10 +11,10 @@ import { AcceptRequestDto, CreateRequestDto, RejectRequestDto } from './dto';
 export class RequestController {
   constructor(private readonly requestService: RequestService) { }
 
-  @Post(':id')
+  @Post()
   @Role(USER_TYPES.USER)
-  createRequest(@GetUser() user: User, @Param('id', ParseIntPipe) id: number, @Body() createRequestDto: CreateRequestDto) {
-    return this.requestService.createRequest(user.id, id, createRequestDto)
+  createRequest(@GetUser() user: User, @Body() createRequestDto: CreateRequestDto) {
+    return this.requestService.createRequest(user.id, createRequestDto)
   }
 
   @Patch('accept')
@@ -31,7 +31,7 @@ export class RequestController {
 
   @Get()
   @Role(USER_TYPES.USER)
-  getAllRequestByUserId(@GetUser() user: User) {
+  getAllRequestsByUserId(@GetUser() user: User) {
     return this.requestService.getAllRequestByUserId(user.id)
   }
 }

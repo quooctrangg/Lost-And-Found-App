@@ -3,6 +3,7 @@ import { onMounted, ref } from 'vue';
 import { usePostStore } from '../../stores/post.store'
 import { useUserStore } from '../../stores/user.store'
 import dayjs from 'dayjs'
+import Loading from '../common/Loading.vue';
 
 const userStore = useUserStore()
 const postStore = usePostStore()
@@ -13,8 +14,10 @@ const posts = ref([])
 
 const getAllPostsByUserId = async () => {
     await postStore.getAllPostsByUserId(userStore.user.id)
+    if (postStore.err) {
+        return
+    }
     posts.value = postStore.result.data
-    console.log(posts.value);
 }
 
 onMounted(async () => {
@@ -24,8 +27,8 @@ onMounted(async () => {
 </script>
 
 <template>
-    <div class="">
-        <div v-for="(post, i) in posts" :key="post.id"
+    <div v-if="postStore.isLoading == false" class="">
+        <div v-if="posts.length" v-for="(post, i) in posts" :key="post.id"
             class="border-2 w-full border-blue-600 p-2 rounded-lg flex gap-4 items-center mt-2">
             <div v-if="post.Image.length" class="w-20%">
                 <img :src="post.Image[0].url" class="w-48 h-48 border-2 rounded-3xl object-cover">
@@ -78,30 +81,41 @@ onMounted(async () => {
                 <h3 class="text-blue-600 text-sm font-semibold hover:underline cursor-pointer">
                     #{{ post.Item.name }}
                 </h3>
-                <h3>
+                <h3 class="flex gap-1">
                     Trạng thái:
-                    <span v-if="post.verify == 0" class="text-yellow-400">
-                        Đang chờ
-                    </span>
-                    <span v-if="post.verify == 1" class="text-green-600">
-                        Đã duyệt
-                    </span>
-                    <span v-if="post.verify == -1" class="text-red-600">
-                        Từ chối
-                        <span class="text-black text-sm">
-                            - Lý do:
-                            {{
-                                post.feedback
-                            }}
+                    <div v-if="post.done == false">
+                        <span v-if="post.verify == 0" class="text-yellow-400">
+                            Đang chờ
                         </span>
-                    </span>
+                        <span v-if="post.verify == 1" class="text-green-600">
+                            Đã duyệt
+                        </span>
+                        <span v-if="post.verify == -1" class="text-red-600">
+                            Từ chối
+                            <span class="text-black text-sm">
+                                - Lý do:
+                                {{
+                                    post.feedback
+                                }}
+                            </span>
+                        </span>
+                    </div>
+                    <div v-else class="text-blue-700">
+                        Đã xong
+                    </div>
                 </h3>
-                <h3 class="flex gap-3 items-center">
+                <h3 v-if="post.verify == 0" class="flex gap-3 items-center">
                     Tùy chọn:
-                    <i v-if="post.verify == 0" class="fa-solid fa-pen text-green-400 cursor-pointer text-2xl"></i>
+                    <i class="fa-solid fa-pen text-green-400 cursor-pointer text-2xl"></i>
                     <i class="fa-solid fa-trash text-red-500 cursor-pointer text-2xl"></i>
                 </h3>
             </div>
         </div>
+        <div v-else class="text-xl text-center mt-5 text-red-600 italic">
+            Không có bài viết.
+        </div>
+    </div>
+    <div v-else class="py-5">
+        <Loading />
     </div>
 </template>

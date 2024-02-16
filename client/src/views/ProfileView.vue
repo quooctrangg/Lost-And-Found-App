@@ -19,6 +19,7 @@ const $toast = useToast()
 
 const profile = ref(null)
 const posts = ref([])
+const totalPost = ref(0)
 
 const getProfileUser = async () => {
     await userStore.getProfileUser(route.params.id)
@@ -36,6 +37,7 @@ const getProfileUser = async () => {
 const getAllPostsByUserId = async () => {
     await postStore.getAllPostsByUserId(route.params.id)
     posts.value = postStore.result.data
+    totalPost.value = posts.value.length
 }
 
 const goBack = () => {
@@ -85,7 +87,7 @@ onMounted(async () => {
                     Tham gia vào ngày {{ dayjs(profile?.createAt).format('DD, MMMM, YYYY') }}
                 </h2>
                 <h2 class="text-base">
-                    Số lượng bài viết: {{ profile?.Post.length || 0 }}
+                    Số lượng bài viết: {{ totalPost }}
                 </h2>
             </div>
             <div class="flex flex-col gap-1 justify-end">

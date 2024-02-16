@@ -121,11 +121,13 @@ onMounted(async () => {
                         </div>
                     </div>
                     <div class="flex gap-3 items-center">
-                        <button v-if="userStore?.user.id !== post?.User?.id"
+                        <button v-if="userStore?.user.id !== post?.User?.id && post?.sendProtection == false"
                             class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded"
                             @click="postStore.showRequestModal">
                             <i class="fa-regular fa-paper-plane mr-1"></i>
-                            Nhận lại đồ vật
+                            {{
+                                post?.type == true ? `Nhận lại đồ vật` : 'Trả lại đồ vật'
+                            }}
                         </button>
                     </div>
                 </div>
@@ -274,6 +276,6 @@ onMounted(async () => {
             </div>
         </div>
     </div>
-    <RequestModal />
+    <RequestModal :request="post?.type" :postId="post?.id" />
     <Footer />
 </template>

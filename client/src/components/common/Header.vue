@@ -110,8 +110,10 @@ watchEffect(async () => {
                     </div>
                     <div class="group relative cursor-pointer">
                         <div class="menu-hover flex items-center gap-1">
-                            <img class="h-10 w-auto rounded-full" :src="userStore.user?.image" alt="logo user">
-                            <p class="text-md truncate">
+                            <div class="h-10 w-10 overflow-hidden rounded-full flex items-center justify-center">
+                                <img class="h-full w-full object-cover" :src="userStore.user?.image" alt="logo user">
+                            </div>
+                            <p class="text-md truncate font-semibold">
                                 {{ userStore.user?.name }}
                             </p>
                         </div>
