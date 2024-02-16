@@ -8,7 +8,9 @@ const props = defineProps(['post'])
     <div class="bg-white rounded-md p-2 mx-auto shadow border-2 border-blue-500 mb-3">
         <div class="flex justify-between items-center mb-3 border-b">
             <div class="flex items-center gap-1">
-                <img class="h-12 w-auto rounded-full" :src="props.post?.User?.image" alt="logo">
+                <div class="w-12 h-12 rounded-full overflow-hidden border-2 border-blue-500">
+                    <img class="h-full w-full object-cover" :src="props.post?.User?.image" alt="logo">
+                </div>
                 <div class="flex flex-col">
                     <p class="text-base truncate">
                         {{
@@ -26,12 +28,12 @@ const props = defineProps(['post'])
             <div class="flex gap-5 items-center">
                 <div>
                     <div v-if="props.post?.type === true" class="flex gap-1">
-                        <p v-if="props.post?.sendProtection"
-                            class="border-2 border-red-500 p-1 text-xs font-semibold text-red-500 rounded">
-                            GỬI LẠI BAN QUẢN LÝ TÒA NHÀ
-                        </p>
-                        <p class="border-2 border-blue-500 p-1 text-xs font-semibold text-blue-500 rounded">
+                        <p class="border-2 border-green-600 p-1 text-xs font-semibold text-green-600 rounded">
                             TÌM THẤY
+                        </p>
+                        <p v-if="props.post?.sendProtection"
+                            class="border-2 border-blue-600 p-1 text-xs font-semibold text-blue-600 rounded">
+                            GỬI LẠI BAN QUẢN LÝ TÒA NHÀ
                         </p>
                     </div>
                     <p v-else class="border-2 border-orange-500 p-1 text-xs font-semibold text-orange-500 rounded">

@@ -67,11 +67,11 @@ export class PostService {
             if (itemId) {
                 where.itemId = itemId
             }
-            if (type !== undefined || type !== null) {
-                where.type = type
+            if (type != undefined || type != null) {
+                where.type = Boolean(type)
             }
-            if (verify !== undefined || verify !== null) {
-                where.verify = verify
+            if (verify != undefined || verify != null) {
+                where.verify = Number(verify)
             }
             if (key) {
                 where.title = {

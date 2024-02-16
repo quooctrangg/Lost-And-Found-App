@@ -9,6 +9,7 @@ import HistoryModal from './HistoryModal.vue'
 import Loading from '@/components/common/Loading.vue';
 import dayjs from 'dayjs'
 import { useToast } from 'vue-toast-notification'
+import { watchEffect } from 'vue';
 
 const manageStore = useManageStore()
 const postStore = usePostStore()
@@ -19,6 +20,8 @@ const emit = defineEmits(['currentPage'])
 const currentPostId = ref(null)
 const currentFeedback = ref(null)
 const isShow = ref(false)
+const verify = ref(null)
+const key = ref('')
 
 const verifyPost = async (id, data) => {
     const conFirm = confirm('Bạn có chắc chắn xác nhận bài viết này?')
@@ -47,7 +50,7 @@ const deletePost = async (id) => {
 }
 
 const getAllPostForAdmin = async () => {
-    await postStore.getAllPostsForAdmin({ sort: 'desc' })
+    await postStore.getAllPostsForAdmin({ sort: 'desc', page: postStore.currentPage, verify: verify.value, key: key.value })
 }
 
 const showHistory = () => {
@@ -57,6 +60,10 @@ const showHistory = () => {
 const closeHistory = () => {
     isShow.value = false
 }
+
+watchEffect(async () => {
+    await postStore.getAllPostsForAdmin({ sort: 'desc', page: postStore.currentPage, verify: verify.value, key: key.value })
+})
 
 onMounted(async () => {
     emit('currentPage', 'post')
@@ -70,15 +77,15 @@ onMounted(async () => {
             <div class="flex items-center justify-between w-full">
                 <div class="flex gap-5">
                     <div class="border border-black rounded-xl">
-                        <Seach :title="'Tìm kiếm bài viết'" />
+                        <Seach :title="'Tìm kiếm bài viết'" @key="(e) => { key = e }" />
                     </div>
                     <div class="flex gap-1 items-center">
                         <h1>Trạng thái: </h1>
-                        <select name="" id="" class="p-1 rounded-xl">
-                            <option value="">Tất cả</option>
-                            <option value="">Đã duyệt</option>
-                            <option value="">Từ chối</option>
-                            <option value="">Chờ duyệt</option>
+                        <select name="" id="" class="p-1 rounded-xl" v-model="verify">
+                            <option :value="null">Tất cả</option>
+                            <option :value="1">Đã duyệt</option>
+                            <option :value="-1">Từ chối</option>
+                            <option :value="0">Chờ duyệt</option>
                         </select>
                     </div>
                 </div>

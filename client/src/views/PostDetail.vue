@@ -77,6 +77,9 @@ onMounted(async () => {
                 <div v-if="post?.verify == 0" class="flex justify-end items-center">
                     <h1 class="p-1 border-yellow-200 border-2 rounded font-medium text-yellow-300">Đang chờ duyệt</h1>
                 </div>
+                <div v-if="post?.done == true" class="flex justify-end items-center">
+                    <h1 class="p-1 border-blue-600 border-2 rounded font-medium text-blue-600">ĐÃ HOÀN THÀNH</h1>
+                </div>
             </div>
             <div v-if="post?.Image.length">
                 <swiper :centeredSlides="true" :spaceBetween="20" :pagination="{ type: 'fraction' }" :navigation="true"
@@ -91,7 +94,10 @@ onMounted(async () => {
             <div class="flex flex-col gap-2">
                 <div class="flex justify-between items-center my-1 border-b-[1px]">
                     <div class="flex items-center gap-1">
-                        <img class="h-12 w-auto rounded-full" :src="post?.User?.image" alt="logo">
+                        <div
+                            class="h-12 w-12 rounded-full overflow-hidden flex items-center justify-center border-2 border-blue-600">
+                            <img class="h-full w-full object-cover" :src="post?.User?.image" alt="logo">
+                        </div>
                         <div class="flex flex-col">
                             <router-link v-if="userStore?.user.id !== post?.User?.id"
                                 :to="{ name: 'profile', params: { id: post?.User?.id } }">
@@ -121,7 +127,8 @@ onMounted(async () => {
                         </div>
                     </div>
                     <div class="flex gap-3 items-center">
-                        <button v-if="userStore?.user.id !== post?.User?.id && post?.sendProtection == false"
+                        <button
+                            v-if="userStore?.user.id !== post?.User?.id && post?.sendProtection == false && post?.done == false"
                             class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded"
                             @click="postStore.showRequestModal">
                             <i class="fa-regular fa-paper-plane mr-1"></i>

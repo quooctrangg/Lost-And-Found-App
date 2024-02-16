@@ -44,20 +44,20 @@ onMounted(async () => {
                     </h1>
                     <h1 class="flex gap-1">
                         <div v-if="post.type == true" class="flex gap-1">
-                            <p v-if="post.sendProtection"
-                                class="border-2 border-red-500 p-1 text-xs font-semibold text-red-500 rounded">
-                                GỬI LẠI BAN QUẢN LÝ TÒA NHÀ
-                            </p>
-                            <p class="border-2 border-blue-500 p-1 text-xs font-semibold text-blue-500 rounded">
+                            <p class="border-2 border-green-600 p-1 text-xs font-semibold  text-green-600 rounded">
                                 TÌM THẤY
+                            </p>
+                            <p v-if="post.sendProtection"
+                                class="border-2 border-blue-500 p-1 text-xs font-semibold text-blue-500 rounded">
+                                GỬI LẠI BAN QUẢN LÝ TÒA NHÀ
                             </p>
                         </div>
                         <p v-else class="border-2 border-orange-500 p-1 text-xs font-semibold text-orange-500 rounded">
                             THẤT LẠC
                         </p>
                         <p v-if="post.done"
-                            class="border-2 border-green-600 p-1 text-xs font-semibold text-green-600 rounded">
-                            HOÀN THÀNH
+                            class="border-2 border-blue-500 p-1 text-xs font-semibold text-blue-500 rounded">
+                            ĐÃ HOÀN THÀNH
                         </p>
                     </h1>
                 </div>
