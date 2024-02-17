@@ -22,12 +22,6 @@ const handleSendComment = async (content) => {
     }
     $toast.success(commentStore.result.message, { position: 'top-right' })
 }
-
-watchEffect(async () => {
-    if (commentStore.comments.length) {
-        parentComments.value = commentStore.comments.filter(e => e.parentId == null).sort((a, b) => new Date(a.createdAt) - new Date(b.createdAt))
-    }
-})
 </script>
 
 <template>
@@ -36,8 +30,9 @@ watchEffect(async () => {
             {{ commentStore.comments.length }} bình luận
         </div>
         <div v-if="commentStore.isLoading == false" class="p-2">
-            <CommentItem v-if="parentComments.length" v-for="parentComment in parentComments" :key="parentComment.id"
-                :comment="parentComment" :replies="commentStore.getReplies(commentStore.comments, parentComment.id)" />
+            <CommentItem v-if="commentStore.parentComments.length" v-for="parentComment in commentStore.parentComments"
+                :key="parentComment.id" :comment="parentComment"
+                :replies="commentStore.getReplies(commentStore.comments, parentComment.id)" />
             <div v-else class="text-base text-gray-700 italic text-center">
                 Không có bình luận.
             </div>

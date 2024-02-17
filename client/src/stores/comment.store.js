@@ -10,6 +10,7 @@ export const useCommentStore = defineStore('comment', () => {
     const result = ref(null)
     const isLoading = ref(false)
     const comments = ref([])
+    const parentComments = ref([])
     const isReply = reactive({
         isShow: false,
         commentId: null
@@ -20,11 +21,13 @@ export const useCommentStore = defineStore('comment', () => {
         err.value = null
         result.value = null
         comments.value = []
+        parentComments.value = []
         try {
             let res = await commentService.getAllCommentsByPostId(authStore.token, postId)
             if (res.statusCode !== 200) throw new Error(res.message)
             result.value = res
             comments.value = res.data
+            parentComments.value = comments.value.filter(e => e.parentId == null).sort((a, b) => new Date(a.createdAt) - new Date(b.createdAt))
         } catch (error) {
             err.value = error.message
         } finally {
@@ -41,6 +44,7 @@ export const useCommentStore = defineStore('comment', () => {
             if (res.statusCode !== 200) throw new Error(res.message)
             result.value = res
             comments.value.push(res.data)
+            parentComments.value = comments.value.filter(e => e.parentId == null).sort((a, b) => new Date(a.createdAt) - new Date(b.createdAt))
         } catch (error) {
             err.value = error.message
         } finally {
@@ -53,6 +57,6 @@ export const useCommentStore = defineStore('comment', () => {
     }
 
     return {
-        err, result, isLoading, comments, isReply, getAllCommentsByPostId, createComment, getReplies
+        err, result, isLoading, comments, isReply, parentComments, getAllCommentsByPostId, createComment, getReplies
     }
 })

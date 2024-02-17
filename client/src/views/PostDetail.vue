@@ -1,7 +1,5 @@
 <script setup>
-import { ref } from 'vue';
-import { onMounted } from 'vue';
-import { watch } from 'vue'
+import { ref, onMounted } from 'vue';
 import { useRouter, useRoute } from 'vue-router'
 import { Swiper, SwiperSlide } from 'swiper/vue'
 import { Navigation, Pagination } from 'swiper/modules'
@@ -42,8 +40,8 @@ const getPostById = async () => {
     post.value = postStore.result.data
 }
 
-const getAllCommentsByPostId = async (postId) => {
-    await commentStore.getAllCommentsByPostId(postId)
+const getAllCommentsByPostId = async () => {
+    await commentStore.getAllCommentsByPostId(route.params.id)
     if (commentStore.err) {
         return
     }
@@ -59,14 +57,9 @@ const goMessage = async (userId) => {
     router.push({ name: 'chat' })
 }
 
-watch(post, async (newval, oldval) => {
-    if (post.value) {
-        await getAllCommentsByPostId(post.value.id)
-    }
-})
-
 onMounted(async () => {
     await getPostById()
+    await getAllCommentsByPostId()
 })
 </script>
 
