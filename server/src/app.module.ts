@@ -13,6 +13,7 @@ import { ChatModule } from './chat/chat.module';
 import { ConversationModule } from './conversation/conversation.module';
 import { MessageModule } from './message/message.module';
 import { RequestModule } from './request/request.module';
+import { CommentModule } from './comment/comment.module';
 import * as Joi from 'joi';
 
 @Module({
@@ -21,6 +22,6 @@ import * as Joi from 'joi';
     validationSchema: Joi.object({
       PORT: Joi.number().required(),
     }),
-  }), PrismaModule, AuthModule, MailingModule, UserModule, CloudinaryModule, ItemModule, LocationModule, PostModule, SchoolModule, ChatModule, ConversationModule, MessageModule, RequestModule]
+  }), PrismaModule, AuthModule, MailingModule, UserModule, CloudinaryModule, ItemModule, LocationModule, PostModule, SchoolModule, ChatModule, ConversationModule, MessageModule, RequestModule, CommentModule]
 })
 export class AppModule { }

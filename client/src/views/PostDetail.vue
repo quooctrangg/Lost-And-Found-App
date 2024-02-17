@@ -1,4 +1,7 @@
 <script setup>
+import { ref } from 'vue';
+import { onMounted } from 'vue';
+import { watch } from 'vue'
 import { useRouter, useRoute } from 'vue-router'
 import { Swiper, SwiperSlide } from 'swiper/vue'
 import { Navigation, Pagination } from 'swiper/modules'
@@ -6,23 +9,23 @@ import { usePostStore } from '../stores/post.store'
 import { useToast } from 'vue-toast-notification'
 import { useConversationStore } from '../stores/conversation.store'
 import { useUserStore } from '../stores/user.store'
+import { useCommentStore } from '../stores/comment.store'
 import Footer from '../components/common/Footer.vue';
 import SuggestCard from '../components/common/SuggestCard.vue';
 import RequestModal from '../components/post/RequestModal.vue';
-import Loading from '@/components/common/Loading.vue'
+import Loading from '../components/common/Loading.vue'
+import Comments from '../components/comment/Comments.vue'
 import dayjs from 'dayjs';
-
 import 'swiper/css';
 import 'swiper/css/navigation';
 import 'swiper/css/pagination';
-import { ref } from 'vue';
-import { onMounted } from 'vue';
 
 const router = useRouter()
 const route = useRoute()
 const conversationStore = useConversationStore()
 const postStore = usePostStore()
 const userStore = useUserStore()
+const commentStore = useCommentStore()
 const $toast = useToast()
 
 const post = ref(null)
@@ -39,6 +42,13 @@ const getPostById = async () => {
     post.value = postStore.result.data
 }
 
+const getAllCommentsByPostId = async (postId) => {
+    await commentStore.getAllCommentsByPostId(postId)
+    if (commentStore.err) {
+        return
+    }
+}
+
 const goMessage = async (userId) => {
     await conversationStore.accessConversation({ userId: userId })
     if (conversationStore.err) {
@@ -48,6 +58,12 @@ const goMessage = async (userId) => {
     $toast.success(conversationStore.result.message, { position: 'top-right' })
     router.push({ name: 'chat' })
 }
+
+watch(post, async (newval, oldval) => {
+    if (post.value) {
+        await getAllCommentsByPostId(post.value.id)
+    }
+})
 
 onMounted(async () => {
     await getPostById()
@@ -192,96 +208,7 @@ onMounted(async () => {
         <Loading />
     </div>
     <div class="w-[80%] mx-auto mt-2">
-        <div class="w-[70%] bg-white rounded-md p-2 shadow">
-            <div class="p-2 text-sm text-gray-700 underline">
-                4 bình luận
-            </div>
-            <div class="p-2">
-                <div class="flex gap-2 mt-2">
-                    <img class="h-8 w-auto rounded-full" src="/logo.png" alt="logo">
-                    <div>
-                        <div class="bg-gray-100 rounded-lg shadow p-1">
-                            <h1 class="text-sm font-medium">Vo Van Kiet</h1>
-                            <div class="text-xs">
-                                Bạn nhặt nó ở phòng họp 201/B1 đúng không
-                            </div>
-                        </div>
-                        <div class="flex gap-2 text-xs indent-2">
-                            <h1 class="text-gray-600">1 ngày trước</h1>
-                            <h1 class="cursor-pointer hover:text-red-500">Phản hồi</h1>
-                        </div>
-                    </div>
-                </div>
-                <div class="">
-                    <div class="flex gap-2 mt-2">
-                        <img class="h-8 w-auto rounded-full" src="/logo.png" alt="logo">
-                        <div>
-                            <div class="bg-gray-100 rounded-lg shadow p-1">
-                                <h1 class="text-sm font-medium">Nguyen Van A</h1>
-                                <div class="text-xs">
-                                    Tôi muốn xem chi tiết
-                                </div>
-                            </div>
-                            <div class="flex gap-2 text-xs indent-2">
-                                <h1 class="text-gray-600">Vài giây trước</h1>
-                                <h1 class="cursor-pointer hover:text-red-500">Phản hồi</h1>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="ml-8">
-                        <div class="flex gap-2 mt-2">
-                            <img class="h-8 w-auto rounded-full" src="/test.png" alt="logo">
-                            <div>
-                                <div class="bg-gray-100 rounded-lg shadow p-1">
-                                    <h1 class="text-sm font-medium">Nguyen Van C</h1>
-                                    <div class="text-xs">
-                                        <span class="font-semibold text-blue-500">Nguyen Van A</span> Hãy nhắn tin cho tôi
-                                    </div>
-                                </div>
-                                <div class="flex gap-2 text-xs indent-2">
-                                    <h1 class="text-gray-600">Vài giây trước</h1>
-                                    <h1 class="cursor-pointer hover:text-red-500">Phản hồi</h1>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="flex gap-2 mt-2">
-                            <img class="h-8 w-auto rounded-full" src="/logo.png" alt="logo">
-                            <div>
-                                <div class="bg-gray-100 rounded-lg shadow p-1">
-                                    <h1 class="text-sm font-medium">Nguyen Van A</h1>
-                                    <div class="text-xs">
-                                        <span class="font-semibold">Nguyen Van B</span> Ok
-                                    </div>
-                                </div>
-                                <div class="flex gap-2 text-xs indent-2">
-                                    <h1 class="text-gray-600">Vài giây trước</h1>
-                                    <h1 class="cursor-pointer hover:text-red-500">Phản hồi</h1>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-            <div>
-                <div v-if="false" class="text-xs text-gray-700 flex gap-2 p-1">
-                    <p>Đang phản hồi <span class="font-semibold">Vo Van Kiet</span></p>
-                    <button class="text-red-600 hover:text-red-400">Hủy</button>
-                </div>
-                <div class="flex justify-between items-center bg-gray-200 p-1 rounded shadow">
-                    <input type="text" placeholder="Nhập bình luận..."
-                        class="p-1 w-full border-none outline-none border-transparent focus:border-transparent focus:ring-0 bg-gray-200">
-                    <div class="flex gap-3 mx-2 hover:text-blue-500">
-                        <span>
-                            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
-                                stroke="currentColor" class="w-6 h-6 cursor-pointer">
-                                <path stroke-linecap="round" stroke-linejoin="round"
-                                    d="M6 12L3.269 3.126A59.768 59.768 0 0121.485 12 59.77 59.77 0 013.27 20.876L5.999 12zm0 0h7.5" />
-                            </svg>
-                        </span>
-                    </div>
-                </div>
-            </div>
-        </div>
+        <Comments :postId="route.params.id" />
     </div>
     <RequestModal :request="post?.type" :postId="post?.id" />
     <Footer />
