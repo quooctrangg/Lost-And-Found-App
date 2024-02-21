@@ -1,5 +1,5 @@
 <script setup>
-import { onMounted, reactive, ref } from 'vue';
+import { onMounted, reactive } from 'vue';
 import { useSchoolStore } from '../stores/school.store'
 import { useAuthStore } from '../stores/auth.store'
 import { useToast } from 'vue-toast-notification'
@@ -20,7 +20,6 @@ const user = reactive({
     schoolId: '',
     confirmPassword: ''
 })
-
 
 const formSchemaRegister = yup.object().shape({
     name: yup.string().required("Tên phải có giá trị.").min(1, 'Tên phải ít nhất 1 ký tự.').max(50, "Tên có nhiều nhất 50 ký tự."),
@@ -80,7 +79,7 @@ onMounted(async () => {
                             <ErrorMessage name="password" class="error" />
                         </div>
                         <div>
-                            <label for="confirm-password" class="label-custom">
+                            <label for="confirmPassword" class="label-custom">
                                 Nhập lại mật khẩu:
                             </label>
                             <Field name="confirmPassword" type="password" id="confirmPassword" class="input-custom"

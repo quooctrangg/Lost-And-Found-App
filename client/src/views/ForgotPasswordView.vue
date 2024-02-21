@@ -1,49 +1,120 @@
 <script setup>
+import * as yup from "yup";
+import { Form, Field, ErrorMessage } from "vee-validate";
+import { reactive } from "vue";
+import { useToast } from 'vue-toast-notification'
+import { useUserStore } from '../stores/user.store'
+import { useRouter } from 'vue-router'
+import { ref } from "vue";
+import Loading from "@/components/common/Loading.vue";
+
+const $toast = useToast()
+const userStore = useUserStore()
+const router = useRouter()
+
+const seconds = ref(0)
+const timeout = ref(false)
+const user = reactive({
+    email: '',
+    newPassword: '',
+    confirmPassword: '',
+    code: ''
+})
+const formSchemaForgotPassword = yup.object().shape({
+    email: yup.string().required("Email phải có giá trị.").email("E-mail không đúng.").max(50, "E-mail tối đa 50 ký tự."),
+    newPassword: yup.string().required('Mật khẩu phải có giá trị.').min(6, 'Tên phải ít nhất 6 ký tự.'),
+    confirmPassword: yup.string().oneOf([yup.ref('newPassword'), null], 'Mật khẩu xác nhận không trùng khớp.'),
+    code: yup.number().typeError('Mã xác nhận phải là số.').required('Mã xác nhận phải có giá trị.')
+})
+
+const submitForgot = async () => {
+    await userStore.forgotPassword(user)
+    if (userStore.err) {
+        $toast.error(userStore.err, { position: 'top-right' })
+        return
+    }
+    $toast.success(userStore.result.message, { position: 'top-right' })
+    setTimeout(() => {
+        router.push('login')
+    }, 1000)
+}
+
+const countDown = () => {
+    if (seconds.value > 0) seconds.value = seconds.value - 1;
+    else timeout.value = false;
+}
+
+const btnSendCode = async () => {
+    if (user.email == '') {
+        $toast.error('Vui lòng nhập email', { position: 'top-right' })
+        return
+    }
+    await userStore.sendVerifyCode({ email: user.email })
+    if (userStore.err) {
+        $toast.error(userStore.err, { position: 'top-right' })
+        return
+    }
+    $toast.success(userStore.result.message, { position: 'top-right' })
+    seconds.value = 120
+    timeout.value = true
+    setInterval(countDown, 1000)
+}
 
 </script>
 
 <template>
-    <section class="bg-slate-100 w-[30%] mx-auto px-6 py-8">
-        <div class="flex items-center justify-center">
+    <section class="bg-slate-100 h-screen w-screen flex items-center">
+        <div class="flex items-center justify-center m-auto w-[30%]">
             <div class="w-full shadow p-6 bg-white rounded-lg">
                 <h1 class="h1-custom">
                     QUÊN MẬT KHẨU
                 </h1>
-                <form class="flex flex-col gap-3">
+                <Form class="flex flex-col gap-3" @submit="submitForgot" :validation-schema="formSchemaForgotPassword">
                     <div>
                         <label for="email" class="label-custom">
                             Email:
                         </label>
-                        <input type="email" name="email" id="email" class="input-custom">
-                        <span v-if="false" class="error">
-                            Email không hợp lệ!
-                        </span>
+                        <Field type="email" name="email" id="email" class="input-custom" v-model="user.email" />
+                        <ErrorMessage name="email" class="error" />
                     </div>
                     <div>
-                        <label for="password" class="label-custom">
+                        <label for="newPassword" class="label-custom">
                             Mật khẩu mới:
                         </label>
-                        <input type="password" name="password" id="password" class="input-custom">
-                        <span v-if="false" class="error">
-                            Tối thiểu 6 ký tự!
-                        </span>
+                        <Field type="password" name="newPassword" id="newPassword" class="input-custom"
+                            v-model="user.newPassword" />
+                        <ErrorMessage name="newPassword" class="error" />
                     </div>
                     <div>
-                        <label for="confirm-password" class="label-custom">
+                        <label for="confirmPassword" class="label-custom">
                             Nhập lại mật khẩu mới:
                         </label>
-                        <input type="password" name="confirm-password" id="confirm-password" class="input-custom">
-                        <span v-if="false" class="error">
-                            Tối thiểu 6 ký tự!
-                        </span>
+                        <Field type="password" name="confirmPassword" id="confirmPassword" class="input-custom"
+                            v-model="user.confirmPassword" />
+                        <ErrorMessage name="confirmPassword" class="error" />
                     </div>
-                    <div class="flex flex-row gap-2 w-full mb-4">
-                        <input type="number" placeholder="XXXXXX"
-                            class="w-2/3 shrink border-b-2 outline-none border-slate-400 px-2">
-                        <button type="button"
-                            class="grow shrink-0 bg-sky-400 text-white text-sm font-semibold rounded-md p-2 hover:bg-sky-300">
-                            Gửi mã
-                        </button>
+                    <div class="">
+                        <label for="code" class="label-custom">
+                            Mã xác nhận:
+                        </label>
+                        <div class="grid grid-cols-3 gap-2 w-full mb-4">
+                            <Field type="number" name="code" id="code" class="input-custom col-span-2" placeholder="XXXXXX"
+                                v-model="user.code" />
+                            <button type="button" @click="async () => { await btnSendCode() }"
+                                v-if="userStore.isLoading == false && timeout == false"
+                                class="grow shrink-0 bg-blue-500 text-white text-sm font-semibold rounded-md p-2 hover:bg-blue-600">
+                                Lấy mã
+                            </button>
+                            <button v-else-if="userStore.isLoading == false && timeout == true" type="button"
+                                class="w-full rounded-lg px-5 py-3 text-white text-sm font-semibold bg-blue-500 flex justify-center items-center cursor-not-allowed">
+                                {{ seconds }}s
+                            </button>
+                            <button v-else type="button"
+                                class="w-full rounded-lg px-5 py-3 text-white font-semibold bg-blue-500 flex justify-center items-center cursor-not-allowed">
+                                <div class="custom-loader"></div>
+                            </button>
+                        </div>
+                        <ErrorMessage name="code" class="error" />
                     </div>
                     <button type="submit" class="btn-custom">
                         Đổi mật khẩu
@@ -55,8 +126,24 @@
                             Đăng ký.
                         </router-link>
                     </p>
-                </form>
+                </Form>
             </div>
         </div>
     </section>
 </template>
+
+<style scoped>
+.custom-loader {
+    width: 20px;
+    height: 20px;
+    border-radius: 50%;
+    background: conic-gradient(#0000 10%, #766DF4);
+    animation: s3 1s infinite linear;
+}
+
+@keyframes s3 {
+    to {
+        transform: rotate(1turn)
+    }
+}
+</style>

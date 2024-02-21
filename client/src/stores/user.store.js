@@ -178,7 +178,9 @@ export const useUserStore = defineStore('user', () => {
         result.value = null
         isLoading.value = true
         try {
-
+            let res = await userService.forgotPassword(data)
+            if (res.statusCode !== 200) throw new Error(res.message)
+            result.value = res
         } catch (error) {
             err.value = error.message
         } finally {
@@ -191,7 +193,9 @@ export const useUserStore = defineStore('user', () => {
         result.value = null
         isLoading.value = true
         try {
-
+            let res = await userService.sendVerifyCode(data)
+            if (res.statusCode !== 200) throw new Error(res.message)
+            result.value = res
         } catch (error) {
             err.value = error.message
         } finally {
