@@ -100,9 +100,15 @@ const routes = [
     ]
   },
   {
+    path: '/confirm',
+    component: () => import('../views/ConfirmUser.vue'),
+    meta: { title: 'Xác nhận tài khoản' }
+  },
+  {
     path: "/:pathMatch(.*)",
     name: "notfound",
-    component: () => import("../views/NotFound.vue")
+    component: () => import("../views/NotFound.vue"),
+    meta: { title: 'Không tìm thấy trang' }
   }
 ]
 

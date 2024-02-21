@@ -1,6 +1,6 @@
 import { Body, Controller, Patch, Post } from '@nestjs/common';
 import { AuthService } from './auth.service';
-import { LoginDto, RegisterDto, VerifyCodeDto } from './dto';
+import { ConfirmEmailDto, LoginDto, RegisterDto } from './dto';
 
 @Controller('auth')
 export class AuthController {
@@ -16,8 +16,8 @@ export class AuthController {
         return this.authService.register(registerDto)
     }
 
-    @Post('verify-code')
-    sendVerifyCode(@Body() verifyCodeDto: VerifyCodeDto) {
-        return this.authService.sendVerifyCode(verifyCodeDto)
+    @Patch('confirm')
+    confirm(@Body() confirmEmailDto: ConfirmEmailDto) {
+        return this.authService.confirm(confirmEmailDto)
     }
 }

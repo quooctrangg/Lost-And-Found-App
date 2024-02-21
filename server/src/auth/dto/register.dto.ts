@@ -20,9 +20,5 @@ export class RegisterDto {
 
     @IsNumber()
     @IsNotEmpty()
-    code: number
-
-    @IsNumber()
-    @IsNotEmpty()
     schoolId: number
 }

@@ -13,8 +13,8 @@ class authService {
         return (await this.api.post('/register', data)).data
     }
 
-    async sendVerifyCode(data) {
-        return (await this.api.post('/verify-code', data)).data
+    async confirmUser(data) {
+        return (await this.api.patch('/confirm', data)).data
     }
 }
 

@@ -4,7 +4,7 @@ import Input from './Input.vue'
 import { useConversationStore } from '../../stores/conversation.store'
 import { useMessageStore } from '../../stores/message.store'
 import { useUserStore } from '../../stores/user.store'
-import { onMounted, onUpdated, watchEffect } from 'vue';
+import { onUpdated, watchEffect } from 'vue';
 import { getSender } from '../../untils'
 
 const conversationStore = useConversationStore()

@@ -6,7 +6,7 @@ import { ResponseData } from '../global';
 export class DashboardService {
   constructor(private readonly prismaService: PrismaService) { }
 
-  async getStatistical() {
+  async getStatistical(option: {}) {
     try {
       const user = await this.prismaService.user.count({
         where: {
@@ -32,6 +32,46 @@ export class DashboardService {
         }
       })
       return new ResponseData<any>({ user, post, request, done }, 200, 'Thống kê')
+    } catch (error) {
+      return new ResponseData<string>(null, 500, 'Lỗi dịch vụ, thử lại sau')
+    }
+  }
+
+  async getChart(option: {}) {
+    try {
+      const countType = await this.prismaService.post.groupBy({
+        by: ['type'],
+        _count: true
+      })
+      const countItem = await this.prismaService.post.groupBy({
+        by: ['itemId'],
+        _count: true,
+        orderBy: {
+          itemId: 'asc'
+        }
+      })
+      const location = await this.prismaService.location.findMany({
+        include: {
+          Post: true
+        }
+      })
+      const countLocation = location.map(elment => ({ id: elment.id, _count: elment.Post.length }))
+      return new ResponseData<any>({ countType, countItem, countLocation }, 200, 'Thống kê')
+    } catch (error) {
+      return new ResponseData<string>(null, 500, 'Lỗi dịch vụ, thử lại sau')
+    }
+  }
+
+  async getListStudentRetureItemSuccessful(option: {}) {
+    try {
+      const list: [] = []
+      const data = await this.prismaService.request.findMany({
+        where: {
+
+        }
+      })
+      console.log(data)
+      return new ResponseData<any>(list, 200, 'Thống kê')
     } catch (error) {
       return new ResponseData<string>(null, 500, 'Lỗi dịch vụ, thử lại sau')
     }

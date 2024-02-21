@@ -17,7 +17,7 @@ export const useAuthStore = defineStore('auth', () => {
             let res = await authService.login(data)
             if (res.statusCode !== 200) throw new Error(res.message)
             result.value = res
-            token.value = result.value.data.accessToken
+            token.value = result.value.data?.accessToken
         } catch (error) {
             err.value = error.message
         } finally {
@@ -33,7 +33,6 @@ export const useAuthStore = defineStore('auth', () => {
             let res = await authService.register(data)
             if (res.statusCode !== 200) throw new Error(res.message)
             result.value = res
-            token.value = result.value.data.accessToken
         } catch (error) {
             err.value = error.message
         } finally {
@@ -41,15 +40,14 @@ export const useAuthStore = defineStore('auth', () => {
         }
     }
 
-    const sendVerifyCode = async data => {
+    const confirmUser = async data => {
         err.value = null
         result.value = null
         isLoading.value = true
         try {
-            let res = await authService.sendVerifyCode(data)
+            let res = await authService.confirmUser(data)
             if (res.statusCode !== 200) throw new Error(res.message)
             result.value = res
-            token.value = result.value.data.accessToken
         } catch (error) {
             err.value = error.message
         } finally {
@@ -57,7 +55,7 @@ export const useAuthStore = defineStore('auth', () => {
         }
     }
 
-    return { err, result, isLoading, token, login, register, sendVerifyCode }
+    return { err, result, isLoading, token, login, register, confirmUser }
 }, {
     persist: {
         key: 'auth',

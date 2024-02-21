@@ -5,14 +5,11 @@ import Loading from '../common/Loading.vue';
 import CommentInput from '../comment/CommentInput.vue'
 import CommentItem from '../../components/comment/ComentItem.vue'
 import { useToast } from 'vue-toast-notification'
-import { watchEffect } from 'vue';
 
 const commentStore = useCommentStore()
 const $toast = useToast()
 
 const props = defineProps(['postId'])
-
-const parentComments = ref([])
 
 const handleSendComment = async (content) => {
     await commentStore.createComment({ content: content, postId: props.postId })

@@ -6,52 +6,40 @@ import { useToast } from 'vue-toast-notification'
 import { useRouter } from "vue-router";
 import * as yup from "yup";
 import { Form, Field, ErrorMessage } from "vee-validate";
+import Loading from '../components/common/Loading.vue';
 
 const schoolStore = useSchoolStore()
 const authStore = useAuthStore()
 const router = useRouter()
 const $toast = useToast()
 
-const seconds = ref(0)
-const timeout = ref(false)
 const user = reactive({
     email: '',
     name: '',
     password: '',
     schoolId: '',
-    code: '',
     confirmPassword: ''
 })
 
-const countDown = () => {
-    if (seconds.value > 0) seconds.value = seconds.value - 1;
-    else timeout.value = false;
-}
 
 const formSchemaRegister = yup.object().shape({
     name: yup.string().required("Tên phải có giá trị.").min(1, 'Tên phải ít nhất 1 ký tự.').max(50, "Tên có nhiều nhất 50 ký tự."),
     email: yup.string().required("Email phải có giá trị.").email("E-mail không đúng.").max(50, "E-mail tối đa 50 ký tự."),
     password: yup.string().required('Mật khẩu phải có giá trị.').min(6, 'Tên phải ít nhất 6 ký tự.'),
     confirmPassword: yup.string().oneOf([yup.ref('password'), null], 'Mật khẩu xác nhận không trùng khớp.'),
-    code: yup.number().typeError('Mã xác nhận phải là số.').required('Mã xác nhận phải có giá trị.'),
     schoolId: yup.string().required('Yêu cầu chọn trường / khoa.')
 })
 
-const btnSendCode = async () => {
-    // await authStore.sendVerifyCode({ email: user.email, name: user.name })
-    // if (authStore.err) {
-    //     $toast.error(authStore.err, { position: 'top-right' })
-    //     return
-    // }
-    // $toast.success(authStore.result.message, { position: 'top-right' })
-    // seconds.value = 120
-    // timeout.value = true
-    // setInterval(countDown, 1000)
-    console.log('code');
-}
-
 const btnSubmit = async () => {
-    console.log('submit');
+    await authStore.register(user)
+    if (authStore.err) {
+        $toast.error(authStore.err, { position: 'top-right' })
+        return
+    }
+    $toast.success(authStore.result.message, { position: 'top-right' })
+    setTimeout(() => {
+        router.push('login')
+    }, 1000)
 }
 
 onMounted(async () => {
@@ -62,7 +50,7 @@ onMounted(async () => {
 
 <template>
     <section class="bg-slate-100 h-screen w-screen flex items-center">
-        <div class="flex items-center justify-center m-auto w-[30%]">
+        <div v-if="authStore.isLoading == false" class="flex items-center justify-center m-auto w-[30%]">
             <div class="w-full shadow p-6 bg-white rounded-lg">
                 <h1 class="h1-custom">
                     ĐĂNG KÝ
@@ -115,32 +103,6 @@ onMounted(async () => {
                         </Field>
                         <ErrorMessage name="schoolId" class="error" />
                     </div>
-                    <div class="grid grid-cols-3 items-end gap-2">
-                        <div class="col-span-2">
-                            <label for="code" class="label-custom">
-                                Nhập mã xác nhận:
-                            </label>
-                            <Field type="text" name="code" id="code" class="input-custom" v-model="user.code" />
-                        </div>
-                        <div>
-                            <button type="button" v-if="authStore.isLoading == false && timeout == false"
-                                @click="btnSendCode"
-                                class="w-full rounded-lg text-sm px-5 py-3 text-center text-white font-semibold bg-green-500 hover:bg-green-600">
-                                Lấy mã
-                            </button>
-                            <button v-else-if="authStore.isLoading == false && timeout == true" type="button"
-                                class="w-full rounded-lg px-5 py-3 text-white text-sm font-semibold bg-green-300 flex justify-center items-center cursor-not-allowed">
-                                {{ seconds }}s
-                            </button>
-                            <button v-else type="button"
-                                class="w-full rounded-lg px-5 py-3 text-white font-semibold bg-green-300 flex justify-center items-center cursor-not-allowed">
-                                <div class="custom-loader"></div>
-                            </button>
-                        </div>
-                        <div class="col-span-2">
-                            <ErrorMessage name="code" class="error" />
-                        </div>
-                    </div>
                     <button type="submit" class="btn-custom mt-3">
                         Tạo tài khoản
                     </button>
@@ -154,21 +116,6 @@ onMounted(async () => {
                 </Form>
             </div>
         </div>
+        <Loading v-else />
     </section>
 </template>
-
-<style scoped>
-.custom-loader {
-    width: 20px;
-    height: 20px;
-    border-radius: 50%;
-    background: conic-gradient(#0000 10%, #766DF4);
-    animation: s3 1s infinite linear;
-}
-
-@keyframes s3 {
-    to {
-        transform: rotate(1turn)
-    }
-}
-</style>

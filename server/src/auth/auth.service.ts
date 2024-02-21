@@ -5,7 +5,7 @@ import { MailerService } from '@nestjs-modules/mailer';
 import { User } from '@prisma/client';
 import * as argon2 from 'argon2';
 import { PrismaService } from '../prisma/prisma.service';
-import { LoginDto, RegisterDto, VerifyCodeDto } from './dto';
+import { ConfirmEmailDto, LoginDto, RegisterDto } from './dto';
 import { ResponseData } from '../global';
 
 @Injectable()
@@ -13,24 +13,18 @@ export class AuthService {
     constructor(private readonly prismaService: PrismaService, private readonly jwtService: JwtService, private readonly configService: ConfigService, private readonly mailerService: MailerService) { }
 
     async register(registerDto: RegisterDto) {
-        const currentDate = new Date();
         try {
             const user = await this.prismaService.user.findFirst({
                 where: {
                     email: registerDto.email
                 }
             })
-            if (user) return new ResponseData<User>(null, 400, 'Email đã được sử dụng')
-            const verifyCode = await this.prismaService.verifyCode.findFirst({
+            if (user && user.type !== -1) return new ResponseData<User>(null, 400, 'Email đã được sử dụng')
+            await this.prismaService.user.deleteMany({
                 where: {
-                    email: registerDto.email,
-                    code: registerDto.code
+                    email: registerDto.email
                 }
             })
-            if (!verifyCode) return new ResponseData<string>(null, 400, 'Mã xác minh không tồn tại')
-            const createdAt = new Date(verifyCode.createdAt)
-            createdAt.setMinutes(createdAt.getMinutes() + 5)
-            if (createdAt <= currentDate) return new ResponseData<string>(null, 400, 'Quá thời gian của mã xác minh')
             const hashedPassword = await argon2.hash(registerDto.password)
             await this.prismaService.user.create({
                 data: {
@@ -40,12 +34,8 @@ export class AuthService {
                     schoolId: registerDto.schoolId
                 }
             })
-            await this.prismaService.verifyCode.deleteMany({
-                where: {
-                    email: registerDto.email
-                }
-            })
-            return new ResponseData<User>(null, 200, 'Tạo tài khoản thành công')
+            await this.sendVerificationLink(registerDto.email)
+            return new ResponseData<User>(null, 200, 'Vui lòng mở email để xác nhận tài khoản')
         } catch (error) {
             return new ResponseData<string>(null, 500, 'Lỗi dịch vụ, thử lại sau')
         }
@@ -66,9 +56,16 @@ export class AuthService {
                 }
             })
             if (!user) return new ResponseData<string>(null, 400, 'Tài khoản không tồn tại')
+            if (user.type == -1) {
+                return new ResponseData<string>(null, 400, 'Tài khoản chưa được xác thực')
+            }
             const passwordMatched = await argon2.verify(user.password, loginDto.password)
-            if (!passwordMatched) return new ResponseData<string>(null, 400, 'Mật khẩu không chính xác')
-            if (user.isBan) return new ResponseData<any>({ feedback: user.Feedback[0] }, 403, 'Tài khoản đã bị khóa')
+            if (!passwordMatched) {
+                return new ResponseData<string>(null, 400, 'Mật khẩu không chính xác')
+            }
+            if (user.isBan) {
+                return new ResponseData<any>({ feedback: user.Feedback[0] }, 403, 'Tài khoản đã bị khóa')
+            }
             const data = await this.signJwtToken(user.id, user.email)
             return new ResponseData<any>(data, 200, 'Đăng nhập thành công')
         } catch (error) {
@@ -76,34 +73,56 @@ export class AuthService {
         }
     }
 
-    async sendVerifyCode(verifyCodeDto: VerifyCodeDto) {
+    async confirm(confirmEmailDto: ConfirmEmailDto) {
         try {
-            await this.prismaService.verifyCode.deleteMany({
+            let data: any = null
+            try {
+                data = await this.jwtService.verifyAsync(confirmEmailDto.token, {
+                    secret: this.configService.get('JWT_SECRET')
+                })
+            } catch (error) {
+                return new ResponseData<string>(null, 400, 'Đã hết thời gian xác nhận tài khoản')
+            }
+            const user = await this.prismaService.user.findFirst({
                 where: {
-                    email: verifyCodeDto.email
+                    email: data.email,
+                    type: -1
                 }
             })
-            const code = this.random6DigitNumber()
-            const verifyCode = await this.prismaService.verifyCode.create({
+            if (!user) {
+                return new ResponseData<string>(null, 400, 'Tài khoản không tồn tại')
+            }
+            await this.prismaService.user.update({
+                where: {
+                    id: user.id
+                },
                 data: {
-                    email: verifyCodeDto.email,
-                    code: parseInt(code)
+                    type: 1
                 }
             })
-            if (!verifyCode) return new ResponseData<string>(null, 500, 'Lỗi dịch vụ, thử lại sau')
-            await this.mailerService.sendMail({
-                to: verifyCodeDto.email,
-                subject: 'Mã OTP để xác nhận tạo tài khoản mới cho Ứng dụng hỗ trợ tìm kiếm đồ vật bị thất lạc',
-                template: './verifycode',
-                context: {
-                    name: verifyCodeDto.name,
-                    code: code
-                }
-            })
-            return new ResponseData<string>(null, 200, 'Gửi mã đến email của bạn')
+            return new ResponseData<string>(null, 200, 'Xác nhận tài khoản thành công')
         } catch (error) {
             return new ResponseData<string>(null, 500, 'Lỗi dịch vụ, thử lại sau')
         }
+    }
+
+    async sendVerificationLink(email: string) {
+        const payload = {
+            email: email
+        }
+        const token = await this.jwtService.signAsync(payload, {
+            expiresIn: this.configService.get('JWT_EXPIRES_VERIFY'),
+            secret: this.configService.get('JWT_SECRET')
+        })
+        const url = `${this.configService.get('CLIENT_URL')}/confirm?token=${token}`
+        return this.mailerService.sendMail({
+            to: email,
+            subject: 'Xác nhận tài khoản ứng dụng',
+            template: './verificationLink',
+            context: {
+                url: url
+            }
+        })
     }
 
     async signJwtToken(userId: number, email: string) {
@@ -112,7 +131,7 @@ export class AuthService {
             email: email
         }
         const jwtString = await this.jwtService.signAsync(payload, {
-            expiresIn: '24h',
+            expiresIn: this.configService.get('JWT_EXPIRES_LOGIN'),
             secret: this.configService.get('JWT_SECRET')
         })
         return {
