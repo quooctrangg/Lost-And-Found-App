@@ -12,5 +12,5 @@ export const createQueryString = (options) => {
         })
         .filter(Boolean)
         .join('&');
-    return queryString.length > 0 ? `?${queryString}` : '';
+    return queryString.length > 0 ? `?${queryString}` : '?';
 }

@@ -28,7 +28,17 @@ class postService {
     }
 
     async getAllPostsForUser(option) {
-        let parameter = createQueryString(option)
+        const { locations, ...other } = option
+        let parameter = createQueryString(other)
+        if (locations.length && locations.length == 1) {
+            console.log(1);
+            parameter += `&locations=${locations[0]}`
+            parameter += `&locations=${locations[0]}`
+        } else if (locations.length && locations.length > 1) {
+            locations.forEach(element => {
+                parameter += `&locations=${element}`
+            });
+        }
         return (await this.api.get(`/post-for-user${parameter}`, {
             headers: {
                 "Content-Type": "application/json",

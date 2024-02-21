@@ -115,7 +115,7 @@ export class PostService {
         }
     }
 
-    async getAllPostsForUser(option: { key: string, page: number, type: boolean, itemId: number, locations: number[] }) {
+    async getAllPostsForUser(option: { key: string, page: number, type: any, itemId: number, locations: number[] }) {
         const pageSize = PAGE_SIZE.PAGE_POST
         try {
             let { key, page, type, itemId, locations } = option
@@ -128,7 +128,7 @@ export class PostService {
                 }
             }
             if (itemId) {
-                where.itemId = itemId
+                where.itemId = Number(itemId)
             }
             if (locations && locations.length) {
                 where.Location = {
@@ -145,8 +145,8 @@ export class PostService {
                     mode: 'insensitive'
                 }
             }
-            if (type !== undefined || type !== null) {
-                where.type = type
+            if (type != undefined || type != null) {
+                where.type = type == 'true' ? true : false
             }
             const totalCount = await this.prismaService.post.count({
                 where: where,

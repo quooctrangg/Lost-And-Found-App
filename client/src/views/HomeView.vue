@@ -8,16 +8,34 @@ import Search from '../components/common/Seach.vue'
 import SuggestCard from '../components/common/SuggestCard.vue';
 import { ref } from 'vue';
 import { onMounted } from 'vue';
+import { reactive } from 'vue';
+import { watch } from 'vue';
 
 const postStore = usePostStore()
 
 const posts = ref([])
+const option = reactive({
+    locations: [],
+    type: null,
+    itemId: null
+})
+
+const setOption = (value) => {
+    option.locations = value.locations
+    option.type = value.type
+    option.itemId = value.itemId
+}
 
 const getAllPostsForUser = async () => {
-    await postStore.getAllPostsForUser({})
+    await postStore.getAllPostsForUser(option)
     if (postStore.err) return
     posts.value = [...postStore.posts]
 }
+
+watch(option, async () => {
+    posts.value = []
+    await getAllPostsForUser()
+})
 
 onMounted(async () => {
     await getAllPostsForUser()
@@ -48,6 +66,6 @@ onMounted(async () => {
         </div>
     </div>
     <ScrollToTop />
-    <FilterModal />
+    <FilterModal @option="(e) => { setOption(e) }" />
     <PostModal />
 </template>

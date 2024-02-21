@@ -2,17 +2,43 @@
 import { FwbModal } from 'flowbite-vue'
 import { ref } from 'vue';
 import { usePostStore } from '../../stores/post.store'
+import { useItemStore } from '../../stores/item.store'
+import { useLocationStore } from '../../stores/location.store'
+import { onMounted } from 'vue';
+import { watch } from 'vue';
+
+const emits = defineEmits(['option'])
 
 const postStore = usePostStore()
+const itemStore = useItemStore()
+const locationStore = useLocationStore()
 
-const locatoins = ['Trường CNTT&TT', 'C1', 'B2', 'A3', 'Trường Nông nghệp']
-const selectedLocation = ref([])
-const isShowLocation = ref(false)
 const type = ref(null)
+const locations = ref([])
+const itemId = ref(null)
 
-const toggleLocation = () => {
-    isShowLocation.value = !isShowLocation.value
+const reset = () => {
+    type.value = null
+    locations.value = []
+    itemId.value = null
 }
+
+watch(type, () => {
+    emits('option', { locations: locations.value, itemId: itemId.value, type: type.value })
+})
+
+watch(locations, () => {
+    emits('option', { locations: locations.value, itemId: itemId.value, type: type.value })
+})
+
+watch(itemId, () => {
+    emits('option', { locations: locations.value, itemId: itemId.value, type: type.value })
+})
+
+onMounted(async () => {
+    await itemStore.getItem({})
+    await locationStore.getLocation({})
+})
 </script>
 <template>
     <fwb-modal v-if="postStore.isShow.filter" @close="postStore.closeFilterModal" persistent>
@@ -41,36 +67,32 @@ const toggleLocation = () => {
                 </div>
                 <label class="italic" for="item">Loại đồ:</label>
                 <div class="flex gap-1 items-center">
-                    <select name="item" id="item" class="rounded-lg  w-full">
-                        <option value="all">Tất cả</option>
-                        <option value="">Áo khoác</option>
-                        <option value="">Điện thoại</option>
-                        <option value="">Khác</option>
+                    <select name="item" id="item" class="rounded-lg  w-full" v-model="itemId">
+                        <option value="null">Tất cả</option>
+                        <option v-if="itemStore.items?.length" v-for="item in itemStore.items" :value="item.id">
+                            {{
+                                item.name
+                            }}
+                        </option>
                     </select>
                 </div>
                 <label class="italic" for="item">Vị trí:</label>
-                <div class="relative">
-                    <div class="border p-2.5 cursor-pointer rounded-lg border-black flex justify-between items-center"
-                        @click="toggleLocation">
+                <div class="flex flex-wrap gap-3">
+                    <label v-for="location in locationStore.locations" :key="location.id" :for="location.id"
+                        class="flex items-center gap-1">
+                        <input type="checkbox" :name="location.id" :id="location.id" :value="location.id"
+                            v-model="locations"
+                            class="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 rounded cursor-pointer" />
                         {{
-                            selectedLocation.length > 0 ? selectedLocation.join(', ') : 'Chọn vị trí'
+                            location.name
                         }}
-                        <i class="fa-solid fa-chevron-down"></i>
-                    </div>
-                    <div v-if="isShowLocation" class="absolute z-10 bg-white border mt-2 p-2 w-full rounded-lg">
-                        <label v-for="(option, index) in locatoins" :for="option" :key="index"
-                            class="flex items-center gap-1">
-                            <input :id="option" type="checkbox" :value="option" v-model="selectedLocation"
-                                class="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 rounded" />
-                            {{ option }}
-                        </label>
-                    </div>
+                    </label>
                 </div>
             </div>
         </template>
         <template #footer>
             <div class="flex justify-end gap-2">
-                <button class="px-3 py-2 bg-red-500 rounded-lg text-white">
+                <button class="px-3 py-2 bg-red-500 rounded-lg text-white" @click="reset">
                     <i class="fa-solid fa-arrows-rotate"></i>
                     Đặt lại
                 </button>
