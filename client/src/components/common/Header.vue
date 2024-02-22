@@ -5,6 +5,7 @@ import { useAuthStore } from '../../stores/auth.store'
 import { useUserStore } from '../../stores/user.store'
 import { useMessageStore } from '../../stores/message.store'
 import { useConversationStore } from '../../stores/conversation.store'
+import { useNotificationStore } from '../../stores/notification.store'
 import { useToast } from 'vue-toast-notification'
 import Notification from '../common/Notification.vue'
 
@@ -12,6 +13,7 @@ const authStore = useAuthStore()
 const userStore = useUserStore()
 const conversationStore = useConversationStore()
 const messageStore = useMessageStore()
+const notificationStore = useNotificationStore()
 const router = useRouter()
 const $toast = useToast()
 
@@ -43,6 +45,7 @@ onUnmounted(() => {
 watchEffect(async () => {
     if (authStore.token) {
         await userStore.getMe()
+        await notificationStore.getAllNotificationsByUserId()
     }
     if (userStore.user !== null) {
         messageStore.setupSocket()
@@ -100,7 +103,11 @@ watchEffect(async () => {
                             class="cursor-pointer relative notification-header">
                             <div
                                 class="absolute right-0 top-0 bg-red-500 rounded-full w-4 h-4  flex justify-center items-center">
-                                <span class="text-[10px] text-white">10</span>
+                                <span class="text-[10px] text-white">
+                                    {{
+                                        notificationStore.totalRead
+                                    }}
+                                </span>
                             </div>
                             <div class="p-2 text-gray-100 hover:text-gray-300">
                                 <i class="fa-solid fa-bell"></i>

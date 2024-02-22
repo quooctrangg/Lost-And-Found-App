@@ -1,0 +1,19 @@
+import createService from './api.service'
+
+class notificationService {
+    constructor(baseUrl = '/apis/notification') {
+        this.api = createService(baseUrl)
+    }
+
+    async getAllNotificationsByUserId(token) {
+        return (await this.api.get('/', {
+            headers: {
+                "Content-Type": "application/json",
+                Accept: "application/json",
+                Authorization: `Bearer ${token}`
+            }
+        })).data
+    }
+}
+
+export default new notificationService()

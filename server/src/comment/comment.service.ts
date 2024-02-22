@@ -11,6 +11,15 @@ export class CommentService {
 
   async createComment(userId: number, createCommentDto: CreateCommentDto) {
     try {
+      const post = await this.prismaService.post.findUnique({
+        where: {
+          id: createCommentDto.postId,
+          isDelete: false
+        }
+      })
+      if (!post) {
+        return new ResponseData<string>(null, 400, 'Bài viết không tồn tại')
+      }
       const newComment = await this.prismaService.comment.create({
         data: {
           content: createCommentDto.content,
@@ -28,11 +37,21 @@ export class CommentService {
           }
         }
       })
-      await this.prismaService.notification.create({
-        data: {
-          commentId: newComment.id
-        }
-      })
+      let parentComment: Comment = null
+      if (createCommentDto.parentId) {
+        parentComment = await this.prismaService.comment.findUnique({
+          where: {
+            id: createCommentDto.parentId
+          }
+        })
+      }
+      if ((!parentComment && post.userId != userId) || (parentComment && parentComment.userId !== userId)) {
+        await this.prismaService.notification.create({
+          data: {
+            commentId: newComment.id
+          }
+        })
+      }
       return new ResponseData<Comment>(newComment, 200, 'Bình luận thành công')
     } catch (error) {
       return new ResponseData<string>(null, 500, 'Lỗi dịch vụ, thử lại sau')

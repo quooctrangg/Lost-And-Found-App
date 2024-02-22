@@ -24,7 +24,7 @@ const handleReply = async (content) => {
 
 <template>
     <div class="flex gap-2 mt-2">
-        <img class="h-8 w-auto rounded-full" src="/logo.png" alt="logo">
+        <img class="h-8 w-auto rounded-full" :src="comment.User?.image" alt="logo">
         <div>
             <div class="bg-gray-100 rounded-lg shadow p-1">
                 <router-link :to="{ name: 'profile', params: { id: comment.User.id } }">
