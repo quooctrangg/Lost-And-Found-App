@@ -5,6 +5,7 @@ import { useToast } from 'vue-toast-notification'
 import { useRouter } from "vue-router";
 import * as yup from "yup";
 import { Form, Field, ErrorMessage } from "vee-validate";
+import Footer from '../components/common/Footer.vue';
 
 const authStore = useAuthStore()
 const router = useRouter()
@@ -16,7 +17,7 @@ const user = reactive({
 })
 
 const formSchemaLogin = yup.object().shape({
-    email: yup.string().required("Email phải có giá trị.").email("E-mail không đúng.").max(50, "E-mail tối đa 50 ký tự."),
+    email: yup.string().required("Email phải có giá trị.").email("E-mail không đúng.").matches(/^[a-zA-Z0-9+_.-]+b\d{7}@student\.ctu\.edu\.vn$/i, 'Email không đúng định dạng của trường Đại học Cần Thơ.').max(50, "E-mail tối đa 50 ký tự."),
     password: yup.string().required('Mật khẩu phải có giá trị.').min(6, 'Tên phải ít nhất 6 ký tự.')
 })
 
@@ -32,46 +33,57 @@ const submitLogin = async () => {
 </script>
 
 <template>
-    <section class="bg-slate-100 h-screen w-screen flex items-center">
-        <div class="flex items-center justify-center m-auto w-[25%]">
-            <div class="w-full shadow p-6 bg-white rounded-lg">
-                <h1 class="h1-custom">
-                    ĐĂNG NHẬP
-                </h1>
-                <Form class="flex flex-col gap-3" @submit="submitLogin" :validation-schema="formSchemaLogin">
+    <section class="bg-white h-screen w-full py-14">
+        <div class="flex items-center justify-center m-auto w-4/5 gap-3">
+            <div class="w-2/4 p-6 flex flex-col items-center justify-center gap-4">
+                <div class="text-center">
+                    <h1 class="text-2xl font-semibold italic text-sky-600">
+                        Hệ thống hỗ trợ tìm kiếm đồ thất lạc
+                    </h1>
+                    <h1 class="text-lg text-sky-600">cho sinh viên</h1>
+                    <h1 class="text-2xl font-semibold italic text-sky-600 uppercase">
+                        Trường Đại học Cần Thơ
+                    </h1>
+                </div>
+                <img class="w-72" src="/logo.png" alt="">
+            </div>
+            <div class="w-2/4 p-6">
+                <Form class="flex flex-col gap-10" @submit="submitLogin" :validation-schema="formSchemaLogin">
+                    <h1 class="h1-custom italic">
+                        Đăng nhập tài khoản
+                    </h1>
                     <div>
-                        <label for="email" class="label-custom">
-                            Email:
-                        </label>
-                        <Field type="email" name="email" id="email" class="input-custom" v-model="user.email" />
+                        <Field type="email" name="email" id="email" class="input-custom shadow-lg" v-model="user.email"
+                            placeholder="Nhập email" />
                         <ErrorMessage name="email" class="error" />
                     </div>
                     <div>
-                        <label for="password" class="label-custom">
-                            Mật khẩu:
-                        </label>
-                        <Field name="password" type="password" id="password" class="input-custom" v-model="user.password" />
+                        <Field name="password" type="password" id="password" class="input-custom shadow-lg"
+                            v-model="user.password" placeholder="Nhập mật khẩu" />
                         <ErrorMessage name="password" class="error" />
                     </div>
-                    <div class="flex items-center justify-between">
-                        <router-link
-                            class="text-xs font-medium text-primary-600 hover:underline hover:text-red-600 text-gray-500"
-                            :to="{ name: 'forgot-password' }">
-                            Quên mật khẩu?
-                        </router-link>
+                    <div>
+                        <div class="flex items-center justify-between py-2">
+                            <router-link
+                                class="text-sm font-medium text-primary-600 hover:underline hover:text-red-600 text-gray-500"
+                                :to="{ name: 'forgot-password' }">
+                                Quên mật khẩu?
+                            </router-link>
+                        </div>
+                        <button type="submit" class="btn-custom shadow-lg">
+                            Đăng nhập
+                        </button>
+                        <div class="text-sm font-light text-gray-500 py-2">
+                            Bạn chưa có tài khoản?
+                            <router-link class="font-medium text-primary-600 hover:underline hover:text-red-600"
+                                :to="{ name: 'register' }">
+                                Đăng ký.
+                            </router-link>
+                        </div>
                     </div>
-                    <button type="submit" class="btn-custom">
-                        Đăng nhập
-                    </button>
-                    <p class="text-xs font-light text-gray-500">
-                        Bạn chưa có tài khoản?
-                        <router-link class="font-medium text-primary-600 hover:underline hover:text-red-600"
-                            :to="{ name: 'register' }">
-                            Đăng ký.
-                        </router-link>
-                    </p>
                 </Form>
             </div>
         </div>
     </section>
+    <Footer />
 </template>

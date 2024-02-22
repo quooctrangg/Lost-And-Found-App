@@ -54,13 +54,13 @@ watchEffect(async () => {
 })
 </script>
 <template>
-    <header class="bg-sky-500 sticky top-0 z-50">
+    <header class="bg-sky-500 sticky top-0 z-50 p-1">
         <div class="w-[80%] mx-auto flex justify-between items-center">
             <div class="">
                 <router-link :to="{ name: 'home' }">
                     <div class="flex items-center gap-2">
                         <img class="h-12 w-auto" src="/logo.png" alt="Logo">
-                        <p class="text-xl break-words italic font-medium text-amber-300">
+                        <p class="text-2xl break-words italic font-medium text-amber-300">
                             Nơi chia sẽ đồ vật thất lạc
                         </p>
                     </div>
@@ -80,12 +80,12 @@ watchEffect(async () => {
                     </div>
                 </div>
                 <div v-else class="flex gap-5 items-center">
-                    <router-link :to="{ name: 'home' }" class="text-xl">
+                    <router-link :to="{ name: 'home' }" class="text-2xl">
                         <div class="p-2 text-gray-100 hover:text-gray-300">
-                            <i class="fa-solid fa-house "></i>
+                            <i class="fa-solid fa-house"></i>
                         </div>
                     </router-link>
-                    <router-link :to="{ name: 'chat' }" class="text-xl relative">
+                    <router-link :to="{ name: 'chat' }" class="text-2xl relative">
                         <div v-if="conversationStore.totalReadMessage !== 0"
                             class="absolute right-0 top-0 bg-red-500 rounded-full w-4 h-4  flex justify-center items-center">
                             <span class="text-[10px] text-white">
@@ -98,7 +98,7 @@ watchEffect(async () => {
                             <i class="fa-solid fa-message "></i>
                         </div>
                     </router-link>
-                    <div class="relative text-xl">
+                    <div class="relative text-2xl">
                         <div @click="showNotifications = !showNotifications"
                             class="cursor-pointer relative notification-header">
                             <div

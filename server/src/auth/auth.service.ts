@@ -14,6 +14,10 @@ export class AuthService {
 
     async register(registerDto: RegisterDto) {
         try {
+            const isEmail = this.validateEmail(registerDto.email)
+            if (!isEmail) {
+                return new ResponseData<User>(null, 400, 'Email không đúng định dạng')
+            }
             const user = await this.prismaService.user.findFirst({
                 where: {
                     email: registerDto.email
@@ -137,6 +141,11 @@ export class AuthService {
         return {
             accessToken: jwtString
         }
+    }
+
+    validateEmail(email: string) {
+        const regex = /^[a-zA-Z0-9+_.-]+B\d{7}@student\.ctu\.edu\.vn$/i
+        return regex.test(email);
     }
 
     random6DigitNumber() {

@@ -6,10 +6,6 @@
     @apply bg-gray-50 border border-gray-300 text-gray-800 rounded-lg block w-full p-2
 }
 
-.input-custom:focus {
-    @apply outline-sky-500
-}
-
 .checkbox-custom {
     @apply w-4 h-4 text-sky-600 bg-gray-100 border-gray-300 rounded
 }
@@ -27,20 +23,11 @@
 }
 
 .h1-custom {
-    @apply text-lg font-bold leading-tight tracking-tight text-center text-sky-500
+    @apply text-2xl font-bold leading-tight tracking-tight text-center text-sky-500
 }
 
 .error {
     @apply text-red-600 text-sm
-}
-
-.no-scrollbar::-webkit-scrollbar {
-    display: none;
-}
-
-.no-scrollbar {
-    -ms-overflow-style: none;
-    scrollbar-width: none;
 }
 
 .message_left {

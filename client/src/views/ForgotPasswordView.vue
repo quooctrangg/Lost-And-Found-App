@@ -6,7 +6,6 @@ import { useToast } from 'vue-toast-notification'
 import { useUserStore } from '../stores/user.store'
 import { useRouter } from 'vue-router'
 import { ref } from "vue";
-import Loading from "@/components/common/Loading.vue";
 
 const $toast = useToast()
 const userStore = useUserStore()
@@ -21,7 +20,7 @@ const user = reactive({
     code: ''
 })
 const formSchemaForgotPassword = yup.object().shape({
-    email: yup.string().required("Email phải có giá trị.").email("E-mail không đúng.").max(50, "E-mail tối đa 50 ký tự."),
+    email: yup.string().required("Email phải có giá trị.").email("E-mail không đúng.").matches(/^[a-zA-Z0-9+_.-]+b\d{7}@student\.ctu\.edu\.vn$/i, 'Email không đúng định dạng của trường Đại học Cần Thơ.').max(50, "E-mail tối đa 50 ký tự."),
     newPassword: yup.string().required('Mật khẩu phải có giá trị.').min(6, 'Tên phải ít nhất 6 ký tự.'),
     confirmPassword: yup.string().oneOf([yup.ref('newPassword'), null], 'Mật khẩu xác nhận không trùng khớp.'),
     code: yup.number().typeError('Mã xác nhận phải là số.').required('Mã xác nhận phải có giá trị.')
@@ -66,8 +65,8 @@ const btnSendCode = async () => {
     <section class="bg-slate-100 h-screen w-screen flex items-center">
         <div class="flex items-center justify-center m-auto w-[30%]">
             <div class="w-full shadow p-6 bg-white rounded-lg">
-                <h1 class="h1-custom">
-                    QUÊN MẬT KHẨU
+                <h1 class="h1-custom italic">
+                    Quên mật khẩu
                 </h1>
                 <Form class="flex flex-col gap-3" @submit="submitForgot" :validation-schema="formSchemaForgotPassword">
                     <div>
@@ -116,16 +115,18 @@ const btnSendCode = async () => {
                         </div>
                         <ErrorMessage name="code" class="error" />
                     </div>
-                    <button type="submit" class="btn-custom">
-                        Đổi mật khẩu
-                    </button>
-                    <p class="text-xs font-light text-gray-500">
-                        Bạn chưa có tài khoản?
-                        <router-link class="font-medium text-primary-600 hover:underline hover:text-red-600"
-                            :to="{ name: 'register' }">
-                            Đăng ký.
-                        </router-link>
-                    </p>
+                    <div>
+                        <button type="submit" class="btn-custom">
+                            Đổi mật khẩu
+                        </button>
+                        <p class="text-sm font-light text-gray-500 py-2">
+                            Bạn chưa có tài khoản?
+                            <router-link class="font-medium text-primary-600 hover:underline hover:text-red-600"
+                                :to="{ name: 'register' }">
+                                Đăng ký.
+                            </router-link>
+                        </p>
+                    </div>
                 </Form>
             </div>
         </div>

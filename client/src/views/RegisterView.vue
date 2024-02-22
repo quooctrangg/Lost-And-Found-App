@@ -7,6 +7,7 @@ import { useRouter } from "vue-router";
 import * as yup from "yup";
 import { Form, Field, ErrorMessage } from "vee-validate";
 import Loading from '../components/common/Loading.vue';
+import Footer from '../components/common/Footer.vue';
 
 const schoolStore = useSchoolStore()
 const authStore = useAuthStore()
@@ -23,7 +24,7 @@ const user = reactive({
 
 const formSchemaRegister = yup.object().shape({
     name: yup.string().required("Tên phải có giá trị.").min(1, 'Tên phải ít nhất 1 ký tự.').max(50, "Tên có nhiều nhất 50 ký tự."),
-    email: yup.string().required("Email phải có giá trị.").email("E-mail không đúng.").max(50, "E-mail tối đa 50 ký tự."),
+    email: yup.string().required("Email phải có giá trị.").email("E-mail không đúng.").matches(/^[a-zA-Z0-9+_.-]+b\d{7}@student\.ctu\.edu\.vn$/i, 'Email không đúng định dạng của trường Đại học Cần Thơ.').max(50, "E-mail tối đa 50 ký tự."),
     password: yup.string().required('Mật khẩu phải có giá trị.').min(6, 'Tên phải ít nhất 6 ký tự.'),
     confirmPassword: yup.string().oneOf([yup.ref('password'), null], 'Mật khẩu xác nhận không trùng khớp.'),
     schoolId: yup.string().required('Yêu cầu chọn trường / khoa.')
@@ -48,50 +49,39 @@ onMounted(async () => {
 </script>
 
 <template>
-    <section class="bg-slate-100 h-screen w-screen flex items-center">
+    <section class="bg-white h-screen w-full py-14">
         <div v-if="authStore.isLoading == false" class="flex items-center justify-center m-auto w-[30%]">
-            <div class="w-full shadow p-6 bg-white rounded-lg">
-                <h1 class="h1-custom">
-                    ĐĂNG KÝ
-                </h1>
-                <Form class="flex flex-col gap-3" @submit="btnSubmit" :validation-schema="formSchemaRegister">
+            <div class="w-full bg-white">
+                <Form class="flex flex-col gap-8" @submit="btnSubmit" :validation-schema="formSchemaRegister">
+                    <h1 class="h1-custom italic">
+                        Đăng ký tài khoản
+                    </h1>
                     <div>
-                        <label for="email" class="label-custom">
-                            Email:
-                        </label>
-                        <Field type="email" name="email" id="email" class="input-custom" v-model="user.email" />
+                        <Field type="email" name="email" id="email" class="input-custom shadow-lg" v-model="user.email"
+                            placeholder="Nhập email" />
                         <ErrorMessage name="email" class="error" />
                     </div>
                     <div>
-                        <label for="name" class="label-custom">
-                            Họ và tên:
-                        </label>
-                        <Field name="name" type="text" class="input-custom" v-model="user.name" />
+                        <Field name="name" type="text" class="input-custom shadow-lg" v-model="user.name"
+                            placeholder="Nhập họ và tên" />
                         <ErrorMessage name="name" class="error" />
                     </div>
-                    <div class="grid grid-cols-2 gap-2">
+                    <div class="grid grid-cols-2 gap-5">
                         <div>
-                            <label for="password" class="label-custom">
-                                Mật khẩu:
-                            </label>
-                            <Field name="password" type="password" id="password" class="input-custom"
-                                v-model="user.password" />
+                            <Field name="password" type="password" id="password" class="input-custom shadow-lg"
+                                v-model="user.password" placeholder="Nhập mật khẩu" />
                             <ErrorMessage name="password" class="error" />
                         </div>
                         <div>
-                            <label for="confirmPassword" class="label-custom">
-                                Nhập lại mật khẩu:
-                            </label>
-                            <Field name="confirmPassword" type="password" id="confirmPassword" class="input-custom"
-                                v-model="user.confirmPassword" />
+                            <Field name="confirmPassword" type="password" id="confirmPassword"
+                                class="input-custom shadow-lg" v-model="user.confirmPassword"
+                                placeholder="Nhập lại mật khẩu" />
                             <ErrorMessage name="confirmPassword" class="error" />
                         </div>
                     </div>
                     <div>
-                        <label for="schoolId" class="label-custom">
-                            Trường / Khoa:
-                        </label>
-                        <Field as="select" name="schoolId" id="schoolId" class="input-custom" v-model="user.schoolId">
+                        <Field as="select" name="schoolId" id="schoolId" class="input-custom shadow-lg"
+                            v-model="user.schoolId">
                             <option value="">Chọn trường / khoa</option>
                             <option v-if="schoolStore.schools?.length" v-for="school in schoolStore.schools"
                                 :key="school.id" :value="school.id">
@@ -102,19 +92,22 @@ onMounted(async () => {
                         </Field>
                         <ErrorMessage name="schoolId" class="error" />
                     </div>
-                    <button type="submit" class="btn-custom mt-3">
-                        Tạo tài khoản
-                    </button>
-                    <p class="text-xs font-light text-gray-500">
-                        Đã có tài khoản?
-                        <router-link class="font-medium text-primary-600 hover:underline hover:text-red-600"
-                            :to="{ name: 'login' }">
-                            Đăng nhập tại đây.
-                        </router-link>
-                    </p>
+                    <div>
+                        <button type="submit" class="btn-custom shadow-lg">
+                            Tạo tài khoản
+                        </button>
+                        <p class="text-sm font-light text-gray-500 py-2">
+                            Đã có tài khoản?
+                            <router-link class="font-medium text-primary-600 hover:underline hover:text-red-600"
+                                :to="{ name: 'login' }">
+                                Đăng nhập tại đây.
+                            </router-link>
+                        </p>
+                    </div>
                 </Form>
             </div>
         </div>
         <Loading v-else />
     </section>
+    <Footer />
 </template>

@@ -8,11 +8,11 @@ import localizedFormat from 'dayjs/plugin/localizedFormat'
 import relativeTime from 'dayjs/plugin/relativeTime'
 import MasonryWall from '@yeger/vue-masonry-wall'
 
+import './assets/main.css'
+import './assets/index.css'
 import 'dayjs/locale/vi'
 import 'vue-toast-notification/dist/theme-sugar.css';
 import "@fortawesome/fontawesome-free/css/all.min.css"
-import './assets/main.css'
-import './assets/index.css'
 
 dayjs.extend(localizedFormat)
 dayjs.extend(relativeTime)
