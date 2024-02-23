@@ -1,5 +1,6 @@
 <script setup>
 import { usePostStore } from '../stores/post.store'
+import { useUserStore } from '../stores/user.store'
 import PostCard from '../components/common/PostCard.vue';
 import FilterModal from '../components/post/FilterModal.vue'
 import PostModal from '../components/post/PostModal.vue'
@@ -12,6 +13,7 @@ import { reactive } from 'vue';
 import { watch } from 'vue';
 
 const postStore = usePostStore()
+const userStore = useUserStore()
 
 const posts = ref([])
 const option = reactive({
@@ -46,7 +48,8 @@ onMounted(async () => {
     <div class="w-[80%] mx-auto">
         <div class="flex gap-2 justify-center  mt-3">
             <Search class="flex-1  border-2 border-blue-600" :title="`Tìm kiếm bài viết`" />
-            <button class="px-3 py-2 bg-blue-500 rounded-xl hover:bg-blue-400 text-white" @click="postStore.showPostModal">
+            <button v-if="userStore.user?.id" class="px-3 py-2 bg-blue-500 rounded-xl hover:bg-blue-400 text-white"
+                @click="postStore.showPostModal">
                 <i class="fa-solid fa-plus"></i>
                 Đăng bài
             </button>

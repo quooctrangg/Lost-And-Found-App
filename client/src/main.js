@@ -6,7 +6,6 @@ import piniaPluginPersistedstate from 'pinia-plugin-persistedstate'
 import dayjs from 'dayjs'
 import localizedFormat from 'dayjs/plugin/localizedFormat'
 import relativeTime from 'dayjs/plugin/relativeTime'
-import MasonryWall from '@yeger/vue-masonry-wall'
 
 import './assets/main.css'
 import './assets/index.css'
@@ -22,4 +21,4 @@ const pinia = createPinia()
 
 pinia.use(piniaPluginPersistedstate)
 
-createApp(App).use(pinia).use(router).use(MasonryWall).mount('#app')
+createApp(App).use(pinia).use(router).mount('#app')

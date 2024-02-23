@@ -1,4 +1,5 @@
 import { createRouter, createWebHistory } from 'vue-router'
+import { useUserStore } from '../stores/user.store'
 
 const routes = [
   {
@@ -30,6 +31,11 @@ const routes = [
     name: 'me',
     component: () => import('../views/MeView.vue'),
     meta: { title: 'Thông tin cá nhân' },
+    beforeEnter: (to, from, next) => {
+      const userStore = useUserStore()
+      if (!userStore.user?.id) next('login')
+      next()
+    },
     children: [
       {
         path: '',
@@ -47,25 +53,45 @@ const routes = [
     path: '/profile/:id',
     name: 'profile',
     component: () => import('../views/ProfileView.vue'),
-    meta: { title: 'Thông tin cá nhân' }
+    meta: { title: 'Thông tin cá nhân' },
+    beforeEnter: (to, from, next) => {
+      const userStore = useUserStore()
+      if (!userStore.user?.id) next('login')
+      next()
+    },
   },
   {
     path: '/chat',
     name: 'chat',
     component: () => import('../views/ChatView.vue'),
-    meta: { title: 'Nhắn tin' }
+    meta: { title: 'Nhắn tin' },
+    beforeEnter: (to, from, next) => {
+      const userStore = useUserStore()
+      if (!userStore.user?.id) next('login')
+      next()
+    },
   },
   {
     path: '/post-detail/:id',
     name: 'post-detail',
     component: () => import('../views/PostDetail.vue'),
-    meta: { title: 'Chi tiết bài đăng' }
+    meta: { title: 'Chi tiết bài đăng' },
+    beforeEnter: (to, from, next) => {
+      const userStore = useUserStore()
+      if (!userStore.user?.id) next('login')
+      next()
+    },
   },
   {
     path: '/manage',
     name: 'manage',
     component: () => import('../views/ManageView.vue'),
     meta: { title: 'Quản lý' },
+    beforeEnter: (to, from, next) => {
+      const userStore = useUserStore()
+      if (!userStore.user?.id && userStore.user?.type != 0) next('login')
+      next()
+    },
     children: [
       {
         path: 'dashboard',
@@ -102,7 +128,12 @@ const routes = [
   {
     path: '/confirm',
     component: () => import('../views/ConfirmUser.vue'),
-    meta: { title: 'Xác nhận tài khoản' }
+    meta: { title: 'Xác nhận tài khoản' },
+    beforeEnter: (to, from, next) => {
+      const userStore = useUserStore()
+      if (!userStore.user?.id) next('login')
+      next()
+    },
   },
   {
     path: "/:pathMatch(.*)",
