@@ -1,9 +1,21 @@
 <script setup>
 import { useNotificationStore } from '../../stores/notification.store'
+import { useRouter } from 'vue-router'
 
 const notificationStore = useNotificationStore()
+const router = useRouter()
 
 const emit = defineEmits(['showNotifications'])
+
+const gotoPost = async (index) => {
+    router.push({ name: 'post-detail', params: { id: notificationStore.notifications[index].Comment.postId }, replace: true })
+    await notificationStore.readNotification(notificationStore.notifications[index].id)
+    if (notificationStore.err) {
+        return
+    }
+    notificationStore.notifications[index].read = true
+    notificationStore.totalRead = notificationStore.totalRead - 1
+}
 </script>
 
 <template>
@@ -14,29 +26,30 @@ const emit = defineEmits(['showNotifications'])
                 <i class="fa-solid fa-xmark"></i>
             </button>
         </div>
-        <div class="p-2 bg-white max-h-[200px] overflow-y-scroll no-scrollbar">
-            <div v-if="notificationStore.notifications?.length" v-for="notification in notificationStore.notifications"
-                :key="notification.id" class="border-b-[1px] border-gray-400 text-sm p-2 flex items-center gap-1">
-                <div class="h-10 w-10 overflow-hidden rounded-full flex items-center justify-center">
-                    <img :src="notification?.Comment?.User?.image" class="h-full w-full object-cover">
-                </div>
-                <span class="">
-                    <span class="font-medium">
-                        {{
-                            notification?.Comment?.User?.name
-                        }}
-                    </span>
-                    <span v-if="notification?.Comment?.parentId"> đã trả lời bình luận </span>
-                    <span v-else> đã bình luận bài viết </span>
-                    <router-link :to="{ name: 'post-detail', params: { id: notification?.Comment?.Post?.id } }">
-                        <span class="font-medium">
+        <div class="bg-white max-h-[200px] overflow-y-scroll no-scrollbar">
+            <div v-if="notificationStore.notifications?.length"
+                v-for="(notification, index) in notificationStore.notifications" :key="notification.id"
+                :class="notification.read ? 'bg-slate-200' : ''" @click="async () => { await gotoPost(index) }">
+                <div class="border-b border-slate-200 text-sm p-2 grid grid-cols-6 cursor-pointer hover:bg-slate-100">
+                    <div class="h-10 w-10 overflow-hidden rounded-full flex items-center justify-center">
+                        <img :src="notification?.Comment?.User?.image" class="h-full w-full object-cover">
+                    </div>
+                    <span class="col-span-5">
+                        <span class="font-medium text-wrap">
+                            {{
+                                notification?.Comment?.User?.name
+                            }}
+                        </span>
+                        <span v-if="notification?.Comment?.parentId" class="text-wrap"> đã trả lời bình luận </span>
+                        <span v-else class="text-wrap"> đã bình luận bài viết </span>
+                        <span class="font-medium text-wrap">
                             {{
                                 notification?.Comment?.parentId ? notification?.Comment?.parent?.content :
                                 notification?.Comment?.Post?.title
                             }}
                         </span>.
-                    </router-link>
-                </span>
+                    </span>
+                </div>
             </div>
         </div>
     </div>

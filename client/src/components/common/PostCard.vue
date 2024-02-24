@@ -7,7 +7,7 @@ const props = defineProps(['post'])
 <template>
     <div class="bg-white rounded-md p-2 mx-auto shadow border-2 border-blue-500 mb-3">
         <router-link :to="{ name: 'post-detail', params: { id: props.post?.id } }">
-            <div class="flex justify-between items-center mb-3 border-b">
+            <div class="flex justify-between items-center mb-3 border-b p-1">
                 <div class="flex items-center gap-1">
                     <div class="w-12 h-12 rounded-full overflow-hidden border-2 border-blue-500">
                         <img class="h-full w-full object-cover" :src="props.post?.User?.image" alt="logo">
@@ -55,12 +55,13 @@ const props = defineProps(['post'])
                     }}
                 </h2>
             </div>
-        </router-link>
-        <div v-if="props.post?.Image.length" :class="`columns-${props.post?.Image.length}`" class="mx-auto my-5 gap-2">
-            <div v-for=" image  in  props.post.Image" :key="image.id"
-                class="w-full break-inside-avoid flex items-center justify-center">
-                <img :src="image.url" alt="" class="max-w-full rounded-md">
+            <div v-if="props.post?.Image.length" class="gap-2"
+                :class="props.post.Image.length ? `columns-${props.post?.Image.length}` : ''">
+                <div v-for="image in post.Image" :key="image.id"
+                    class="w-full break-inside-avoid flex items-center justify-center">
+                    <img :src="image.url" alt="" class="max-w-full rounded-md object-cover">
+                </div>
             </div>
-        </div>
+        </router-link>
     </div>
 </template>

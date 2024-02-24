@@ -2,9 +2,11 @@ import { reactive, ref } from 'vue'
 import { defineStore } from 'pinia'
 import commentService from '@/services/comment.service'
 import { useAuthStore } from './auth.store'
+import { useMessageStore } from './message.store'
 
 export const useCommentStore = defineStore('comment', () => {
     const authStore = useAuthStore()
+    const messageStore = useMessageStore()
 
     const err = ref(null)
     const result = ref(null)
@@ -44,6 +46,7 @@ export const useCommentStore = defineStore('comment', () => {
             if (res.statusCode !== 200) throw new Error(res.message)
             result.value = res
             comments.value.push(res.data)
+            messageStore.emitComment(data)
             parentComments.value = comments.value.filter(e => e.parentId == null).sort((a, b) => new Date(a.createdAt) - new Date(b.createdAt))
         } catch (error) {
             err.value = error.message

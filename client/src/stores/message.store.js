@@ -2,7 +2,8 @@ import { ref } from 'vue'
 import { defineStore } from 'pinia'
 import { useAuthStore } from './auth.store'
 import { useUserStore } from './user.store'
-import { useConversationStore } from '../stores/conversation.store'
+import { useConversationStore } from './conversation.store'
+import { useNotificationStore } from './notification.store'
 import { getSender } from '../untils/'
 import messageService from '../services/message.service'
 import io from "socket.io-client";
@@ -13,6 +14,7 @@ export const useMessageStore = defineStore('message', () => {
     const authStore = useAuthStore()
     const userStore = useUserStore()
     const conversationStore = useConversationStore()
+    const notificationStore = useNotificationStore()
 
     const activeIndex = ref(null)
     const err = ref(null)
@@ -25,6 +27,9 @@ export const useMessageStore = defineStore('message', () => {
 
     const setupSocket = () => {
         socket.emit('setup', { userId: userStore.user.id })
+        socket.on('notification recieved', async () => {
+            await notificationStore.getAllNotificationsByUserId()
+        })
         socket.on('message recieved', async newMessageRecieved => {
             await conversationStore.fetchConversations()
             if (conversationStore.activeIndex !== null) {
@@ -68,7 +73,6 @@ export const useMessageStore = defineStore('message', () => {
             newMessage.value = res.data
             messages.value.push(res.data)
             socket.emit('new message', { data: newMessage.value, userRecievedId: getSender(userStore.user, conversationStore.conversations[conversationStore.activeIndex].User).id })
-
         } catch (error) {
             err.value = error.message
         } finally {
@@ -106,5 +110,9 @@ export const useMessageStore = defineStore('message', () => {
         }
     }
 
-    return { activeIndex, err, result, isLoading, messages, newMessage, setupSocket, getAllMessages, sendMessage, sendImage, readMessages }
+    const emitComment = (data) => {
+        socket.emit('new notification', data)
+    }
+
+    return { activeIndex, err, result, isLoading, messages, newMessage, setupSocket, getAllMessages, sendMessage, sendImage, readMessages, emitComment }
 })

@@ -1,4 +1,4 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete, UseGuards } from '@nestjs/common';
+import { Controller, Get, Param, ParseIntPipe, Patch, UseGuards } from '@nestjs/common';
 import { NotificationService } from './notification.service';
 import { GetUser } from 'src/auth/decorator';
 import { User } from '@prisma/client';
@@ -13,5 +13,10 @@ export class NotificationController {
   @Get()
   getAllNotificationsByUserId(@GetUser() user: User) {
     return this.notificationService.getAllNotificationByUserId(user.id)
+  }
+
+  @Patch(':id')
+  readNotification(@GetUser() user: User, @Param('id', ParseIntPipe) id: number) {
+    return this.notificationService.readNotification(user.id, id)
   }
 }

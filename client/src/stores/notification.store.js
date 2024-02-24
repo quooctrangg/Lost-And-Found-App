@@ -29,7 +29,22 @@ export const useNotificationStore = defineStore('notification', () => {
         }
     }
 
+    const readNotification = async (id) => {
+        err.value = null
+        result.value = null
+        isLoading.value = true
+        try {
+            let res = await notificationService.readNotification(authStore.token, id)
+            if (res.statusCode !== 200) throw new Error(res.message)
+            result.value = res
+        } catch (error) {
+            err.value = error.message
+        } finally {
+            isLoading.value = false
+        }
+    }
+
     return {
-        err, result, isLoading, notifications, totalRead, getAllNotificationsByUserId
+        err, result, isLoading, notifications, totalRead, getAllNotificationsByUserId, readNotification
     }
 })

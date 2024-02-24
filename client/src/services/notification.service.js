@@ -14,6 +14,16 @@ class notificationService {
             }
         })).data
     }
+
+    async readNotification(token, id) {
+        return (await this.api.patch(`/${id}`, {}, {
+            headers: {
+                "Content-Type": "application/json",
+                Accept: "application/json",
+                Authorization: `Bearer ${token}`
+            }
+        })).data
+    }
 }
 
 export default new notificationService()

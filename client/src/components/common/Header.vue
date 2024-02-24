@@ -101,7 +101,7 @@ watchEffect(async () => {
                     <div class="relative text-2xl">
                         <div @click="showNotifications = !showNotifications"
                             class="cursor-pointer relative notification-header">
-                            <div
+                            <div v-if="notificationStore.totalRead"
                                 class="absolute right-0 top-0 bg-red-500 rounded-full w-4 h-4  flex justify-center items-center">
                                 <span class="text-[10px] text-white">
                                     {{

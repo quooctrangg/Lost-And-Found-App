@@ -4,6 +4,10 @@ import { useUserStore } from '../stores/user.store'
 const routes = [
   {
     path: '/',
+    redirect: '/home',
+  },
+  {
+    path: '/home',
     name: 'home',
     component: () => import('../views/HomeView.vue'),
     meta: { title: 'Trang Chủ' }
@@ -34,7 +38,7 @@ const routes = [
     beforeEnter: (to, from, next) => {
       const userStore = useUserStore()
       if (!userStore.user?.id) next('login')
-      next()
+      else next()
     },
     children: [
       {
@@ -57,7 +61,7 @@ const routes = [
     beforeEnter: (to, from, next) => {
       const userStore = useUserStore()
       if (!userStore.user?.id) next('login')
-      next()
+      else next()
     },
   },
   {
@@ -68,7 +72,7 @@ const routes = [
     beforeEnter: (to, from, next) => {
       const userStore = useUserStore()
       if (!userStore.user?.id) next('login')
-      next()
+      else next()
     },
   },
   {
@@ -79,7 +83,7 @@ const routes = [
     beforeEnter: (to, from, next) => {
       const userStore = useUserStore()
       if (!userStore.user?.id) next('login')
-      next()
+      else next()
     },
   },
   {
@@ -90,7 +94,7 @@ const routes = [
     beforeEnter: (to, from, next) => {
       const userStore = useUserStore()
       if (!userStore.user?.id && userStore.user?.type != 0) next('login')
-      next()
+      else next()
     },
     children: [
       {
@@ -132,7 +136,7 @@ const routes = [
     beforeEnter: (to, from, next) => {
       const userStore = useUserStore()
       if (!userStore.user?.id) next('login')
-      next()
+      else next()
     },
   },
   {

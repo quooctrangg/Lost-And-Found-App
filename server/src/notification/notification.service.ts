@@ -8,23 +8,34 @@ export class NotificationService {
   constructor(private readonly prismaService: PrismaService) { }
 
   async getAllNotificationByUserId(userId: number) {
+    const currentDate = new Date()
+    const tenDaysAgo = new Date(currentDate.setDate(currentDate.getDate() - 10));
     try {
       const notifications = await this.prismaService.notification.findMany({
         where: {
-          Comment: {
-            OR: [
-              {
-                Post: {
-                  userId: userId
-                }
-              },
-              {
-                parent: {
-                  userId: userId
-                }
+          AND: [
+            {
+              createdAt: {
+                gte: tenDaysAgo
               }
-            ]
-          }
+            },
+            {
+              Comment: {
+                OR: [
+                  {
+                    Post: {
+                      userId: userId
+                    }
+                  },
+                  {
+                    parent: {
+                      userId: userId
+                    }
+                  }
+                ]
+              }
+            }
+          ]
         },
         include: {
           Comment: {
@@ -57,6 +68,9 @@ export class NotificationService {
               }
             }
           }
+        },
+        orderBy: {
+          createdAt: 'desc'
         }
       })
       let totalRead = 0
@@ -67,6 +81,54 @@ export class NotificationService {
       })
       return new ResponseData<any>({ notifications, totalRead }, 200, 'Tìm thành công')
     } catch (error) {
+      return new ResponseData<string>(null, 500, 'Lỗi dịch vụ, thử lại sau')
+    }
+  }
+
+  async readNotification(userId: number, id: number) {
+    try {
+      const notification = await this.prismaService.notification.findUnique({
+        where: {
+          id: id
+        },
+        include: {
+          Comment: {
+            include: {
+              parent: {
+                select: {
+                  userId: true
+                }
+              },
+              Post: {
+                select: {
+                  userId: true
+                }
+              }
+            }
+          }
+        }
+      })
+      if (!notification) {
+        return new ResponseData<string>(null, 400, 'Thông báo không tồn tại')
+      }
+      if (notification.Comment?.parent?.userId !== userId && notification.Comment.Post.userId !== userId) {
+        return new ResponseData<string>(null, 400, 'Bạn không có quyền đọc')
+      }
+      if (notification.read) {
+        return new ResponseData<string>(null, 400, 'Thông báo đã được đọc')
+      }
+      await this.prismaService.notification.update({
+        where: {
+          id: id
+        },
+        data: {
+          read: true
+        }
+      })
+      return new ResponseData<string>(null, 200, 'Xem thông báo thành công')
+    } catch (error) {
+      console.log(error);
+
       return new ResponseData<string>(null, 500, 'Lỗi dịch vụ, thử lại sau')
     }
   }

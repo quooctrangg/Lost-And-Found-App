@@ -211,6 +211,12 @@ export const useUserStore = defineStore('user', () => {
         closeUpdatePasswordModal, showUpdatePasswordModal,
         closeUpdateProfileModal, showUpdateProfileModal,
         closeUpdateAvatarModal, showUpdateAvatarModal,
-
     }
-})
+},
+    {
+        persist: {
+            key: 'user',
+            paths: ['user'],
+            storage: sessionStorage
+        }
+    })
