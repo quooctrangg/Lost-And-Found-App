@@ -8,7 +8,6 @@ const router = useRouter()
 const emit = defineEmits(['showNotifications'])
 
 const gotoPost = async (index) => {
-    router.push({ name: 'post-detail', params: { id: notificationStore.notifications[index].Comment.postId }, replace: true })
     await notificationStore.readNotification(notificationStore.notifications[index].id)
     if (notificationStore.err) {
         return
@@ -19,7 +18,7 @@ const gotoPost = async (index) => {
 </script>
 
 <template>
-    <div class="shadow-xl border  overflow-hidden rounded-lg absolute w-[300px] mt-1 flex flex-col notification-container">
+    <div class="shadow-xl border overflow-hidden rounded-lg absolute w-[300px] mt-1 flex flex-col notification-container">
         <div class="flex justify-between items-center bg-blue-600 p-2 px-3">
             <h1 class=" text-white">Thông báo</h1>
             <button @click="emit('showNotifications', false)" class="hover:text-red-500 text-white">
@@ -30,26 +29,28 @@ const gotoPost = async (index) => {
             <div v-if="notificationStore.notifications?.length"
                 v-for="(notification, index) in notificationStore.notifications" :key="notification.id"
                 :class="notification.read ? 'bg-slate-200' : ''" @click="async () => { await gotoPost(index) }">
-                <div class="border-b border-slate-200 text-sm p-2 grid grid-cols-6 cursor-pointer hover:bg-slate-100">
-                    <div class="h-10 w-10 overflow-hidden rounded-full flex items-center justify-center">
-                        <img :src="notification?.Comment?.User?.image" class="h-full w-full object-cover">
-                    </div>
-                    <span class="col-span-5">
-                        <span class="font-medium text-wrap">
-                            {{
-                                notification?.Comment?.User?.name
-                            }}
+                <router-link :to="{ name: 'post-detail', params: { id: notification.Comment.postId }, replace: true }">
+                    <div class="border-b border-slate-200 text-sm p-2 grid grid-cols-6 cursor-pointer hover:bg-slate-100">
+                        <div class="h-10 w-10 overflow-hidden rounded-full flex items-center justify-center">
+                            <img :src="notification?.Comment?.User?.image" class="h-full w-full object-cover">
+                        </div>
+                        <span class="col-span-5">
+                            <span class="font-medium text-wrap">
+                                {{
+                                    notification?.Comment?.User?.name
+                                }}
+                            </span>
+                            <span v-if="notification?.Comment?.parentId" class="text-wrap"> đã trả lời bình luận </span>
+                            <span v-else class="text-wrap"> đã bình luận bài viết </span>
+                            <span class="font-medium text-wrap">
+                                {{
+                                    notification?.Comment?.parentId ? notification?.Comment?.parent?.content :
+                                    notification?.Comment?.Post?.title
+                                }}
+                            </span>.
                         </span>
-                        <span v-if="notification?.Comment?.parentId" class="text-wrap"> đã trả lời bình luận </span>
-                        <span v-else class="text-wrap"> đã bình luận bài viết </span>
-                        <span class="font-medium text-wrap">
-                            {{
-                                notification?.Comment?.parentId ? notification?.Comment?.parent?.content :
-                                notification?.Comment?.Post?.title
-                            }}
-                        </span>.
-                    </span>
-                </div>
+                    </div>
+                </router-link>
             </div>
         </div>
     </div>

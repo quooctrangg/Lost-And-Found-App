@@ -55,8 +55,8 @@ const props = defineProps(['post'])
                     }}
                 </h2>
             </div>
-            <div v-if="props.post?.Image.length" class="gap-2"
-                :class="props.post.Image.length ? `columns-${props.post?.Image.length}` : ''">
+            <div v-if="props.post?.Image.length" class="grid gap-2 test"
+                :class="props.post.Image.length ? `grid-cols-${props.post?.Image.length}` : ''">
                 <div v-for="image in post.Image" :key="image.id"
                     class="w-full break-inside-avoid flex items-center justify-center">
                     <img :src="image.url" alt="" class="max-w-full rounded-md object-cover">

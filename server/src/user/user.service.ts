@@ -114,7 +114,8 @@ export class UserService {
                     email: createUserDto.email,
                     password: hashedPassword,
                     name: createUserDto.name,
-                    schoolId: createUserDto.schoolId
+                    schoolId: createUserDto.schoolId,
+                    type: 1
                 }
             })
             return new ResponseData<User>(null, 200, 'Tạo tài khoản thành công')
