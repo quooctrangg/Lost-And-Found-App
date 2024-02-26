@@ -60,6 +60,6 @@ export const useAuthStore = defineStore('auth', () => {
     persist: {
         key: 'auth',
         paths: ['token'],
-        storage: localStorage
+        storage: sessionStorage
     }
 })

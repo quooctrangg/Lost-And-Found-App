@@ -104,7 +104,8 @@ onMounted(async () => {
 </script>
 
 <template>
-    <fwb-modal v-if="postStore.isShow.post" @close="postStore.closePostModal" size="5xl">
+    <fwb-modal v-if="postStore.isShow.post" @close="postStore.closePostModal" size="5xl" :not-escapable="true"
+        @click:outside="() => { }">
         <template #header>
             <div class="flex items-center gap-2 font-semibold text-2xl">
                 <i class="fa-regular fa-clipboard"></i>
@@ -191,12 +192,14 @@ onMounted(async () => {
         </template>
         <template #footer>
             <div class="flex justify-end gap-2">
-                <button @click="reset" class="px-3 py-2 bg-red-500 rounded-lg text-white hover:bg-red-600">
+                <button @click="reset"
+                    class="px-3 py-2 bg-red-500 rounded-lg text-white hover:bg-red-600 text-sm font-semibold">
                     <i class="fa-solid fa-arrows-rotate"></i>
                     Đặt lại
                 </button>
                 <label for="btn-submit"
-                    class="bg-green-500 rounded-lg text-sm px-5 py-3 text-center text-white font-semibold cursor-pointer hover:bg-green-600">
+                    class="bg-green-500 rounded-lg text-sm px-3 py-2 text-center text-white font-semibold cursor-pointer hover:bg-green-600">
+                    <i class="fa-solid fa-check"></i>
                     Đăng
                 </label>
             </div>

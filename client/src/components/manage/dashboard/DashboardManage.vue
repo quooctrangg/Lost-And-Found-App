@@ -6,6 +6,10 @@ import ChartDoughnut from './ChartDoughnut.vue';
 
 const emit = defineEmits(['currentPage'])
 
+const option = ref('month')
+const year = ref(2024)
+const month = ref(8)
+
 const titleBar = 'Biểu đồ thống kê số lượng hồ sơ được đăng theo tháng'
 const dataBar = reactive({
     labels: ['11', '12', '01'],
@@ -50,15 +54,37 @@ onMounted(() => {
 
 <template>
     <div class="flex flex-col w-full gap-4">
-        <div class="flex items-center justify-between">
-            <select name="" id="" class="rounded p-2 text-sm font-medium">
-                <option value="">3 tháng gần nhất</option>
-                <option value="">6 tháng gần nhất</option>
-                <option value="">9 tháng gần nhất</option>
-                <option value="">12 tháng gần nhất</option>
+        <div class="flex items-center gap-1">
+            <div>Theo: </div>
+            <select name="" id="" class="rounded p-2 text-sm font-medium" v-model="option">
+                <option value="month">Tháng</option>
+                <option value="year">Năm</option>
+                <option value="any">Tùy chọn</option>
             </select>
-            <div class="">
-
+            <div class="flex gap-1">
+                <div v-if="option !== 'any'" class="flex gap-1">
+                    <select v-if="option == 'month'" name="" id="" class="rounded p-2 text-sm font-medium" v-model="month">
+                        <option value="1">01</option>
+                        <option value="2">02</option>
+                        <option value="3">03</option>
+                        <option value="4">04</option>
+                        <option value="5">05</option>
+                        <option value="6">06</option>
+                        <option value="7">07</option>
+                        <option value="8">08</option>
+                        <option value="9">09</option>
+                        <option value="10">10</option>
+                        <option value="11">11</option>
+                        <option value="12">12</option>
+                    </select>
+                    <input type="number" class="rounded p-2 text-sm font-medium w-auto" v-model="year">
+                </div>
+                <div v-else class="flex gap-1 items-center">
+                    Từ ngày:
+                    <input type="date" class="rounded p-2 text-sm font-medium">
+                    đến ngày:
+                    <input type="date" class="rounded p-2 text-sm font-medium">
+                </div>
             </div>
         </div>
         <div class=" grid grid-cols-4 gap-4">
@@ -90,7 +116,6 @@ onMounted(() => {
         </div>
         <div class="p-2 bg-white rounded-lg shadow border-2">
             <h1 class="text-center font-semibold text-lg">Danh sách các sinh viên nhặt và trả lại thành công</h1>
-            <h2 class="text-center font-semibold text-sm italic text-gray-600">Tháng: 01</h2>
             <table class="table-auto border-collapse border border-slate-500 w-full mt-2">
                 <thead>
                     <tr>
