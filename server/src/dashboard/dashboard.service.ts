@@ -1,34 +1,69 @@
 import { Injectable } from '@nestjs/common';
 import { PrismaService } from '../prisma/prisma.service';
 import { ResponseData } from '../global';
+import * as moment from 'moment-timezone';
 
 @Injectable()
 export class DashboardService {
   constructor(private readonly prismaService: PrismaService) { }
 
-  async getStatistical(option: {}) {
+  async getStatistical(option: { type: string, month: string, year: string, to: string, from: string }) {
+    let start: any
+    let end: any
     try {
+      const { type, month, year, to, from } = option
+      switch (type) {
+        case 'month':
+          start = new Date(Number(year), Number(month) - 1, 1)
+          end = new Date(Number(year), Number(month), 0);
+          break;
+        case 'year':
+          start = new Date(Number(year), 0, 1)
+          end = new Date(Number(year), 12, 0)
+          break;
+        case 'any':
+          const startDate = moment.tz(to, 'Asia/Ho_Chi_Minh');
+          const endDate = moment.tz(from, 'Asia/Ho_Chi_Minh');
+          start = new Date(startDate.clone().utc().format())
+          end = new Date(endDate.clone().utc().format())
+          break;
+      }
       const user = await this.prismaService.user.count({
         where: {
-          type: 1
+          type: 1,
+          createdAt: {
+            gte: start,
+            lte: end
+          }
         }
       })
       const post = await this.prismaService.post.count({
         where: {
           verify: 1,
-          isDelete: false
+          isDelete: false,
+          createdAt: {
+            gte: start,
+            lte: end
+          }
         }
       })
       const request = await this.prismaService.request.count({
         where: {
-
+          createdAt: {
+            gte: start,
+            lte: end
+          }
         }
       })
       const done = await this.prismaService.post.count({
         where: {
           done: true,
           isDelete: false,
-          verify: 1
+          verify: 1,
+          createdAt: {
+            gte: start,
+            lte: end
+          }
         }
       })
       return new ResponseData<any>({ user, post, request, done }, 200, 'Thống kê')
@@ -37,22 +72,63 @@ export class DashboardService {
     }
   }
 
-  async getChart(option: {}) {
+  async getChart(option: { type: string, month: string, year: string, to: string, from: string }) {
+    let start: any
+    let end: any
     try {
+      const { type, month, year, to, from } = option
+      switch (type) {
+        case 'month':
+          start = new Date(Number(year), Number(month) - 1, 1)
+          end = new Date(Number(year), Number(month), 0);
+          break;
+        case 'year':
+          start = new Date(Number(year), 0, 1)
+          end = new Date(Number(year), 12, 0)
+          break;
+        case 'any':
+          const startDate = moment.tz(to, 'Asia/Ho_Chi_Minh');
+          const endDate = moment.tz(from, 'Asia/Ho_Chi_Minh');
+          start = new Date(startDate.clone().utc().format())
+          end = new Date(endDate.clone().utc().format())
+          break;
+      }
       const countType = await this.prismaService.post.groupBy({
         by: ['type'],
-        _count: true
+        _count: true,
+        where: {
+          createdAt: {
+            gte: start,
+            lte: end
+          }
+        }
       })
       const countItem = await this.prismaService.post.groupBy({
         by: ['itemId'],
         _count: true,
         orderBy: {
           itemId: 'asc'
+        },
+        where: {
+          createdAt: {
+            gte: start,
+            lte: end
+          }
         }
       })
       const location = await this.prismaService.location.findMany({
         include: {
           Post: true
+        },
+        where: {
+          Post: {
+            some: {
+              createdAt: {
+                gte: start,
+                lte: end
+              }
+            }
+          }
         }
       })
       const countLocation = location.map(elment => ({ id: elment.id, _count: elment.Post.length }))
@@ -62,15 +138,87 @@ export class DashboardService {
     }
   }
 
-  async getListStudentRetureItemSuccessful(option: {}) {
+  async getListStudentRetureItemSuccessful(option: { type: string, month: string, year: string, to: string, from: string }) {
+    let start: any
+    let end: any
     try {
-      const list: [] = []
-      const data = await this.prismaService.request.findMany({
+      const { type, month, year, to, from } = option
+      switch (type) {
+        case 'month':
+          start = new Date(Number(year), Number(month) - 1, 1)
+          end = new Date(Number(year), Number(month), 0);
+          break;
+        case 'year':
+          start = new Date(Number(year), 0, 1)
+          end = new Date(Number(year), 12, 0)
+          break;
+        case 'any':
+          const startDate = moment.tz(to, 'Asia/Ho_Chi_Minh');
+          const endDate = moment.tz(from, 'Asia/Ho_Chi_Minh');
+          start = new Date(startDate.clone().utc().format())
+          end = new Date(endDate.clone().utc().format())
+          break;
+      }
+      const list: { lost: string, found: string, item: string, school: string, sendProtection: boolean }[] = []
+      const lostandfond = await this.prismaService.request.findMany({
         where: {
-
+          status: 1,
+          createdAt: {
+            gte: start,
+            lte: end
+          }
+        },
+        include: {
+          User: {
+            select: {
+              id: true,
+              email: true,
+              School: true
+            },
+          },
+          Post: {
+            include: {
+              User: {
+                select: {
+                  id: true,
+                  email: true,
+                  School: true
+                }
+              },
+              Item: true
+            }
+          }
         }
       })
-      console.log(data)
+      const sendProtection = await this.prismaService.post.findMany({
+        where: {
+          sendProtection: true,
+          createdAt: {
+            gte: start,
+            lte: end
+          }
+        },
+        include: {
+          User: {
+            select: {
+              id: true,
+              email: true,
+              School: true
+            }
+          },
+          Item: true
+        }
+      })
+      lostandfond.forEach(e => {
+        if (e.Post.type == true) {
+          list.push({ lost: e.User.email, found: e.Post.User.email, item: e.Post.Item.name, school: e.Post.User.School.name, sendProtection: false })
+        } else {
+          list.push({ found: e.User.email, lost: e.Post.User.email, item: e.Post.Item.name, school: e.User.School.name, sendProtection: false })
+        }
+      })
+      sendProtection.forEach(e => {
+        list.push({ found: e.User.email, lost: '', school: e.User.School.name, item: e.Item.name, sendProtection: true })
+      })
       return new ResponseData<any>(list, 200, 'Thống kê')
     } catch (error) {
       return new ResponseData<string>(null, 500, 'Lỗi dịch vụ, thử lại sau')

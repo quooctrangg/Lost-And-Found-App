@@ -75,7 +75,10 @@ export class RequestService {
       })
       await this.prismaService.request.updateMany({
         where: {
-          postId: isRequest.postId
+          postId: isRequest.postId,
+          id: {
+            not: acceptRequestDto.idRequest
+          }
         },
         data: {
           status: -1

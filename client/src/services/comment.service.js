@@ -1,5 +1,4 @@
 import createService from './api.service'
-import { createQueryString } from '../untils'
 
 class commentService {
     constructor(baseUrl = '/apis/comment') {
