@@ -1,4 +1,4 @@
-import { ref } from 'vue'
+import { reactive, ref } from 'vue'
 import { defineStore } from 'pinia'
 import { useAuthStore } from './auth.store'
 import dashboardService from '@/services/dashboard.service'
@@ -9,15 +9,29 @@ export const useDashboardtore = defineStore('dashboard', () => {
     const err = ref(null)
     const result = ref(null)
     const isLoading = ref(false)
+    const studentsList = ref([])
+    const statistical = reactive({
+        user: 0,
+        done: 0,
+        request: 0,
+        post: 0
+    })
+    const chart = reactive({
+        countItem: [],
+        countLocation: [],
+        countType: []
+    })
 
     const getStatistical = async (option) => {
         err.value = null
-        result.value = null
         isLoading.value = true
         try {
             let res = await dashboardService.getStatistical(authStore.token, option)
             if (res.statusCode !== 200) throw new Error(res.message)
-            result.value = res
+            statistical.user = res.data.user
+            statistical.done = res.data.done
+            statistical.request = res.data.request
+            statistical.post = res.data.post
         } catch (error) {
             err.value = error.message
         } finally {
@@ -27,12 +41,13 @@ export const useDashboardtore = defineStore('dashboard', () => {
 
     const getChart = async (option) => {
         err.value = null
-        result.value = null
         isLoading.value = true
         try {
             let res = await dashboardService.getChart(authStore.token, option)
             if (res.statusCode !== 200) throw new Error(res.message)
-            result.value = res
+            chart.countItem = res.data.countItem
+            chart.countLocation = res.data.countLocation
+            chart.countType = res.data.countType
         } catch (error) {
             err.value = error.message
         } finally {
@@ -42,12 +57,11 @@ export const useDashboardtore = defineStore('dashboard', () => {
 
     const getListStudentRetureItemSuccessful = async (option) => {
         err.value = null
-        result.value = null
         isLoading.value = true
         try {
             let res = await dashboardService.getListStudentRetureItemSuccessful(authStore.token, option)
             if (res.statusCode !== 200) throw new Error(res.message)
-            result.value = res
+            studentsList.value = res.data
         } catch (error) {
             err.value = error.message
         } finally {
@@ -55,5 +69,5 @@ export const useDashboardtore = defineStore('dashboard', () => {
         }
     }
 
-    return { err, result, isLoading, getStatistical, getChart, getListStudentRetureItemSuccessful }
+    return { err, result, isLoading, studentsList, statistical, chart, getStatistical, getChart, getListStudentRetureItemSuccessful }
 })
