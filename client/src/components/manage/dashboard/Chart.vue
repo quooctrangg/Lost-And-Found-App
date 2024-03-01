@@ -31,7 +31,7 @@ onMounted(async () => {
 <template>
     <div class="grid grid-cols-3 gap-2">
         <Bar :option="props.option" :data="dashboardStore.chart.countType" class="row-span-2 col-span-2" />
-        <Doughnut :data="dashboardStore.chart.conutLocation" />
+        <Doughnut :data="dashboardStore.chart.countLocation" />
         <Pie :data="dashboardStore.chart.countItem" />
     </div>
 </template>

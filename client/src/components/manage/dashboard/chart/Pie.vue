@@ -1,8 +1,9 @@
 <script setup>
 import { Pie } from 'vue-chartjs'
 import { Chart as ChartJs, CategoryScale, LinearScale, PointElement, LineElement, Title, Tooltip, Legend, ArcElement } from 'chart.js'
-import { computed, onMounted, reactive, watch } from 'vue';
+import { computed, onMounted, reactive, ref, watch } from 'vue';
 import { useItemStore } from '../../../../stores/item.store'
+import Loading from '@/components/common/Loading.vue';
 
 ChartJs.register(CategoryScale, LinearScale, PointElement, LineElement, Title, Tooltip, Legend, ArcElement)
 
@@ -29,36 +30,39 @@ const dataPie = reactive({
         hoverOffset: 4
     }]
 })
-
-const setLabels = () => {
-    dataPie.labels = []
-    itemStore.items.forEach(element => {
-        dataPie.labels.push(element.name)
-    });
-}
+const isLoading = ref(false)
 
 const setData = (data) => {
+    dataPie.labels = []
+    dataPie.datasets[0].data = []
     data.forEach(item => {
         itemStore.items.forEach(element => {
-
+            if (item.itemId == element.id) {
+                dataPie.labels.push(element.name)
+                dataPie.datasets[0].data.push(item._count)
+            }
         });
     })
 }
 
 onMounted(async () => {
     await itemStore.getItem({})
-    setLabels()
 })
 
 watch(() => props.data, (newVal) => {
+    isLoading.value = true
     setData(newVal)
+    setTimeout(() => {
+        isLoading.value = false
+    }, 1000)
 })
 
 const chartIncomes = computed(() => { return { ...dataPie } })
 </script>
 
 <template>
-    <div class="p-1 bg-white rounded-lg shadow">
+    <div v-if="isLoading == false" class="p-1 bg-white rounded-lg shadow">
         <Pie :data="chartIncomes" :options="options" class="w-full h-full" />
     </div>
+    <Loading v-else />
 </template>

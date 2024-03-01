@@ -80,7 +80,6 @@ onMounted(() => {
 })
 
 const chartData = computed(() => { return { ...dataBar } })
-
 </script>
 
 <template>
