@@ -34,7 +34,7 @@ const logout = () => {
     router.push({ name: 'home' })
 }
 
-onMounted(async () => {
+onMounted(() => {
     document.addEventListener('click', handleClickOutside);
 })
 

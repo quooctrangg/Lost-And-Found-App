@@ -3,7 +3,6 @@ import { useNotificationStore } from '../../stores/notification.store'
 import { useRouter } from 'vue-router'
 
 const notificationStore = useNotificationStore()
-const router = useRouter()
 
 const emit = defineEmits(['showNotifications'])
 

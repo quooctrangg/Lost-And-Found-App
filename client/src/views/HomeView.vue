@@ -1,16 +1,13 @@
 <script setup>
+import { ref, onMounted, reactive, watch } from 'vue';
 import { usePostStore } from '../stores/post.store'
 import { useUserStore } from '../stores/user.store'
 import PostCard from '../components/common/PostCard.vue';
 import FilterModal from '../components/post/FilterModal.vue'
 import PostModal from '../components/post/PostModal.vue'
 import ScrollToTop from '../components/common/ScrollToTop.vue'
-import Search from '../components/common/Seach.vue'
 import SuggestCard from '../components/common/SuggestCard.vue';
-import { ref } from 'vue';
-import { onMounted } from 'vue';
-import { reactive } from 'vue';
-import { watch } from 'vue';
+import InputSearch from '../components/post/InputSearch.vue';
 
 const postStore = usePostStore()
 const userStore = useUserStore()
@@ -46,8 +43,8 @@ onMounted(async () => {
 
 <template>
     <div class="w-[80%] mx-auto">
-        <div class="flex gap-2 justify-center  mt-3">
-            <Search class="flex-1  border-2 border-blue-600" :title="`Tìm kiếm bài viết`" />
+        <div class="flex gap-2 justify-center mt-3">
+            <InputSearch />
             <button v-if="userStore.user?.id" class="px-3 py-2 bg-blue-500 rounded-xl hover:bg-blue-400 text-white"
                 @click="postStore.showPostModal">
                 <i class="fa-solid fa-plus"></i>
@@ -60,7 +57,7 @@ onMounted(async () => {
         </button>
         <div class="w-full flex gap-2">
             <div class="w-[70%]">
-                <PostCard v-if="posts.length" v-for="post in posts" :post="post" />
+                <PostCard v-if="posts.length" v-for=" post  in  posts " :post="post" />
             </div>
             <div class="w-[30%] bg-white rounded-md shadow border-2 border-green-400 h-fit p-2 sticky top-11">
                 <h1 class="text-center font-semibold text-lg text-green-500 italic border-b ">Gợi ý cho bạn</h1>
