@@ -72,7 +72,7 @@ watch(() => props.data, newval => {
     setData(newval);
     setTimeout(() => {
         isLoading.value = false
-    }, 1000)
+    }, 500)
 })
 
 onMounted(() => {

@@ -95,7 +95,7 @@ onMounted(async () => {
                     :modules="[Navigation, Pagination]" class="mySwiper">
                     <swiper-slide v-for="image in post?.Image">
                         <div class="bg-slate-400 rounded overflow-hidden flex justify-center items-center">
-                            <img class="h-[300px]" :src="image.url" :alt="image.id">
+                            <img class="max-h-[500px]" :src="image.url" :alt="image.id">
                         </div>
                     </swiper-slide>
                 </swiper>

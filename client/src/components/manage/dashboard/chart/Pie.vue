@@ -54,7 +54,7 @@ watch(() => props.data, (newVal) => {
     setData(newVal)
     setTimeout(() => {
         isLoading.value = false
-    }, 1000)
+    }, 500)
 })
 
 const chartIncomes = computed(() => { return { ...dataPie } })

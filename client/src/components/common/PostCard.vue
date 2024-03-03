@@ -59,7 +59,7 @@ const props = defineProps(['post'])
                 :class="props.post.Image.length ? `grid-cols-${props.post?.Image.length}` : ''">
                 <div v-for="image in post.Image" :key="image.id"
                     class="w-full break-inside-avoid flex items-center justify-center">
-                    <img :src="image.url" alt="" class="max-w-full rounded-md object-cover">
+                    <img :src="image.url" alt="" class="max-w-[300px] rounded-md object-cover">
                 </div>
             </div>
         </router-link>
