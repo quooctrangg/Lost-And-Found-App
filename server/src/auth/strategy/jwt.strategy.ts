@@ -22,7 +22,11 @@ export class JwtStrategy extends PassportStrategy(Strategy, 'jwt') {
             },
             include: {
                 School: true,
-                Post: true
+                Post: {
+                    where: {
+                        isDelete: false
+                    }
+                }
             }
         })
         if (!user) return

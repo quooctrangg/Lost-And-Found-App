@@ -206,8 +206,6 @@ export class PostService {
             if (verifyPostDto.verify == -1) {
                 data.feedback = verifyPostDto.feedback
             }
-            console.log(data.feedback);
-
             await this.prismaService.post.update({
                 where: {
                     id: id
@@ -251,7 +249,8 @@ export class PostService {
         try {
             const data = await this.prismaService.post.findUnique({
                 where: {
-                    id: id
+                    id: id,
+                    isDelete: false
                 },
                 include: {
                     User: {

@@ -17,6 +17,7 @@ import { CommentModule } from './comment/comment.module';
 import { DashboardModule } from './dashboard/dashboard.module';
 import { NotificationModule } from './notification/notification.module';
 import { SearchHistoryModule } from './search-history/search-history.module';
+import { SuggestModule } from './suggest/suggest.module';
 import * as Joi from 'joi';
 
 @Module({
@@ -25,6 +26,6 @@ import * as Joi from 'joi';
     validationSchema: Joi.object({
       PORT: Joi.number().required(),
     }),
-  }), PrismaModule, AuthModule, MailingModule, UserModule, CloudinaryModule, ItemModule, LocationModule, PostModule, SchoolModule, SocketModule, ConversationModule, MessageModule, RequestModule, CommentModule, DashboardModule, NotificationModule, SearchHistoryModule]
+  }), PrismaModule, AuthModule, MailingModule, UserModule, CloudinaryModule, ItemModule, LocationModule, PostModule, SchoolModule, SocketModule, ConversationModule, MessageModule, RequestModule, CommentModule, DashboardModule, NotificationModule, SearchHistoryModule, SuggestModule]
 })
 export class AppModule { }
