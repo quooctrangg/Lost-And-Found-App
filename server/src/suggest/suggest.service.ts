@@ -7,12 +7,18 @@ export class SuggestService {
   constructor(private readonly prismaService: PrismaService) { }
 
   async getSuggest(userId: number) {
-    const model = await tf.loadLayersModel('file://path/to/model.json');
-    // const inputTensor = tf.tensor2d([1, 2, 3], [1, [1, 2, 3].length]);
+    try {
 
-    // const prediction = model.predict(inputTensor) as tf.Tensor;
-    // const outputData = await prediction.data() as Float32Array;
+    } catch (error) {
+      console.log(error);
+    }
+  }
 
-    // return Array.from(outputData);
+  async trainModel() {
+    try {
+
+    } catch (error) {
+      console.log(error);
+    }
   }
 }

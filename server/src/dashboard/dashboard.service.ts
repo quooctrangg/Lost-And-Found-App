@@ -224,13 +224,13 @@ export class DashboardService {
       })
       lostandfond.forEach(e => {
         if (e.Post.type == true) {
-          list.push({ lost: e.User.email, found: e.Post.User.email, item: e.Post.Item.name, school: e.Post.User.School.name, sendProtection: false })
+          list.push({ found: e.Post.User.email, school: e.Post.User.School.name, lost: e.User.email, item: e.Post.Item.name, sendProtection: false })
         } else {
-          list.push({ found: e.User.email, lost: e.Post.User.email, item: e.Post.Item.name, school: e.User.School.name, sendProtection: false })
+          list.push({ found: e.User.email, school: e.User.School.name, lost: e.Post.User.email, item: e.Post.Item.name, sendProtection: false })
         }
       })
       sendProtection.forEach(e => {
-        list.push({ found: e.User.email, lost: '', school: e.User.School.name, item: e.Item.name, sendProtection: true })
+        list.push({ found: e.User.email, school: e.User.School.name, lost: '', item: e.Item.name, sendProtection: true })
       })
       return new ResponseData<any>(list, 200, 'Thống kê')
     } catch (error) {

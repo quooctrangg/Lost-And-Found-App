@@ -2,6 +2,7 @@
 import { useToast } from 'vue-toast-notification'
 import { useDashboardtore } from '../../../stores/dashboard.store'
 import { onMounted, watch } from 'vue';
+import xlsx from 'xlsx/dist/xlsx.full.min'
 
 const dashboardStore = useDashboardtore()
 const $toast = useToast()
@@ -22,6 +23,67 @@ const getMSSV = (email) => {
     return match ? match[0] : null;
 }
 
+const setDate = (option) => {
+    let result = ''
+    switch (option.type) {
+        case 'month':
+            result = `Tháng ${option.month}-${option.year}`
+            break;
+        case 'year':
+            result = `Năm ${option.year}`
+            break;
+        case 'any':
+            result = `Từ ngày ${dayjs(option.to).format('DD-MM-YYYY')} đến ${dayjs(option.from).format('DD-MM-YYYY')}`
+            break;
+    }
+    return result
+}
+
+const objectsToArray = (objects) => {
+    const newArray = [];
+    let index = 1
+    for (let obj of objects) {
+        if (obj.sendProtection == true) obj.sendProtection = 'X'
+        let objArray = Object.values(obj);
+        objArray.unshift(index)
+        index++
+        newArray.push(objArray);
+    }
+    return newArray;
+}
+
+const exportExcel = () => {
+    const date = setDate(props.option);
+    const title = 'Danh sách các sinh viên nhặt và trả lại thành công'
+    const XLSX = xlsx
+    const workbook = XLSX.utils.book_new()
+    const worksheet = XLSX.utils.aoa_to_sheet(
+        [
+            [title],
+            [date],
+            [],
+            [],
+            ['STT', 'Người tìm thấy', 'Trường / Khoa', 'Người thất lạc', 'Loại đồ', 'Gửi lại bảo vệ'],
+            ...objectsToArray(dashboardStore.studentsList)
+        ]
+    )
+    const columnWidths = [
+        { wch: 5 },
+        { wch: 50 },
+        { wch: 50 },
+        { wch: 50 },
+        { wch: 25 },
+        { wch: 20 }
+    ];
+    worksheet['!cols'] = columnWidths;
+    worksheet['!merges'] = [
+        { s: { r: 0, c: 0 }, e: { r: 0, c: 5 } },
+        { s: { r: 1, c: 0 }, e: { r: 1, c: 5 } }
+    ];
+    XLSX.utils.book_append_sheet(workbook, worksheet, `${setDate(props.option)}`)
+    XLSX.writeFile(workbook, `${setDate(props.option)}.xlsx`)
+}
+
 watch(() => props.option, async (newval) => {
     await getListStudentRetureItemSuccessful(newval)
 })
@@ -33,7 +95,12 @@ onMounted(async () => {
 
 <template>
     <div class="p-2 bg-white rounded-lg shadow border-2">
-        <h1 class="text-center font-semibold text-lg">Danh sách các sinh viên nhặt và trả lại thành công</h1>
+        <h1 class="text-center font-semibold text-2xl">Danh sách các sinh viên nhặt và trả lại thành công</h1>
+        <h1 class="text-center italic p-2">
+            {{
+                setDate(props.option)
+            }}
+        </h1>
         <table class="table-auto border-collapse border border-slate-500 w-full mt-2">
             <thead>
                 <tr>
@@ -49,33 +116,33 @@ onMounted(async () => {
                 <tr v-if="dashboardStore.studentsList.length" v-for="(student, i) in dashboardStore.studentsList">
                     <td class="border border-slate-700 p-2 text-center">
                         {{
-                            i + 1
-                        }}
+                i + 1
+            }}
                     </td>
                     <td class="border border-slate-700 p-2">
                         {{
-                            getMSSV(student.found)
-                        }}
+                    getMSSV(student.found)
+                }}
                     </td>
                     <td class="border border-slate-700 p-2">
                         {{
-                            student.school
-                        }}
+                    student.school
+                }}
                     </td>
                     <td class="border border-slate-700 p-2">
                         {{
-                            getMSSV(student.lost)
-                        }}
+                    getMSSV(student.lost)
+                }}
                     </td>
                     <td class="border border-slate-700 p-2">
                         {{
-                            student.item
-                        }}
+                    student.item
+                }}
                     </td>
                     <td class="border border-slate-700 p-2 text-center">
                         {{
-                            student.sendProtection ? 'X' : ''
-                        }}
+                    student.sendProtection ? 'X' : ''
+                }}
                     </td>
                 </tr>
                 <tr v-else>
@@ -90,7 +157,7 @@ onMounted(async () => {
                 Tổng cộng:
                 {{ dashboardStore.studentsList.length }}
             </h1>
-            <button
+            <button @click="exportExcel"
                 class="text-sm p-1 border border-blue-500 text-blue-500 rounded-md hover:text-red-400 hover:border-red-400">
                 Xuất file
                 <i class="fa-solid fa-file-export"></i>

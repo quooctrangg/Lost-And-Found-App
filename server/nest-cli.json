@@ -8,6 +8,10 @@
       {
         "include": "mailing/templates/**/*",
         "outDir": "dist"
+      },
+      {
+        "include": "suggest/model/**/*",
+        "outDir": "dist"
       }
     ],
     "watchAssets": true
