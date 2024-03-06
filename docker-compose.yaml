@@ -1,8 +1,8 @@
 version: '3.0'
 services:
-  dev-database:
+  database-nest:
     image: postgres:15.3
-    container_name: dev-database
+    container_name: database-nest
     ports:
       - 5434:5432
     environment:
@@ -20,9 +20,9 @@ services:
     env_file:
       - ./server/.env
     depends_on:
-      - dev-database
+      - database-nest
     volumes:
-      - .:/server/
+      - .:/server
       - /server/node_modules
     ports:
       - '8000:8000'

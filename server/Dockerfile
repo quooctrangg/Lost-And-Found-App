@@ -1,10 +1,10 @@
-FROM node:alpine As development
+FROM node:alpine AS development
 
 WORKDIR /server 
 
-COPY package*.json ./
+COPY ./server/package*.json ./
 
-RUN npm install
+RUN npm i
 
 COPY . .
 
