@@ -1,5 +1,5 @@
 <script setup>
-import { onMounted, ref } from 'vue'
+import { onMounted, ref, watchEffect } from 'vue'
 import { FwbPagination } from 'flowbite-vue'
 import { useManageStore } from '../../../stores/manage.store'
 import { usePostStore } from '../../../stores/post.store'
@@ -9,7 +9,6 @@ import HistoryModal from './HistoryModal.vue'
 import Loading from '@/components/common/Loading.vue';
 import dayjs from 'dayjs'
 import { useToast } from 'vue-toast-notification'
-import { watchEffect } from 'vue';
 
 const manageStore = useManageStore()
 const postStore = usePostStore()
@@ -125,15 +124,15 @@ onMounted(async () => {
                         <td class="">
                             <div class="font-medium line-clamp-2 p-2">
                                 {{
-                                    post.title
-                                }}
+                            post.title
+                        }}
                             </div>
                         </td>
                         <td>
                             <div class="line-clamp-2 text-sm">
                                 {{
-                                    post.description
-                                }}
+                                post.description
+                            }}
                             </div>
                         </td>
                         <td v-if="post.verify == 0" class=" text-yellow-300 text-center">
@@ -147,8 +146,8 @@ onMounted(async () => {
                         </td>
                         <td class="text-center text-sm">
                             {{
-                                dayjs(post.createdAt).format('LT DD/MM/YYYY')
-                            }}
+                            dayjs(post.createdAt).format('LT DD/MM/YYYY')
+                        }}
                         </td>
                         <td v-if="post.verify !== -1">
                             <div class="" v-if="post.verify == 0">
@@ -161,26 +160,26 @@ onMounted(async () => {
                         <td v-if="post.verify !== -1">
                             <div class="" v-if="post.verify == 0">
                                 <button class="p-2 text-red-500 hover:text-red-300 text-2xl" @click="() => {
-                                    manageStore.showRefuseModal()
-                                    currentPostId = post.id
-                                }">
+                            manageStore.showRefuseModal()
+                            currentPostId = post.id
+                        }">
                                     <i class="fa-solid fa-ban"></i>
                                 </button>
                             </div>
                         </td>
                         <td colspan="2" v-if="post.verify == -1" class="">
                             <div class="text-center text-2xl text-orange-500 cursor-pointer" @click="() => {
-                                currentFeedback = post.feedback
-                                showHistory()
-                            }">
+                            currentFeedback = post.feedback
+                            showHistory()
+                        }">
                                 <i class="fa-regular fa-eye"></i>
                             </div>
                         </td>
                         <td class="">
                             <div class="">
                                 <button class="p-2 text-yellow-300 hover:text-yellow-200 text-2xl" @click="async () => {
-                                    await deletePost(post.id)
-                                }">
+                            await deletePost(post.id)
+                        }">
                                     <i class="fa-solid fa-trash-can"></i>
                                 </button>
                             </div>
@@ -206,9 +205,9 @@ onMounted(async () => {
                 :show-labels="false" />
         </div>
         <RefuseModal @submitFeedback="async (e) => {
-            await verifyPost(currentPostId, { verify: -1, feedback: e })
-            manageStore.closeRefuseModal()
-        }" />
+                            await verifyPost(currentPostId, { verify: -1, feedback: e })
+                            manageStore.closeRefuseModal()
+                        }" />
         <HistoryModal :isShow="isShow" :currentFeedback="currentFeedback" @closeHistory="closeHistory" />
     </div>
 </template>

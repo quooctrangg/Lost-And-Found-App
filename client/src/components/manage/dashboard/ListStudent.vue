@@ -1,13 +1,27 @@
 <script setup>
 import { useToast } from 'vue-toast-notification'
 import { useDashboardtore } from '../../../stores/dashboard.store'
-import { onMounted, watch } from 'vue';
+import { onMounted, ref, watch } from 'vue';
+import { FwbPagination } from 'flowbite-vue'
 import xlsx from 'xlsx/dist/xlsx.full.min'
 
 const dashboardStore = useDashboardtore()
 const $toast = useToast()
 
 const props = defineProps(['option'])
+
+const currentPage = ref(1)
+const pageSize = 20
+const totalPages = ref(1)
+const data = ref([])
+
+const nextPage = (page) => {
+    if (page < 1) page = 1
+    if (page > totalPages.value) page = totalPages.value
+    let start = (page - 1) * pageSize
+    let end = start + pageSize
+    data.value = dashboardStore.studentsList.slice(start, end)
+}
 
 const getListStudentRetureItemSuccessful = async (option) => {
     await dashboardStore.getListStudentRetureItemSuccessful(option)
@@ -86,63 +100,69 @@ const exportExcel = () => {
 
 watch(() => props.option, async (newval) => {
     await getListStudentRetureItemSuccessful(newval)
+    currentPage.value = 1
+    nextPage(currentPage.value)
+})
+
+watch(() => currentPage.value, (newval) => {
+    nextPage(newval)
 })
 
 onMounted(async () => {
     await getListStudentRetureItemSuccessful(props.option)
+    totalPages.value = Math.ceil(dashboardStore.studentsList.length / 20)
+    currentPage.value = 1
+    nextPage(currentPage.value)
 })
 </script>
 
 <template>
     <div class="p-2 bg-white rounded-lg shadow border-2">
-        <h1 class="text-center font-semibold text-2xl">Danh sách các sinh viên nhặt và trả lại thành công</h1>
-        <h1 class="text-center italic p-2">
-            {{
-                setDate(props.option)
-            }}
-        </h1>
+        <div>
+            <h1 class="text-center font-semibold text-2xl">Danh sách các sinh viên nhặt và trả lại thành công</h1>
+            <h1 class="text-center italic p-2">
+                {{
+                    setDate(props.option)
+                }}
+            </h1>
+        </div>
+        <div class="text-end">
+            <button @click="exportExcel"
+                class="text-sm p-1 border border-blue-500 text-blue-500 rounded-md hover:text-red-400 hover:border-red-400">
+                Xuất file
+                <i class="fa-solid fa-file-export"></i>
+            </button>
+        </div>
         <table class="table-auto border-collapse border border-slate-500 w-full mt-2">
             <thead>
                 <tr>
-                    <th class="border border-slate-600 p-2">STT</th>
-                    <th class="border border-slate-600 p-2">Người tìm thấy</th>
-                    <th class="border border-slate-600 p-2">Trường / Khoa</th>
-                    <th class="border border-slate-600 p-2">Người thất lạc</th>
-                    <th class="border border-slate-600 p-2">Loại đồ</th>
-                    <th class="border border-slate-600 p-2">Gửi lại bảo vệ</th>
+                    <th class="border border-slate-600 bg-gray-300 p-2">STT</th>
+                    <th class="border border-slate-600 bg-gray-300 p-2">Người tìm thấy</th>
+                    <th class="border border-slate-600 bg-gray-300 p-2">Trường / Khoa</th>
+                    <th class="border border-slate-600 bg-gray-300 p-2">Người thất lạc</th>
+                    <th class="border border-slate-600 bg-gray-300 p-2">Loại đồ</th>
+                    <th class="border border-slate-600 bg-gray-300 p-2">Gửi lại bảo vệ</th>
                 </tr>
             </thead>
             <tbody>
-                <tr v-if="dashboardStore.studentsList.length" v-for="(student, i) in dashboardStore.studentsList">
+                <tr v-if="data.length" v-for="(student, i) in data">
                     <td class="border border-slate-700 p-2 text-center">
-                        {{
-                i + 1
-            }}
+                        {{ i + 1 }}
                     </td>
                     <td class="border border-slate-700 p-2">
-                        {{
-                    getMSSV(student.found)
-                }}
+                        {{ getMSSV(student.found) }}
                     </td>
                     <td class="border border-slate-700 p-2">
-                        {{
-                    student.school
-                }}
+                        {{ student.school }}
                     </td>
                     <td class="border border-slate-700 p-2">
-                        {{
-                    getMSSV(student.lost)
-                }}
+                        {{ getMSSV(student.lost) }}
                     </td>
                     <td class="border border-slate-700 p-2">
-                        {{
-                    student.item
-                }}
+                        {{ student.item }}
                     </td>
                     <td class="border border-slate-700 p-2 text-center">
-                        {{
-                    student.sendProtection ? 'X' : ''
-                }}
+                        {{ student.sendProtection ? 'X' : '' }}
                     </td>
                 </tr>
                 <tr v-else>
@@ -157,11 +177,9 @@ onMounted(async () => {
                 Tổng cộng:
                 {{ dashboardStore.studentsList.length }}
             </h1>
-            <button @click="exportExcel"
-                class="text-sm p-1 border border-blue-500 text-blue-500 rounded-md hover:text-red-400 hover:border-red-400">
-                Xuất file
-                <i class="fa-solid fa-file-export"></i>
-            </button>
+        </div>
+        <div class="text-center" v-if="totalPages > 1">
+            <FwbPagination v-model="currentPage" :total-pages="totalPages" :show-icons="true" :show-labels="false" />
         </div>
     </div>
 </template>

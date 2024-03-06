@@ -6,6 +6,7 @@ import piniaPluginPersistedstate from 'pinia-plugin-persistedstate'
 import dayjs from 'dayjs'
 import localizedFormat from 'dayjs/plugin/localizedFormat'
 import relativeTime from 'dayjs/plugin/relativeTime'
+import infiniteScroll from 'vue-infinite-scroll'
 
 import './assets/main.css'
 import './assets/index.css'
@@ -21,4 +22,4 @@ const pinia = createPinia()
 
 pinia.use(piniaPluginPersistedstate)
 
-createApp(App).use(pinia).use(router).mount('#app')
+createApp(App).use(pinia).use(router).use(infiniteScroll).mount('#app')

@@ -7,7 +7,7 @@ import { useLocationStore } from '../../stores/location.store'
 import { onMounted } from 'vue';
 import { watch } from 'vue';
 
-const emits = defineEmits(['option'])
+const emits = defineEmits(['option', 'btnSubmit'])
 
 const postStore = usePostStore()
 const itemStore = useItemStore()
@@ -21,6 +21,11 @@ const reset = () => {
     type.value = null
     locations.value = []
     itemId.value = null
+}
+
+const submit = () => {
+    emits('btnSubmit')
+    postStore.closeFilterModal()
 }
 
 watch(type, () => {
@@ -40,6 +45,7 @@ onMounted(async () => {
     await locationStore.getLocation({})
 })
 </script>
+
 <template>
     <fwb-modal v-if="postStore.isShow.filter" @close="postStore.closeFilterModal">
         <template #header>
@@ -48,6 +54,7 @@ onMounted(async () => {
                 Lọc
             </div>
         </template>
+
         <template #body>
             <div class="flex flex-col gap-1 text-sm">
                 <label class="italic">Loại bài viết:</label>
@@ -71,8 +78,8 @@ onMounted(async () => {
                         <option value="null">Tất cả</option>
                         <option v-if="itemStore.items?.length" v-for="item in itemStore.items" :value="item.id">
                             {{
-                                item.name
-                            }}
+        item.name
+    }}
                         </option>
                     </select>
                 </div>
@@ -84,19 +91,20 @@ onMounted(async () => {
                             v-model="locations"
                             class="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 rounded cursor-pointer" />
                         {{
-                            location.name
-                        }}
+        location.name
+    }}
                     </label>
                 </div>
             </div>
         </template>
+
         <template #footer>
             <div class="flex justify-end gap-2">
                 <button class="px-3 py-2 bg-red-500 rounded-lg text-white" @click="reset">
                     <i class="fa-solid fa-arrows-rotate"></i>
                     Đặt lại
                 </button>
-                <button @click="postStore.closeFilterModal" class="px-3 py-2 bg-blue-500 rounded-lg text-white">
+                <button @click="submit" class="px-3 py-2 bg-blue-500 rounded-lg text-white">
                     <i class="fa-regular fa-circle-xmark"></i>
                     Hoàn tất
                 </button>

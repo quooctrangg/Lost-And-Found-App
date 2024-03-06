@@ -1,5 +1,5 @@
 <script setup>
-import { ref, onMounted, reactive, watch } from 'vue';
+import { ref, onMounted, reactive, onUnmounted } from 'vue';
 import { usePostStore } from '../stores/post.store'
 import { useUserStore } from '../stores/user.store'
 import PostCard from '../components/common/PostCard.vue';
@@ -8,6 +8,8 @@ import PostModal from '../components/post/PostModal.vue'
 import ScrollToTop from '../components/common/ScrollToTop.vue'
 import SuggestCard from '../components/common/SuggestCard.vue';
 import InputSearch from '../components/post/InputSearch.vue';
+import Footer from '../components/common/Footer.vue';
+import Loading from '../components/common/Loading.vue';
 
 const postStore = usePostStore()
 const userStore = useUserStore()
@@ -16,8 +18,11 @@ const posts = ref([])
 const option = reactive({
     locations: [],
     type: null,
-    itemId: null
+    itemId: null,
+    page: 1
 })
+const scrollComponent = ref(null)
+const totalPage = ref(1)
 
 const setOption = (value) => {
     option.locations = value.locations
@@ -28,16 +33,34 @@ const setOption = (value) => {
 const getAllPostsForUser = async () => {
     await postStore.getAllPostsForUser(option)
     if (postStore.err) return
-    posts.value = [...postStore.posts]
+    posts.value.push(...postStore.posts)
+    totalPage.value = postStore.totalPages
 }
 
-watch(option, async () => {
+const loadMore = async () => {
+    let element = scrollComponent.value
+    let triggerBottom = element.getBoundingClientRect().bottom;
+    let viewportHeight = window.innerHeight;
+    if (triggerBottom <= viewportHeight && !postStore.isLoading) {
+        if (option.page < totalPage.value) {
+            option.page++
+            await getAllPostsForUser()
+        }
+    }
+}
+
+const getFilter = async () => {
     posts.value = []
+    await getAllPostsForUser()
+}
+
+onMounted(async () => {
+    window.addEventListener('scroll', loadMore)
     await getAllPostsForUser()
 })
 
-onMounted(async () => {
-    await getAllPostsForUser()
+onUnmounted(() => {
+    window.removeEventListener('scroll', loadMore)
 })
 </script>
 
@@ -56,7 +79,7 @@ onMounted(async () => {
             Lọc
         </button>
         <div class="w-full flex gap-2">
-            <div class="w-[70%]">
+            <div class="w-[70%]" ref="scrollComponent">
                 <PostCard v-if="posts.length" v-for=" post  in  posts " :post="post" />
             </div>
             <div class="w-[30%] bg-white rounded-md shadow border-2 border-green-400 h-fit p-2 sticky top-11">
@@ -64,8 +87,12 @@ onMounted(async () => {
                 <SuggestCard />
             </div>
         </div>
+        <div class="py-10">
+            <Loading v-if="postStore.isLoading" />
+        </div>
     </div>
+    <Footer />
     <ScrollToTop />
-    <FilterModal @option="(e) => { setOption(e) }" />
+    <FilterModal @option="(e) => { setOption(e) }" @btnSubmit="getFilter" />
     <PostModal />
 </template>

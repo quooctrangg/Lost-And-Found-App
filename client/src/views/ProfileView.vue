@@ -72,12 +72,12 @@ onMounted(async () => {
             <div class="flex flex-col gap-2 flex-1">
                 <h1 class="font-bold text-xl">
                     {{
-                        profile?.name
-                    }}
+        profile?.name
+    }}
                     <span class="text-gray-400 text-lg">
                         {{
-                            `#${route.params.id}`
-                        }}
+            `#${route.params.id}`
+        }}
                     </span>
                 </h1>
                 <h2 class="text-base text-gray-600 indent-3">
@@ -106,9 +106,8 @@ onMounted(async () => {
             </div>
         </div>
         <div class="mx-auto">
-            <div v-for="(post, i) in posts" :key="post.id"
-                class="border-2 w-full border-blue-600 p-2 rounded-lg mt-2">
-                <router-link :to="{name: 'post-detail', params: {id: post.id}}">
+            <div v-for="(post, i) in posts" :key="post.id" class="border-2 w-full border-blue-600 p-2 rounded-lg mt-2">
+                <router-link :to="{ name: 'post-detail', params: { id: post.id } }">
                     <div class="flex gap-2">
                         <div v-if="post.Image.length" class="w-20%">
                             <img :src="post.Image[0].url" class="w-48 h-48 border-2 rounded-lg object-cover">
@@ -117,12 +116,13 @@ onMounted(async () => {
                             <div class="flex justify-between items-center">
                                 <h1 class="text-xl font-semibold flex-1">
                                     {{
-                                        post.title
-                                    }}
+        post.title
+    }}
                                 </h1>
                                 <h1 class="flex gap-1">
                                     <div v-if="post.type == true" class="flex gap-1">
-                                        <p class="border-2 border-green-600 p-1 text-xs font-semibold text-green-600 rounded">
+                                        <p
+                                            class="border-2 border-green-600 p-1 text-xs font-semibold text-green-600 rounded">
                                             TÌM THẤY
                                         </p>
                                         <p v-if="post.sendProtection"
@@ -130,7 +130,8 @@ onMounted(async () => {
                                             GỬI LẠI BAN QUẢN LÝ TÒA NHÀ
                                         </p>
                                     </div>
-                                    <p v-else class="border-2 border-orange-500 p-1 text-xs font-semibold text-orange-500 rounded">
+                                    <p v-else
+                                        class="border-2 border-orange-500 p-1 text-xs font-semibold text-orange-500 rounded">
                                         THẤT LẠC
                                     </p>
                                     <p v-if="post.done"
@@ -146,7 +147,7 @@ onMounted(async () => {
                                 <h2 class="font-semibold text-sm">Mô tả:</h2>
                                 <p class="text-sm indent-2 text-justify  ">
                                     {{
-                                        post.description
+        post.description
                                     }}
                                 </p>
                             </h1>
