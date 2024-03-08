@@ -1,24 +1,18 @@
 import { Injectable } from '@nestjs/common';
 import { PrismaService } from '../prisma/prisma.service';
-import * as tf from '@tensorflow/tfjs';
+import { PythonShell } from 'python-shell';
+import { config } from './python.config';
+import { ResponseData } from '../global';
 
 @Injectable()
 export class SuggestService {
-  constructor(private readonly prismaService: PrismaService) { }
-
-  async getSuggest(userId: number) {
-    try {
-
-    } catch (error) {
-      console.log(error);
-    }
+  constructor(private readonly prismaService: PrismaService) {
+    this.shell = new PythonShell('main.py', config);
+    this.startup()
   }
+  private shell: PythonShell
 
-  async trainModel() {
-    try {
-
-    } catch (error) {
-      console.log(error);
-    }
+  private startup() {
+    console.log('PYTHON STARTUP');
   }
 }

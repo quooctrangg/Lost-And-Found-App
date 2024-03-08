@@ -1,5 +1,6 @@
 <script setup>
 import { ref } from 'vue';
+import Footer from '@/components/common/Footer.vue';
 
 const currentPage = ref('dashboard')
 
@@ -53,5 +54,6 @@ const name = {
                 <router-view @currentPage="(e) => { currentPage = e }" />
             </div>
         </div>
+        <Footer />
     </div>
 </template>

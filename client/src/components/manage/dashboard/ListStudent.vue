@@ -120,7 +120,7 @@ onMounted(async () => {
     <div class="p-2 bg-white rounded-lg shadow border-2">
         <div>
             <h1 class="text-center font-semibold text-2xl">Danh sách các sinh viên nhặt và trả lại thành công</h1>
-            <h1 class="text-center italic p-2">
+            <h1 class="text-center italic">
                 {{
                     setDate(props.option)
                 }}
@@ -136,12 +136,12 @@ onMounted(async () => {
         <table class="table-auto border-collapse border border-slate-500 w-full mt-2">
             <thead>
                 <tr>
-                    <th class="border border-slate-600 bg-gray-300 p-2">STT</th>
-                    <th class="border border-slate-600 bg-gray-300 p-2">Người tìm thấy</th>
-                    <th class="border border-slate-600 bg-gray-300 p-2">Trường / Khoa</th>
-                    <th class="border border-slate-600 bg-gray-300 p-2">Người thất lạc</th>
-                    <th class="border border-slate-600 bg-gray-300 p-2">Loại đồ</th>
-                    <th class="border border-slate-600 bg-gray-300 p-2">Gửi lại bảo vệ</th>
+                    <th class="border border-slate-600 bg-blue-300 p-2">STT</th>
+                    <th class="border border-slate-600 bg-blue-300 p-2">Người tìm thấy</th>
+                    <th class="border border-slate-600 bg-blue-300 p-2">Trường / Khoa</th>
+                    <th class="border border-slate-600 bg-blue-300 p-2">Người thất lạc</th>
+                    <th class="border border-slate-600 bg-blue-300 p-2">Loại đồ</th>
+                    <th class="border border-slate-600 bg-blue-300 p-2">Gửi lại bảo vệ</th>
                 </tr>
             </thead>
             <tbody>
@@ -173,7 +173,7 @@ onMounted(async () => {
             </tbody>
         </table>
         <div class="mt-2 flex justify-between items-center">
-            <h1 class="font-medium">
+            <h1 class="font-medium text-red-500">
                 Tổng cộng:
                 {{ dashboardStore.studentsList.length }}
             </h1>

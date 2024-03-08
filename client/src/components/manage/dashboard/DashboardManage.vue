@@ -35,7 +35,8 @@ const select = computed(() => { return { ...option } })
             </select>
             <div class="flex gap-1">
                 <div v-if="option.type !== 'any'" class="flex gap-1">
-                    <select v-if="option.type == 'month'" class="rounded p-2 text-sm font-medium" v-model="option.month">
+                    <select v-if="option.type == 'month'" class="rounded p-2 text-sm font-medium"
+                        v-model="option.month">
                         <option value="1">01</option>
                         <option value="2">02</option>
                         <option value="3">03</option>

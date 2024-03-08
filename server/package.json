@@ -31,7 +31,6 @@
     "@nestjs/platform-socket.io": "^10.3.1",
     "@nestjs/websockets": "^10.3.1",
     "@prisma/client": "^5.8.0",
-    "@tensorflow/tfjs": "^4.17.0",
     "argon2": "^0.31.2",
     "class-transformer": "^0.5.1",
     "class-validator": "^0.14.0",
@@ -41,6 +40,7 @@
     "moment-timezone": "^0.5.45",
     "passport-jwt": "^4.0.1",
     "prisma": "^5.8.0",
+    "python-shell": "^5.0.0",
     "reflect-metadata": "^0.1.13",
     "rxjs": "^7.8.1",
     "streamifier": "^0.1.1"

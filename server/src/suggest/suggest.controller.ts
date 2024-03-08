@@ -9,8 +9,4 @@ import { User } from '@prisma/client';
 export class SuggestController {
   constructor(private readonly suggestService: SuggestService) { }
 
-  @Get()
-  getSuggest() {
-    return this.suggestService.getSuggest(1)
-  }
 }
