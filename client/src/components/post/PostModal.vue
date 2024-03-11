@@ -18,7 +18,6 @@ const maxAllowedFiles = 5
 const selectedFile = ref([])
 const urls = ref([])
 const data = reactive({
-    title: '',
     description: '',
     type: '',
     itemId: '',
@@ -27,10 +26,9 @@ const data = reactive({
 })
 
 const formDataSchema = yup.object().shape({
-    title: yup.string().required("Tiêu đề phải có giá trị.").min(1, 'Tiêu đề phải ít nhất 1 ký tự.').max(50, "Tiêu đề có nhiều nhất 50 ký tự."),
     type: yup.string().required('Yêu cầu chọn loại bài viết.'),
     itemId: yup.string().required('Yêu cầu chọn loại đồ vật.'),
-    description: yup.string().required("Miêu tả phải có giá trị.").min(1, 'Miêu tả phải ít nhất 1 ký tự.').max(250, "Miêu tả có nhiều nhất 250 ký tự."),
+    description: yup.string().required("Miêu tả phải có giá trị.").min(10, 'Miêu tả phải ít nhất 1 ký tự.').max(1000, "Miêu tả có nhiều nhất 250 ký tự."),
     locations: yup.array().min(1, 'Chọn ít nhất 1 địa điểm')
 })
 
@@ -58,7 +56,6 @@ const deleteImage = (i) => {
 
 const submitPost = async () => {
     const dataForm = new FormData()
-    dataForm.append('title', data.title)
     dataForm.append('description', data.description)
     dataForm.append('itemId', data.itemId)
     dataForm.append('type', Number(data.type))
@@ -87,7 +84,6 @@ const submitPost = async () => {
 }
 
 const reset = () => {
-    data.title = ''
     data.description = ''
     data.type = ''
     data.itemId = ''
@@ -117,14 +113,18 @@ onMounted(async () => {
                 <div class="flex flex-col gap-3">
                     <div class="grid grid-cols-2 gap-5">
                         <div class=" flex flex-col">
-                            <label class="mt-2 mb-1" for="title">Tiêu đề</label>
-                            <Field type="text" name="title" id="title" placeholder="Nhập tiêu đề ..." class="input-custom"
-                                v-model="data.title" />
-                            <ErrorMessage name="title" class="error" />
                             <label class="mt-2 mb-1" for="description">Mô tả</label>
-                            <Field type="text" name="description" id="description" as="textarea" class="w-full rounded-md"
-                                placeholder="Nhập mô tả ..." v-model="data.description" rows="4" />
+                            <Field type="text" name="description" id="description" as="textarea"
+                                class="w-full rounded-md" placeholder="Nhập mô tả ..." v-model="data.description"
+                                rows="4" />
                             <ErrorMessage name="description" class="error" />
+                            <label class="mt-2 mb-1" for="type">Loại bài viết</label>
+                            <Field as="select" name="type" id="type" class="input-custom" v-model="data.type">
+                                <option value="">Chọn loại bài viết</option>
+                                <option :value="1">Tìm thấy</option>
+                                <option :value="0">Thất lạc</option>
+                            </Field>
+                            <ErrorMessage name="type" class="error" />
                             <div v-if="data.type && data.type == 1"
                                 class="flex gap-2 items-center mt-5 text-lg text-red-600 font-medium">
                                 <input type="checkbox" name="sendProtection" id="sendProtection"
@@ -134,21 +134,12 @@ onMounted(async () => {
                             </div>
                         </div>
                         <div class="flex flex-col">
-                            <label class="mt-2 mb-1" for="type">Loại bài viết</label>
-                            <Field as="select" name="type" id="type" class="input-custom" v-model="data.type">
-                                <option value="">Chọn loại bài viết</option>
-                                <option :value="1">Tìm thấy</option>
-                                <option :value="0">Thất lạc</option>
-                            </Field>
-                            <ErrorMessage name="type" class="error" />
                             <label class="mt-2 mb-1" for="itemId">Loại đồ vật</label>
                             <Field as="select" name="itemId" id="itemId" class="input-custom" v-model="data.itemId">
                                 <option value="">Chọn loại đồ vật</option>
                                 <option v-if="itemStore.items?.length" v-for="item in itemStore.items" :key="item.id"
                                     :value="item.id">
-                                    {{
-                                        item.name
-                                    }}
+                                    {{ item.name }}
                                 </option>
                             </Field>
                             <ErrorMessage name="itemId" class="error" />
@@ -159,9 +150,7 @@ onMounted(async () => {
                                     <Field name="locations" :id="location.id" type="checkbox" :value="location.id"
                                         v-model="data.locations"
                                         class="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 rounded cursor-pointer" />
-                                    {{
-                                        location.name
-                                    }}
+                                    {{ location.name }}
                                 </label>
                             </div>
                             <ErrorMessage name="locations" class="error" />

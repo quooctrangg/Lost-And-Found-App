@@ -71,13 +71,9 @@ onMounted(async () => {
             </div>
             <div class="flex flex-col gap-2 flex-1">
                 <h1 class="font-bold text-xl">
-                    {{
-        profile?.name
-    }}
+                    {{ profile?.name }}
                     <span class="text-gray-400 text-lg">
-                        {{
-            `#${route.params.id}`
-        }}
+                        {{ `#${route.params.id}` }}
                     </span>
                 </h1>
                 <h2 class="text-base text-gray-600 indent-3">
@@ -113,12 +109,14 @@ onMounted(async () => {
                             <img :src="post.Image[0].url" class="w-48 h-48 border-2 rounded-lg object-cover">
                         </div>
                         <div class="flex-1 flex flex-col gap-2">
+                            <h1 class="">
+                                {{ post.description }}
+                            </h1>
                             <div class="flex justify-between items-center">
-                                <h1 class="text-xl font-semibold flex-1">
-                                    {{
-        post.title
-    }}
-                                </h1>
+                                <h2 class="text-sm italic">
+                                    <i class="fa-regular fa-clock"></i>
+                                    {{ dayjs(post.createdAt).fromNow() }}
+                                </h2>
                                 <h1 class="flex gap-1">
                                     <div v-if="post.type == true" class="flex gap-1">
                                         <p
@@ -140,17 +138,6 @@ onMounted(async () => {
                                     </p>
                                 </h1>
                             </div>
-                            <h2 class="text-sm">
-                                {{ dayjs(post.createdAt).fromNow() }}
-                            </h2>
-                            <h1 class="">
-                                <h2 class="font-semibold text-sm">Mô tả:</h2>
-                                <p class="text-sm indent-2 text-justify  ">
-                                    {{
-        post.description
-                                    }}
-                                </p>
-                            </h1>
                             <h2 class="text-gray-500 flex gap-1 items-center text-sm">
                                 <i class="fa-solid fa-location-dot"></i>
                                 <div v-for="(location, i) in post.Location">

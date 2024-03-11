@@ -49,7 +49,7 @@ export class NotificationService {
               Post: {
                 select: {
                   id: true,
-                  title: true,
+                  description: true,
                   User: {
                     select: {
                       id: true,

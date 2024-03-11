@@ -39,33 +39,22 @@ onMounted(() => {
             </div>
             <div class="flex flex-col gap-2 flex-1">
                 <h1 class="font-bold text-xl">
-                    {{
-                        userStore.user?.name
-                    }}
+                    {{ userStore.user?.name }}
+                    <span class="text-gray-400 text-lg">
+                        {{ `#${userStore.user?.id}` }}
+                    </span>
                 </h1>
                 <h2 class="text-base text-gray-600 indent-3">
-                    Trường/Khoa:
-                    {{
-                            userStore.user?.School?.name
-                        }}
+                    Trường/Khoa: {{ userStore.user?.School?.name }}
                 </h2>
                 <h2 class="text-base text-gray-600 indent-3">
-                    Email:
-                    {{
-                            userStore.user?.email
-                        }}
+                    Email: {{ userStore.user?.email }}
                 </h2>
                 <h2 class="text-base text-gray-600 indent-3">
-                    Tham gia vào ngày
-                    {{
-                            dayjs(userStore.user?.createAt).format('DD, MMMM, YYYY')
-                        }}
+                    Tham gia vào ngày {{ dayjs(userStore.user?.createAt).format('DD, MMMM, YYYY') }}
                 </h2>
                 <h2 class="text-base">
-                    Số lượng bài viết:
-                    {{
-                            total
-                        }}
+                    Số lượng bài viết: {{ total }}
                 </h2>
             </div>
             <div class="flex flex-col gap-1 justify-end">

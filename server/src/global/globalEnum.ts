@@ -24,6 +24,6 @@ export enum PAGE_SIZE {
 }
 
 export enum POST_SIZE {
-    TITLE = 50,
-    DESCRIPTION = 250
+    DESCRIPTION_MAX = 1000,
+    DESCRIPTION_MIN = 10
 }

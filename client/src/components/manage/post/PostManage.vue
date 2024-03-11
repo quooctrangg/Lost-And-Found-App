@@ -95,9 +95,6 @@ onMounted(async () => {
                         <th class="text-center w-[5%] pb-2">
                             STT
                         </th>
-                        <th class="w-[15%] pb-2">
-                            Tiêu đề
-                        </th>
                         <th class="w-[25%] pb-2">
                             Mô tả
                         </th>
@@ -121,18 +118,9 @@ onMounted(async () => {
                                 {{ i + 1 }}
                             </router-link>
                         </td>
-                        <td class="">
-                            <div class="font-medium line-clamp-2 p-2">
-                                {{
-                            post.title
-                        }}
-                            </div>
-                        </td>
                         <td>
                             <div class="line-clamp-2 text-sm">
-                                {{
-                                post.description
-                            }}
+                                {{ post.description }}
                             </div>
                         </td>
                         <td v-if="post.verify == 0" class=" text-yellow-300 text-center">

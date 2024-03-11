@@ -74,14 +74,14 @@ onMounted(async () => {
                     :to="{ name: 'profile', params: { id: post?.User?.id } }">
                     <h1 class="text-base truncate font-semibold text-center hover:underline">
                         {{
-                            post?.User?.name
-                        }}
+        post?.User?.name
+    }}
                     </h1>
                 </router-link>
                 <h1 v-else class="text-base truncate font-semibold text-center">
                     {{
-                        post?.User?.name
-                    }}
+            post?.User?.name
+        }}
                 </h1>
                 <div v-if="post?.verify == 0" class="flex justify-end items-center">
                     <h1 class="p-1 border-yellow-200 border-2 rounded font-medium text-yellow-300">Đang chờ duyệt</h1>
@@ -111,49 +111,24 @@ onMounted(async () => {
                             <router-link v-if="userStore?.user.id !== post?.User?.id"
                                 :to="{ name: 'profile', params: { id: post?.User?.id } }">
                                 <p class="text-base truncate font-semibold hover:underline">
-                                    {{
-                                        post?.User?.name
-                                    }}
+                                    {{ post?.User?.name }}
                                 </p>
                             </router-link>
                             <p v-else class="text-base truncate font-semibold">
-                                {{
-                                    post?.User?.name
-                                }}
+                                {{ post?.User?.name }}
                             </p>
                             <span class="text-xs italic">
                                 <i class=" fa-regular fa-clock"></i>
-                                {{
-                                    dayjs(post?.createdAt).fromNow()
-                                }}
+                                {{ dayjs(post?.createdAt).fromNow() }}
                             </span>
                         </div>
                         <div v-if="userStore?.user.id !== post?.User?.id"
-                            class="px-2 cursor-pointer text-2xl hover:text-red-600 text-blue-500" @click="async () => {
-                                await goMessage(post?.User?.id)
-                            }">
+                            class="px-2 cursor-pointer text-2xl hover:text-red-600 text-blue-500"
+                            @click="async () => { await goMessage(post?.User?.id) }">
                             <i class="fa-brands fa-facebook-messenger"></i>
                         </div>
                     </div>
                     <div class="flex gap-3 items-center">
-                        <button
-                            v-if="userStore?.user.id !== post?.User?.id && post?.sendProtection == false && post?.done == false"
-                            class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded"
-                            @click="postStore.showRequestModal">
-                            <i class="fa-regular fa-paper-plane mr-1"></i>
-                            {{
-                                post?.type == true ? `Nhận lại đồ vật` : 'Trả lại đồ vật'
-                            }}
-                        </button>
-                    </div>
-                </div>
-                <div class="">
-                    <div class="grid grid-cols-3">
-                        <h1 class="font-semibold text-lg col-span-2">
-                            {{
-                                post?.title
-                            }}
-                        </h1>
                         <div class="flex justify-end items-center">
                             <div v-if="post?.type" class="flex gap-1">
                                 <p v-if="post?.sendProtection"
@@ -164,11 +139,25 @@ onMounted(async () => {
                                     TÌM THẤY
                                 </p>
                             </div>
-                            <p v-else class="border-2 border-orange-500 p-1 text-xs font-semibold text-orange-500 rounded">
+                            <p v-else
+                                class="border-2 border-orange-500 p-1 text-xs font-semibold text-orange-500 rounded">
                                 THẤT LẠC
                             </p>
                         </div>
-
+                        <button
+                            v-if="userStore?.user.id !== post?.User?.id && post?.sendProtection == false && post?.done == false"
+                            class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded"
+                            @click="postStore.showRequestModal">
+                            <i class="fa-regular fa-paper-plane mr-1"></i>
+                            {{ post?.type == true ? `Nhận lại đồ vật` : 'Trả lại đồ vật' }}
+                        </button>
+                    </div>
+                </div>
+                <div class="">
+                    <div>
+                        <p class="text-base indent-2 text-justify  ">
+                            {{ post?.description }}
+                        </p>
                     </div>
                     <h2 class="text-gray-500 flex gap-1 items-center text-sm">
                         <i class="fa-solid fa-location-dot"></i>
@@ -176,18 +165,8 @@ onMounted(async () => {
                             {{ location.name }} {{ post?.Location.length - 1 !== i ? '-' : '' }}
                         </div>
                     </h2>
-                    <div>
-                        <h2 class="font-semibold text-sm">Mô tả:</h2>
-                        <p class="text-sm indent-2 text-justify  ">
-                            {{
-                                post?.description
-                            }}
-                        </p>
-                    </div>
                     <h3 class="text-blue-600 text-sm font-semibold hover:underline cursor-pointer">
-                        {{
-                            `#${post?.Item?.name}`
-                        }}
+                        {{ `#${post?.Item?.name}` }}
                     </h3>
                 </div>
             </div>

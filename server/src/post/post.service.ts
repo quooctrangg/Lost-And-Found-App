@@ -29,11 +29,10 @@ export class PostService {
 
     async createPost(userId: number, createPostDto: CreatPostDto, images: Express.Multer.File[]) {
         try {
-            let { title, description, itemId, sendProtection, locations, type } = createPostDto
+            let { description, itemId, sendProtection, locations, type } = createPostDto
             locations = locations.map(id => Number(id))
             const data: any = {
                 userId: userId,
-                title: title,
                 description: description,
                 itemId: itemId,
                 type: Number(type) == 1 ? true : false,
@@ -74,7 +73,7 @@ export class PostService {
                 where.verify = Number(verify)
             }
             if (key) {
-                where.title = {
+                where.description = {
                     contains: key,
                     mode: 'insensitive'
                 }
@@ -140,7 +139,7 @@ export class PostService {
                 }
             }
             if (key) {
-                where.title = {
+                where.description = {
                     contains: key,
                     mode: 'insensitive'
                 }

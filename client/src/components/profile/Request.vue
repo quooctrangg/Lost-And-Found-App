@@ -62,15 +62,11 @@ onMounted(async () => {
                     </div>
                     <div class="flex flex-col">
                         <p class="text-base font-semibold truncate">
-                            {{
-                                request.User.name
-                            }}
+                            {{ request.User.name }}
                         </p>
                         <span class="text-xs italic">
                             <i class=" fa-regular fa-clock"></i>
-                            {{
-                                dayjs(request.createdAt).fromNow()
-                            }}
+                            {{ dayjs(request.createdAt).fromNow() }}
                         </span>
                     </div>
                 </div>
@@ -89,17 +85,13 @@ onMounted(async () => {
                 <h1 class="font-semibold text-base py-2">
                     Yêu cầu cho bài viết:
                     <router-link :to="{ name: 'post-detail', params: { id: request.postId } }"
-                        class="hover:underline hover:text-blue-600">
-                        {{
-                            request.Post.title
-                        }}
+                        class="hover:underline hover:text-blue-600 font-normal">
+                        {{ request.Post.description }}
                     </router-link>
                 </h1>
-                <h1 class="text-sm py-2">
-                    <span class="font-medium">Nội dung: </span>
-                    {{
-                        request.description
-                    }}
+                <h1 class="py-1">
+                    <span class="font-medium">Nội dung yêu cầu: </span>
+                    {{ request.description }}
                 </h1>
             </div>
         </div>

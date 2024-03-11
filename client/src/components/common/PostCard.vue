@@ -15,14 +15,14 @@ const props = defineProps(['post'])
                     <div class="flex flex-col">
                         <p class="text-base truncate">
                             {{
-                                props.post?.User?.name
-                            }}
+            props.post?.User?.name
+        }}
                         </p>
                         <span class="text-xs italic">
                             <i class=" fa-regular fa-clock"></i>
                             {{
-                                dayjs(props.post?.createdAt).fromNow()
-                            }}
+                dayjs(props.post?.createdAt).fromNow()
+            }}
                         </span>
                     </div>
                 </div>
@@ -44,15 +44,8 @@ const props = defineProps(['post'])
                 </div>
             </div>
             <div class="flex flex-col gap-2 mb-3 p-2">
-                <h1 class="font-semibold text-lg">
-                    {{
-                        props.post?.title
-                    }}
-                </h1>
-                <h2 class="text-sm">
-                    {{
-                        props.post?.description
-                    }}
+                <h2 class="text-base">
+                    {{ props.post?.description }}
                 </h2>
             </div>
             <div v-if="props.post?.Image.length" class="grid gap-2 test"
