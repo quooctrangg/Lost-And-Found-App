@@ -14,25 +14,25 @@ export class AuthService {
 
     async register(registerDto: RegisterDto) {
         try {
-            const isEmail = this.validateEmail(registerDto.email)
+            const isEmail = this.validateEmail(registerDto.email.toLowerCase())
             if (!isEmail) {
                 return new ResponseData<User>(null, 400, 'Email không đúng định dạng')
             }
             const user = await this.prismaService.user.findFirst({
                 where: {
-                    email: registerDto.email
+                    email: registerDto.email.toLowerCase()
                 }
             })
             if (user && user.type !== -1) return new ResponseData<User>(null, 400, 'Email đã được sử dụng')
             await this.prismaService.user.deleteMany({
                 where: {
-                    email: registerDto.email
+                    email: registerDto.email.toLowerCase()
                 }
             })
             const hashedPassword = await argon2.hash(registerDto.password)
             await this.prismaService.user.create({
                 data: {
-                    email: registerDto.email,
+                    email: registerDto.email.toLowerCase(),
                     name: registerDto.name,
                     password: hashedPassword,
                     schoolId: registerDto.schoolId
@@ -49,7 +49,7 @@ export class AuthService {
         try {
             const user = await this.prismaService.user.findFirst({
                 where: {
-                    email: loginDto.email
+                    email: loginDto.email.toLowerCase()
                 },
                 include: {
                     Feedback: {

@@ -102,7 +102,7 @@ export class UserService {
         try {
             const user = await this.prismaService.user.findFirst({
                 where: {
-                    email: createUserDto.email
+                    email: createUserDto.email.toLowerCase()
                 }
             })
             if (user) {
@@ -111,7 +111,7 @@ export class UserService {
             const hashedPassword = await argon2.hash(createUserDto.password)
             await this.prismaService.user.create({
                 data: {
-                    email: createUserDto.email,
+                    email: createUserDto.email.toLowerCase(),
                     password: hashedPassword,
                     name: createUserDto.name,
                     schoolId: createUserDto.schoolId,
