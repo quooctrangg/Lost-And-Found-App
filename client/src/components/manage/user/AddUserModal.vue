@@ -3,8 +3,9 @@ import { FwbButton, FwbModal } from 'flowbite-vue'
 import { useManageStore } from '../../../stores/manage.store'
 import { useUserStore } from '../../../stores/user.store'
 import { useSchoolStore } from '../../../stores/school.store'
+import { useMajorStore } from '../../../stores/major.store'
 import { useToast } from 'vue-toast-notification'
-import { reactive } from 'vue'
+import { reactive, watch } from 'vue'
 import Loading from '../../common/Loading.vue'
 import * as yup from "yup";
 import { Form, Field, ErrorMessage } from "vee-validate";
@@ -12,19 +13,22 @@ import { Form, Field, ErrorMessage } from "vee-validate";
 const manageStore = useManageStore()
 const userStore = useUserStore()
 const schoolStore = useSchoolStore()
+const majorStore = useMajorStore()
 const $toast = useToast()
 
 const user = reactive({
     name: '',
     email: '',
     password: '',
-    schoolId: ''
+    schoolId: '',
+    majorId: ''
 })
 const formSchemaUser = yup.object().shape({
     name: yup.string().required("Tên phải có giá trị.").min(1, 'Tên phải ít nhất 1 ký tự.').max(50, "Tên có nhiều nhất 50 ký tự."),
     email: yup.string().required("Email phải có giá trị.").email("E-mail không đúng.").max(50, "E-mail tối đa 50 ký tự."),
     password: yup.string().required('Mật khẩu phải có giá trị.').min(6, 'Tên phải ít nhất 6 ký tự.'),
-    schoolId: yup.string().required('Yêu cầu chọn trường / khoa.')
+    schoolId: yup.string().required('Yêu cầu chọn trường / khoa.'),
+    majorId: yup.string().required('Yêu cầu chọn chuyên ngành.')
 })
 
 const createUser = async () => {
@@ -38,9 +42,18 @@ const createUser = async () => {
     user.password = ''
     user.schoolId = ''
     user.email = ''
+    user.majorId = ''
     await userStore.getAllUsers({ page: userStore.currentPage, key: userStore.key, isBan: userStore.isBan, schoolId: userStore.schoolId })
     manageStore.closeAddUserModal()
 }
+
+watch(() => user.schoolId, async newval => {
+    if (newval) {
+        user.majorId = ''
+        await majorStore.getAllsBySchoolId(newval)
+    }
+})
+
 </script>
 
 <template>
@@ -72,23 +85,35 @@ const createUser = async () => {
                         <label for="password" class="label-custom">
                             Mật khẩu:
                         </label>
-                        <Field name="password" type="password" id="password" class="input-custom" v-model="user.password" />
+                        <Field name="password" type="password" id="password" class="input-custom"
+                            v-model="user.password" />
                         <ErrorMessage name="password" class="error" />
                     </div>
                     <div>
-                        <label for="school" class="label-custom">
+                        <label for="schoolId" class="label-custom">
                             Trường / Khoa:
                         </label>
                         <Field as="select" name="schoolId" id="schoolId" class="input-custom" v-model="user.schoolId">
                             <option value="">Chọn trường / khoa</option>
                             <option v-if="schoolStore.schools?.length" v-for="school in schoolStore.schools"
                                 :key="school.id" :value="school.id">
-                                {{
-                                    school.name
-                                }}
+                                {{ school.name }}
                             </option>
                         </Field>
                         <ErrorMessage name="schoolId" class="error" />
+                    </div>
+                    <div>
+                        <label for="majorId" class="label-custom">
+                            Chuyên ngành:
+                        </label>
+                        <Field as="select" name="majorId" id="majorId" class="input-custom" v-model="user.majorId">
+                            <option value="">Chọn chuyên ngành</option>
+                            <option v-if="majorStore.majors?.length" v-for="major in majorStore.majors" :key="major.id"
+                                :value="major.id">
+                                {{ major.name }}
+                            </option>
+                        </Field>
+                        <ErrorMessage name="majorId" class="error" />
                     </div>
                     <button type="submit" hidden id="btn-submit"></button>
                 </Form>

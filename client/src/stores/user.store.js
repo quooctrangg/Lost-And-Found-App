@@ -16,6 +16,7 @@ export const useUserStore = defineStore('user', () => {
     const currentPage = ref(1)
     const key = ref('')
     const isBan = ref(null)
+    const majorId = ref(null)
     const schoolId = ref(null)
     const isShow = reactive({
         updatePassword: false,
@@ -206,7 +207,7 @@ export const useUserStore = defineStore('user', () => {
 
     return {
         isShow, user, err, result, isLoading, users, totalPages, isLoadingUpdate,
-        currentPage, key, isBan, schoolId, getMe, updateAvatar, getProfileUser,
+        currentPage, key, isBan, majorId, schoolId, getMe, updateAvatar, getProfileUser,
         updateProfile, updatePassword, getAllUsers, createUser,
         toggleBanUser, updateUser, forgotPassword, sendVerifyCode,
         closeUpdatePasswordModal, showUpdatePasswordModal,

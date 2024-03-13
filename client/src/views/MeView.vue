@@ -45,7 +45,7 @@ onMounted(() => {
                     </span>
                 </h1>
                 <h2 class="text-base text-gray-600 indent-3">
-                    Trường/Khoa: {{ userStore.user?.School?.name }}
+                    Chuyên ngành: {{ userStore.user?.Major?.name }}
                 </h2>
                 <h2 class="text-base text-gray-600 indent-3">
                     Email: {{ userStore.user?.email }}

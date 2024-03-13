@@ -77,7 +77,7 @@ const exportExcel = () => {
             [date],
             [],
             [],
-            ['STT', 'Người tìm thấy', 'Trường / Khoa', 'Người thất lạc', 'Loại đồ', 'Gửi lại bảo vệ'],
+            ['STT', 'Người tìm thấy', 'Chuyên ngành', 'Người thất lạc', 'Loại đồ', 'Gửi lại bảo vệ'],
             ...objectsToArray(dashboardStore.studentsList)
         ]
     )
@@ -138,7 +138,7 @@ onMounted(async () => {
                 <tr>
                     <th class="border border-slate-600 bg-blue-300 p-2">STT</th>
                     <th class="border border-slate-600 bg-blue-300 p-2">Người tìm thấy</th>
-                    <th class="border border-slate-600 bg-blue-300 p-2">Trường / Khoa</th>
+                    <th class="border border-slate-600 bg-blue-300 p-2">Chuyên ngành</th>
                     <th class="border border-slate-600 bg-blue-300 p-2">Người thất lạc</th>
                     <th class="border border-slate-600 bg-blue-300 p-2">Loại đồ</th>
                     <th class="border border-slate-600 bg-blue-300 p-2">Gửi lại bảo vệ</th>

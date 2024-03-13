@@ -77,7 +77,7 @@ onMounted(async () => {
                     </span>
                 </h1>
                 <h2 class="text-base text-gray-600 indent-3">
-                    Trường/Khoa: {{ profile?.School?.name }}
+                    Chuyên ngành: {{ profile?.Major?.name }}
                 </h2>
                 <h2 class="text-base text-gray-600 indent-3">
                     Tham gia vào ngày {{ dayjs(profile?.createAt).format('DD, MMMM, YYYY') }}

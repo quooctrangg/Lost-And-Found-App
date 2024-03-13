@@ -3,8 +3,9 @@ import { FwbButton, FwbModal } from 'flowbite-vue'
 import { useManageStore } from '../../../stores/manage.store'
 import { useUserStore } from '../../../stores/user.store'
 import { useSchoolStore } from '../../../stores/school.store'
+import { useMajorStore } from '../../../stores/major.store'
 import { useToast } from 'vue-toast-notification'
-import { reactive, ref, watchEffect } from 'vue'
+import { reactive, ref, watch, watchEffect } from 'vue'
 import Loading from '../../common/Loading.vue'
 import * as yup from "yup";
 import { Form, Field, ErrorMessage } from "vee-validate";
@@ -12,6 +13,7 @@ import { Form, Field, ErrorMessage } from "vee-validate";
 const manageStore = useManageStore()
 const userStore = useUserStore()
 const schoolStore = useSchoolStore()
+const majorStore = useMajorStore()
 const $toast = useToast()
 
 const props = defineProps(['user'])
@@ -19,11 +21,13 @@ const props = defineProps(['user'])
 const user = reactive({
     name: '',
     password: '',
-    schoolId: ''
+    schoolId: '',
+    majorId: ''
 })
 const formSchemaUser = yup.object().shape({
     name: yup.string().required("Tên phải có giá trị.").min(1, 'Tên phải ít nhất 1 ký tự.').max(50, "Tên có nhiều nhất 50 ký tự."),
-    schoolId: yup.string().required('Yêu cầu chọn trường / khoa.')
+    schoolId: yup.string().required('Yêu cầu chọn trường / khoa.'),
+    majorId: yup.string().required('Yêu cầu chọn chuyên ngành')
 })
 
 const url = ref(null)
@@ -51,8 +55,8 @@ const editUser = async () => {
     if (user.name !== props.user.name) {
         data.append('name', user.name)
     }
-    if (user.schoolId !== props.user.schoolId) {
-        data.append('schoolId', user.schoolId)
+    if (user.majorId !== props.user.majorId) {
+        data.append('majorId', user.majorId)
     }
     await userStore.updateUser(data, props.user.id)
     if (userStore.err) {
@@ -63,16 +67,27 @@ const editUser = async () => {
     user.name = ''
     user.password = ''
     user.schoolId = ''
+    user.majorId = ''
     selectedFile.value = null
     url.value = null
-    await userStore.getAllUsers({ page: userStore.currentPage, key: userStore.key, isBan: userStore.isBan, schoolId: userStore.schoolId })
+    await userStore.getAllUsers({ page: userStore.currentPage, key: userStore.key, isBan: userStore.isBan, majorId: userStore.majorId })
     manageStore.closeEditUserModal()
 }
+
+watch(() => user.schoolId, async newval => {
+    if (newval) {
+        if (newval !== props.user?.Major?.schoolId) {
+            user.majorId = ''
+        }
+        await majorStore.getAllsBySchoolId(newval)
+    }
+})
 
 watchEffect(async () => {
     if (props.user) {
         user.name = props.user.name
-        user.schoolId = props.user.schoolId
+        user.schoolId = props.user?.Major?.schoolId
+        user.majorId = props.user?.Major?.id
     }
 })
 </script>
@@ -129,6 +144,19 @@ watchEffect(async () => {
                             </option>
                         </Field>
                         <ErrorMessage name="schoolId" class="error" />
+                    </div>
+                    <div>
+                        <label for="majorId" class="label-custom">
+                            Chuyên ngành:
+                        </label>
+                        <Field as="select" name="majorId" id="majorId" class="input-custom" v-model="user.majorId">
+                            <option value="">Chọn chuyên ngành</option>
+                            <option v-if="majorStore.majors?.length" v-for="major in majorStore.majors" :key="major.id"
+                                :value="major.id">
+                                {{ major.name }}
+                            </option>
+                        </Field>
+                        <ErrorMessage name="majorId" class="error" />
                     </div>
                     <div class="mt-4">
                         <label for="password" class="label-custom">

@@ -1,9 +1,10 @@
 <script setup>
-import { onMounted, ref, watchEffect } from 'vue'
+import { onMounted, ref, watch, watchEffect } from 'vue'
 import { FwbPagination } from 'flowbite-vue'
 import { useManageStore } from '../../../stores/manage.store'
 import { useUserStore } from '../../../stores/user.store'
 import { useSchoolStore } from '../../../stores/school.store'
+import { useMajorStore } from '../../../stores/major.store'
 import { useToast } from 'vue-toast-notification'
 import Seach from '../../common/Seach.vue';
 import AddUserModal from './AddUserModal.vue';
@@ -16,6 +17,7 @@ import dayjs from 'dayjs'
 const manageStore = useManageStore()
 const userStore = useUserStore()
 const schoolStore = useSchoolStore()
+const majorStore = useMajorStore()
 const $toast = useToast()
 
 const emit = defineEmits(['currentPage'])
@@ -37,7 +39,17 @@ const toggleBanUser = async (user, feedback = null) => {
 }
 
 watchEffect(async () => {
-    await userStore.getAllUsers({ page: userStore.currentPage, key: userStore.key, isBan: userStore.isBan, schoolId: userStore.schoolId })
+    await userStore.getAllUsers({ page: userStore.currentPage, key: userStore.key, isBan: userStore.isBan, schoolId: userStore.schoolId, majorId: userStore.majorId })
+})
+
+watch(() => userStore.schoolId, async newval => {
+    if (newval !== 'null' && newval !== null && newval !== '') {
+        userStore.majorId = 'null'
+        await majorStore.getAllsBySchoolId(newval)
+    } else {
+        userStore.majorId = 'null'
+        majorStore.majors = []
+    }
 })
 
 onMounted(async () => {
@@ -54,10 +66,12 @@ onMounted(async () => {
 <template>
     <div class="flex flex-col gap-5">
         <div class="w-full">
-            <div class="flex items-center justify-between w-full">
-                <div class="flex gap-5">
-                    <div class="border border-black rounded-xl">
-                        <Seach :title="'Nhập tên hoặc email'" @key="(e) => { userStore.key = e }" />
+            <div class="flex items-center justify-between w-full gap-3">
+                <div class="flex-1 flex gap-5 justify-between items-center">
+                    <div>
+                        <div class="border border-black rounded-xl">
+                            <Seach :title="'Nhập tên hoặc email'" @key="(e) => { userStore.key = e }" />
+                        </div>
                     </div>
                     <div class="flex gap-1 items-center">
                         <label for="isban">Trạng thái: </label>
@@ -67,14 +81,25 @@ onMounted(async () => {
                             <option value="true">Khóa</option>
                         </select>
                     </div>
-                    <div>
-                        <label for="school">Trường / khoa: </label>
-                        <select name="" id="school" class="rounded-xl p-1" v-model="userStore.schoolId">
-                            <option value="null">Tất cả</option>
-                            <option v-for="school in schoolStore.schools" :key="school.id" :value="school.id">
-                                {{ school.name }}
-                            </option>
-                        </select>
+                    <div class="flex flex-col gap-2">
+                        <div class="flex items-center gap-1">
+                            <label for="schoolId">Trường / khoa: </label>
+                            <select name="" id="schoolId" class="rounded-xl p-1 flex-1" v-model="userStore.schoolId">
+                                <option value="null">Tất cả</option>
+                                <option v-for="school in schoolStore.schools" :key="school.id" :value="school.id">
+                                    {{ school.name }}
+                                </option>
+                            </select>
+                        </div>
+                        <div class="flex items-center gap-1">
+                            <label for="major">Chuyên ngành: </label>
+                            <select name="" id="major" class="rounded-xl p-1 flex-1" v-model="userStore.majorId">
+                                <option value="null">Tất cả</option>
+                                <option v-for="major in majorStore.majors" :key="major.id" :value="major.id">
+                                    {{ major.name }}
+                                </option>
+                            </select>
+                        </div>
                     </div>
                 </div>
                 <button class="p-2 text-blue-500 rounded font-medium hover:text-blue-400 text-xl"
@@ -139,9 +164,9 @@ onMounted(async () => {
                         </td>
                         <td class="whitespace-nowrap px-6 py-4 flex gap-2 items-center justify-center">
                             <button v-if="!user.isBan" class="p-2 text-red-600 hover:text-red-700 text-2xl" @click="() => {
-                            manageStore.showFeedbackModal()
-                            currentUser = user
-                        }">
+                                manageStore.showFeedbackModal()
+                                currentUser = user
+                            }">
                                 <i class="fa-solid fa-lock"></i>
                             </button>
                             <button v-else class="p-2 text-orange-400 hover:text-orange-500 text-2xl"
@@ -149,15 +174,15 @@ onMounted(async () => {
                                 <i class="fa-solid fa-unlock"></i>
                             </button>
                             <button class="p-2 text-yellow-300 hover:text-yellow-400 text-2xl" @click="() => {
-                            manageStore.showEditUserModal()
-                            currentUser = user
-                        }">
+                                manageStore.showEditUserModal()
+                                currentUser = user
+                            }">
                                 <i class="fa-solid fa-pen"></i>
                             </button>
                             <button class="p-2 text-gray-500 hover:text-gray-600 text-2xl" @click="() => {
-                            manageStore.showHistoryModal()
-                            currentUser = user
-                        }">
+                                manageStore.showHistoryModal()
+                                currentUser = user
+                            }">
                                 <i class="fa-regular fa-eye"></i>
                             </button>
                         </td>

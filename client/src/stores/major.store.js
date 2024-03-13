@@ -41,7 +41,7 @@ export const useMajorStore = defineStore('major', () => {
             let res = await majorService.getAllsBySchoolId(schoolId)
             if (res.statusCode !== 200) throw new Error(res.message)
             result.value = res
-            majors.value = res.data.data
+            majors.value = res.data
         } catch (error) {
             err.value = error.message
         } finally {

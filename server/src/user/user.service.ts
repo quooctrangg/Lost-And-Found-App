@@ -42,10 +42,10 @@ export class UserService {
         }
     }
 
-    async getAllUser(option: { page: number, key: string, isBan: string, schoolId: number }) {
+    async getAllUser(option: { page: number, key: string, isBan: string, schoolId: number, majorId: number }) {
         const pageSize = PAGE_SIZE.PAGE_USER
         try {
-            let { key, page, isBan, schoolId } = option
+            let { key, page, isBan, schoolId, majorId } = option
             let whereCondition: any = {
                 type: USER_TYPES.USER
             }
@@ -62,10 +62,21 @@ export class UserService {
                     }
                 }]
             }
+            if (schoolId) {
+                whereCondition.AND = [
+                    {
+                        Major: {
+                            schoolId: Number(schoolId)
+                        }
+                    }
+                ]
+                if (majorId) {
+                    whereCondition.AND.push({ majorId: Number(majorId) })
+                }
+            }
             if (isBan !== undefined && isBan !== null) {
                 whereCondition.isBan = isBan == 'true' ? true : false
             }
-            if (schoolId) whereCondition.schoolId = Number(schoolId)
             const totalCount = await this.prismaService.user.count({
                 where: whereCondition,
             })
@@ -83,7 +94,11 @@ export class UserService {
                     isBan: true,
                     createdAt: true,
                     Feedback: true,
-                    Major: true
+                    Major: {
+                        include: {
+                            School: true
+                        }
+                    }
                 },
                 orderBy: {
                     id: 'asc'
@@ -165,7 +180,8 @@ export class UserService {
                     id: user.id
                 },
                 data: {
-                    ...updateProfileDto
+                    name: updateProfileDto.name,
+                    majorId: updateProfileDto.majorId
                 }
             })
             return new ResponseData<any>(null, 200, 'Cập nhật thông tin thành công')

@@ -21,7 +21,11 @@ export class JwtStrategy extends PassportStrategy(Strategy, 'jwt') {
                 email: payload.email
             },
             include: {
-                Major: true,
+                Major: {
+                    include: {
+                        School: true
+                    }
+                },
                 Post: {
                     where: {
                         isDelete: false
