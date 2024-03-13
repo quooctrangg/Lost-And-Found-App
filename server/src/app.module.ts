@@ -18,14 +18,23 @@ import { DashboardModule } from './dashboard/dashboard.module';
 import { NotificationModule } from './notification/notification.module';
 import { SearchHistoryModule } from './search-history/search-history.module';
 import { SuggestModule } from './suggest/suggest.module';
+import { ScheduleModule } from '@nestjs/schedule';
 import * as Joi from 'joi';
 
 @Module({
-  imports: [ConfigModule.forRoot({
-    isGlobal: true,
-    validationSchema: Joi.object({
-      PORT: Joi.number().required(),
+  imports: [
+    ConfigModule.forRoot({
+      isGlobal: true,
+      validationSchema: Joi.object({
+        PORT: Joi.number().required(),
+      }),
     }),
-  }), PrismaModule, AuthModule, MailingModule, UserModule, CloudinaryModule, ItemModule, LocationModule, PostModule, SchoolModule, SocketModule, ConversationModule, MessageModule, RequestModule, CommentModule, DashboardModule, NotificationModule, SearchHistoryModule, SuggestModule]
+    ScheduleModule.forRoot(),
+    PrismaModule, AuthModule, MailingModule, UserModule,
+    CloudinaryModule, ItemModule, LocationModule, PostModule,
+    SchoolModule, SocketModule, ConversationModule, MessageModule,
+    RequestModule, CommentModule, DashboardModule, NotificationModule,
+    SearchHistoryModule, SuggestModule
+  ]
 })
 export class AppModule { }

@@ -1,28 +1,29 @@
 from sklearn.metrics.pairwise import cosine_similarity
 from sklearn.feature_extraction.text import TfidfVectorizer
 import pandas as pd
+import sys
 
-data = pd.read_csv("data.csv")
+def suggest_items_based_on_description(descriptions):
+    data = pd.read_csv("D:\project\lostandfound\server\src\suggest\scripts\data.csv")
+    df = pd.DataFrame(data)
 
-df = pd.DataFrame(data)
+    tfidf_vectorizer = TfidfVectorizer()
+    tfidf_matrix = tfidf_vectorizer.fit_transform(df['description'])
 
-tfidf_vectorizer = TfidfVectorizer()
-tfidf_matrix = tfidf_vectorizer.fit_transform(df['description'])
+    new_description_matrix = tfidf_vectorizer.transform(descriptions)
+    similarities_new = cosine_similarity(new_description_matrix, tfidf_matrix)
 
-similarities = cosine_similarity(tfidf_matrix, tfidf_matrix)
+    n_similar_items = 2
+    similar_items_indices = similarities_new.argsort(axis=1)[:, -n_similar_items:][:, ::-1]
 
-new_description = "CCCD"
+    suggested_items = []
+    for indices in similar_items_indices:
+        similar_items_ids = df.loc[indices, 'itemId'].tolist()
+        suggested_items.append(similar_items_ids)
 
-new_description_vector = tfidf_vectorizer.transform([new_description])
+    return suggested_items
 
-similarities_new = cosine_similarity(new_description_vector, tfidf_matrix)
-
-n_similar_items = 2
-
-similar_items_indices = similarities_new.argsort(axis=1).squeeze()[-n_similar_items:][::-1]
-
-similar_items_ids = df.loc[similar_items_indices, 'itemId'].tolist()
-
-print("Các itemId được đề xuất dựa trên mô tả đã nhập:")
-
-print(similar_items_ids)
+if __name__ == "__main__":
+    descriptions = sys.argv[1:]
+    suggested_items = suggest_items_based_on_description(descriptions)
+    print(suggested_items)

@@ -10,7 +10,7 @@
         "outDir": "dist"
       },
       {
-        "include": "suggest/model/**/*",
+        "include": "suggest/scripts/**/*",
         "outDir": "dist"
       }
     ],
