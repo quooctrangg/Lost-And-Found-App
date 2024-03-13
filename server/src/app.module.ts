@@ -19,6 +19,7 @@ import { NotificationModule } from './notification/notification.module';
 import { SearchHistoryModule } from './search-history/search-history.module';
 import { SuggestModule } from './suggest/suggest.module';
 import { ScheduleModule } from '@nestjs/schedule';
+import { MajorModule } from './major/major.module';
 import * as Joi from 'joi';
 
 @Module({
@@ -34,7 +35,7 @@ import * as Joi from 'joi';
     CloudinaryModule, ItemModule, LocationModule, PostModule,
     SchoolModule, SocketModule, ConversationModule, MessageModule,
     RequestModule, CommentModule, DashboardModule, NotificationModule,
-    SearchHistoryModule, SuggestModule
+    SearchHistoryModule, SuggestModule, MajorModule
   ]
 })
 export class AppModule { }

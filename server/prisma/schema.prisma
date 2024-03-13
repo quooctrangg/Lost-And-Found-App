@@ -29,8 +29,8 @@ model User {
   Conversation  Conversation[]
   Comment       Comment[]
 
-  School   School? @relation(fields: [schoolId], references: [id])
-  schoolId Int?
+  Major   Major? @relation(fields: [majorId], references: [id])
+  majorId Int?
 
   @@map("users")
 }
@@ -69,9 +69,21 @@ model School {
   id   Int    @id @default(autoincrement())
   name String
 
-  User User[]
+  Major Major[]
 
   @@map("schools")
+}
+
+model Major {
+  id   Int    @id @default(autoincrement())
+  name String
+
+  User User[]
+
+  School   School? @relation(fields: [schoolId], references: [id])
+  schoolId Int?
+
+  @@map("majors")
 }
 
 model Conversation {

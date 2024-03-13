@@ -20,7 +20,8 @@ export enum PAGE_SIZE {
     PAGE_POST = 10,
     PAGE_SCHOOL = 10,
     PAGE_LOCATION = 10,
-    PAGE_ITEM = 10
+    PAGE_ITEM = 10,
+    PAGE_MAJOR = 10
 }
 
 export enum POST_SIZE {
