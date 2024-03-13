@@ -1,6 +1,6 @@
 import { reactive, ref } from 'vue'
 import { defineStore } from 'pinia'
-import commentService from '@/services/comment.service'
+import commentService from '../services/comment.service'
 import { useAuthStore } from './auth.store'
 import { useMessageStore } from './message.store'
 

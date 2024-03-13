@@ -1,7 +1,7 @@
 import { ref } from 'vue'
 import { defineStore } from 'pinia'
 import { useAuthStore } from './auth.store'
-import searchHistoryService from '@/services/search-history.service'
+import searchHistoryService from '../services/search-history.service'
 
 export const useSearchHistoryStore = defineStore('search-history', () => {
     const authStore = useAuthStore()

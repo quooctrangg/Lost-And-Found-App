@@ -2,6 +2,7 @@
 import { ref, onMounted, reactive, onUnmounted, watch } from 'vue';
 import { usePostStore } from '../stores/post.store'
 import { useUserStore } from '../stores/user.store'
+import { useAuthStore } from '../stores/auth.store'
 import PostCard from '../components/common/PostCard.vue';
 import FilterModal from '../components/post/FilterModal.vue'
 import PostModal from '../components/post/PostModal.vue'
@@ -13,6 +14,7 @@ import Loading from '../components/common/Loading.vue';
 
 const postStore = usePostStore()
 const userStore = useUserStore()
+const authStore = useAuthStore
 
 const posts = ref([])
 const option = reactive({
@@ -87,7 +89,8 @@ onUnmounted(() => {
             <div class="w-[70%]" ref="scrollComponent">
                 <PostCard v-if="posts.length" v-for=" post  in  posts " :post="post" />
             </div>
-            <div class="w-[30%] bg-white rounded-md shadow border-2 border-green-400 h-fit p-2 sticky top-11">
+            <div v-if="userStore.user?.id"
+                class="w-[30%] bg-white rounded-md shadow border-2 border-green-400 h-fit p-2 sticky top-11">
                 <h1 class="text-center font-semibold text-lg text-green-500 italic border-b ">Gợi ý cho bạn</h1>
                 <SuggestCard />
             </div>

@@ -1,7 +1,7 @@
 import { ref } from 'vue'
 import { defineStore } from 'pinia'
 import { useAuthStore } from './auth.store'
-import notificationService from '@/services/notification.service'
+import notificationService from '../services/notification.service'
 
 export const useNotificationStore = defineStore('notification', () => {
     const authStore = useAuthStore()

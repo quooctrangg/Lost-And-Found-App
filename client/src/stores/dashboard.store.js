@@ -1,7 +1,7 @@
 import { reactive, ref } from 'vue'
 import { defineStore } from 'pinia'
 import { useAuthStore } from './auth.store'
-import dashboardService from '@/services/dashboard.service'
+import dashboardService from '../services/dashboard.service'
 
 export const useDashboardtore = defineStore('dashboard', () => {
     const authStore = useAuthStore()
