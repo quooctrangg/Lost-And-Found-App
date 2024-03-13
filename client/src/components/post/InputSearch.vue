@@ -81,9 +81,7 @@ watchEffect(async () => {
             <li v-if="searchHistoryStore.searchs.length" v-for="search in searchHistoryStore.searchs"
                 class="px-3 py-1 flex hover:bg-gray-200">
                 <div class="flex-1 cursor-pointer" @click="() => { key = search.content }">
-                    {{
-                search.content
-            }}
+                    {{ search.content }}
                 </div>
                 <button @click="async () => { await deleteById(search.id) }" class="text-red-600 hover:text-red-800">
                     Xóa

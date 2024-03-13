@@ -33,7 +33,7 @@ onMounted(async () => {
         <div class="w-full max-w-[700px]">
             <Bar :option="props.option" :data="dashboardStore.chart.countType" />
         </div>
-        <div class="grid grid-cols-2 gap-2 w-full">
+        <div class="grid grid-cols-2 gap-2 w-full min-h-[500px]">
             <Doughnut :data="dashboardStore.chart.countLocation" />
             <Pie :data="dashboardStore.chart.countItem" />
         </div>
