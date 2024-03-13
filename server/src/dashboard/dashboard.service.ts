@@ -186,7 +186,7 @@ export class DashboardService {
             select: {
               id: true,
               email: true,
-              School: true
+              Major: true
             },
           },
           Post: {
@@ -195,7 +195,7 @@ export class DashboardService {
                 select: {
                   id: true,
                   email: true,
-                  School: true
+                  Major: true
                 }
               },
               Item: true
@@ -216,7 +216,7 @@ export class DashboardService {
             select: {
               id: true,
               email: true,
-              School: true
+              Major: true
             }
           },
           Item: true
@@ -224,13 +224,13 @@ export class DashboardService {
       })
       lostandfond.forEach(e => {
         if (e.Post.type == true) {
-          list.push({ found: e.Post.User.email, school: e.Post.User.School.name, lost: e.User.email, item: e.Post.Item.name, sendProtection: false })
+          list.push({ found: e.Post.User.email, school: e.Post.User.Major.name, lost: e.User.email, item: e.Post.Item.name, sendProtection: false })
         } else {
-          list.push({ found: e.User.email, school: e.User.School.name, lost: e.Post.User.email, item: e.Post.Item.name, sendProtection: false })
+          list.push({ found: e.User.email, school: e.User.Major.name, lost: e.Post.User.email, item: e.Post.Item.name, sendProtection: false })
         }
       })
       sendProtection.forEach(e => {
-        list.push({ found: e.User.email, school: e.User.School.name, lost: '', item: e.Item.name, sendProtection: true })
+        list.push({ found: e.User.email, school: e.User.Major.name, lost: '', item: e.Item.name, sendProtection: true })
       })
       return new ResponseData<any>(list, 200, 'Thống kê')
     } catch (error) {

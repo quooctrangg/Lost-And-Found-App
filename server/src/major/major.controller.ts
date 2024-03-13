@@ -10,7 +10,9 @@ export class MajorController {
   constructor(private readonly majorService: MajorService) { }
 
   @Get()
-  getAlls(@Query() option: { page: number, key: string }) {
+  @UseGuards(MyJWTGuard, RolesGuard)
+  @Role(USER_TYPES.ADMIN)
+  getAlls(@Query() option: { page: number, key: string, schoolId: number }) {
     return this.majorService.getAlls(option)
   }
 
@@ -33,7 +35,7 @@ export class MajorController {
     return this.majorService.update(id, updateMajorDto)
   }
 
-  @Delete('id')
+  @Delete(':id')
   @UseGuards(MyJWTGuard, RolesGuard)
   @Role(USER_TYPES.ADMIN)
   delete(@Param('id', ParseIntPipe) id: number) {

@@ -27,7 +27,7 @@ export class UserService {
                 },
                 include: {
                     Post: true,
-                    School: true
+                    Major: true
                 }
             })
             if (!user) {
@@ -83,8 +83,7 @@ export class UserService {
                     isBan: true,
                     createdAt: true,
                     Feedback: true,
-                    schoolId: true,
-                    School: true
+                    Major: true
                 },
                 orderBy: {
                     id: 'asc'
@@ -114,7 +113,7 @@ export class UserService {
                     email: createUserDto.email.toLowerCase(),
                     password: hashedPassword,
                     name: createUserDto.name,
-                    schoolId: createUserDto.schoolId,
+                    majorId: createUserDto.majorId,
                     type: 1
                 }
             })
@@ -198,7 +197,7 @@ export class UserService {
 
     async updateUser(userId: number, updateUserDto: updateUserDto, image: Express.Multer.File) {
         try {
-            const data: { name?: string, image?: string, password?: string, schoolId?: number } = {}
+            const data: { name?: string, image?: string, password?: string, majorId?: number } = {}
             const user = await this.getUserById(userId)
             if (!user) {
                 return new ResponseData<User>(null, 400, 'Tài khoản không tồn tại')
@@ -214,8 +213,8 @@ export class UserService {
                 const img = await this.cloudinaryService.uploadFile(image)
                 data.image = img.url
             }
-            if (updateUserDto.schoolId) {
-                data.schoolId = updateUserDto.schoolId
+            if (updateUserDto.majorId) {
+                data.majorId = updateUserDto.majorId
             }
             await this.prismaService.user.update({
                 where: {

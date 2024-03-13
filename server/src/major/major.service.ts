@@ -29,28 +29,21 @@ export class MajorService {
     }
   }
 
-  async getAlls(option: { page: number, key: string }) {
+  async getAlls(option: { page: number, key: string, schoolId: number }) {
     try {
-      let { page, key } = option
+      let { page, key, schoolId } = option
       let totalPages = 1
       let pageSize = undefined
       let next = undefined
       let where: any = {}
       if (key) {
-        where.OR = [
-          {
-            name: {
-              contains: key,
-              mode: 'insensitive'
-            }
-          },
-          {
-            symbol: {
-              contains: key,
-              mode: 'insensitive'
-            }
-          }
-        ]
+        where.name = {
+          contains: key,
+          mode: 'insensitive'
+        }
+      }
+      if (schoolId) {
+        where.schoolId = Number(schoolId)
       }
       if (page) {
         pageSize = PAGE_SIZE.PAGE_MAJOR
@@ -71,7 +64,10 @@ export class MajorService {
         },
         skip: next,
         take: pageSize,
-        where: where
+        where: where,
+        include: {
+          School: true
+        }
       })
       return new ResponseData<any>({ data, totalPages }, 200, 'Tìm thành công')
     } catch (error) {

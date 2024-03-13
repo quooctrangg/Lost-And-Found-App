@@ -11,6 +11,7 @@ const name = {
     'item': 'DANH MỤC',
     'location': 'VỊ TRÍ',
     'school': 'TRƯỜNG',
+    'major': 'CHUYÊN NGÀNH'
 }
 </script>
 
@@ -48,6 +49,11 @@ const name = {
                     :class="currentPage == 'school' ? 'bg-white text-sky-400 border-2 border-blue-400' : 'text-white  bg-sky-400 hover:bg-sky-500'">
                     <i class="fa-solid fa-house"></i>
                     Trường / Khoa
+                </router-link>
+                <router-link :to="{ name: 'major-manage' }" class="rounded-lg shadow p-2 font-medium"
+                    :class="currentPage == 'major' ? 'bg-white text-sky-400 border-2 border-blue-400' : 'text-white  bg-sky-400 hover:bg-sky-500'">
+                    <i class="fa-solid fa-house"></i>
+                    Chuyên ngành
                 </router-link>
             </div>
             <div class="border-2 border-blue-400 p-4 rounded-lg shadow flex-1">

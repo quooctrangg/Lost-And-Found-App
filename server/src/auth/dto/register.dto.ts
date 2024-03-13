@@ -20,5 +20,5 @@ export class RegisterDto {
 
     @IsNumber()
     @IsNotEmpty()
-    schoolId: number
+    majorId: number
 }

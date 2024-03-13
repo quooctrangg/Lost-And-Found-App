@@ -15,5 +15,5 @@ export class updateUserDto {
 
     @IsNumber()
     @IsOptional()
-    schoolId: number
+    majorId: number
 }

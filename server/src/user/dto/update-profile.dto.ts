@@ -10,5 +10,5 @@ export class updateProfileDto {
 
     @IsOptional()
     @IsNumber()
-    schoolId: number
+    majorId: number
 }

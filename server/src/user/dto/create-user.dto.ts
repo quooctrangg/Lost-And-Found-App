@@ -20,5 +20,5 @@ export class createUserDto {
 
     @IsNumber()
     @IsNotEmpty()
-    schoolId: number
+    majorId: number
 }

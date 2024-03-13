@@ -1,4 +1,4 @@
-import { reactive, ref } from 'vue'
+import { reactive } from 'vue'
 import { defineStore } from 'pinia'
 
 export const useManageStore = defineStore('manage', () => {
@@ -14,7 +14,9 @@ export const useManageStore = defineStore('manage', () => {
         addLocation: false,
         editSchool: false,
         addSchool: false,
-        history: false
+        history: false,
+        addMajor: false,
+        editMajor: false
     })
 
     const closeAddUserModal = () => { isShow.addUser = false }
@@ -61,6 +63,14 @@ export const useManageStore = defineStore('manage', () => {
 
     const showHistoryModal = () => { isShow.history = true }
 
+    const closeAddMajorModal = () => { isShow.addMajor = false }
+
+    const showAddMajorModal = () => { isShow.addMajor = true }
+
+    const closeEditMajorModal = () => { isShow.editMajor = false }
+
+    const showEditMajorModal = () => { isShow.editMajor = true }
+
     return {
         isShow,
         closeAddUserModal, showAddUserModal,
@@ -73,6 +83,8 @@ export const useManageStore = defineStore('manage', () => {
         closeEditLocationModal, showEditLocationModal,
         closeEditSchoolModal, showEditSchoolModal,
         closeAddSchoolModal, showAddSchoolModal,
-        closeHistoryModal, showHistoryModal
+        closeHistoryModal, showHistoryModal,
+        closeAddMajorModal, showAddMajorModal,
+        closeEditMajorModal, showEditMajorModal
     }
 })

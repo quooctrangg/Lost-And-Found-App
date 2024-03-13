@@ -35,7 +35,7 @@ export class AuthService {
                     email: registerDto.email.toLowerCase(),
                     name: registerDto.name,
                     password: hashedPassword,
-                    schoolId: registerDto.schoolId
+                    majorId: registerDto.majorId
                 }
             })
             await this.sendVerificationLink(registerDto.email)

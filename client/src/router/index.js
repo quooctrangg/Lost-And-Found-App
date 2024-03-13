@@ -126,6 +126,11 @@ const routes = [
         path: 'school',
         name: 'school-manage',
         component: () => import('../components/manage/school/SchoolManage.vue')
+      },
+      {
+        path: 'major',
+        name: 'major-manage',
+        component: () => import('../components/manage/major/MajorManage.vue')
       }
     ]
   },
