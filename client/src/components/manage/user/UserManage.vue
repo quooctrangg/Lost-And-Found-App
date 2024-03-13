@@ -72,9 +72,7 @@ onMounted(async () => {
                         <select name="" id="school" class="rounded-xl p-1" v-model="userStore.schoolId">
                             <option value="null">Tất cả</option>
                             <option v-for="school in schoolStore.schools" :key="school.id" :value="school.id">
-                                {{
-                                    school.name
-                                }}
+                                {{ school.name }}
                             </option>
                         </select>
                     </div>
@@ -88,7 +86,7 @@ onMounted(async () => {
                 <thead class="border-b border-black font-medium">
                     <tr class="text-left">
                         <th class="px-6 py-4 text-center">
-                            ID
+                            STT
                         </th>
                         <th class="px-6 py-4">
                             Hình
@@ -111,12 +109,12 @@ onMounted(async () => {
                     </tr>
                 </thead>
                 <tbody v-if="userStore.isLoading == false">
-                    <tr v-if="userStore.users?.length" v-for="user in userStore.users" :key="user.id"
+                    <tr v-if="userStore.users?.length" v-for="(user, i) in userStore.users" :key="user.id"
                         class="border-b transition duration-300 ease-in-out hover:bg-gray-300">
                         <td class="whitespace-nowrap px-6 py-4 font-medium text-center">
                             <router-link :to="{ name: 'profile', params: { id: `${user.id}` } }"
                                 class="text-lg text-blue-500 underline p-2 hover:text-blue-600">
-                                {{ user.id }}
+                                {{ (userStore.currentPage - 1) * 10 + i + 1 }}
                             </router-link>
                         </td>
                         <td class="whitespace-nowrap px-6 py-4">
@@ -125,14 +123,10 @@ onMounted(async () => {
                             </div>
                         </td>
                         <td class="whitespace-nowrap px-6 py-4">
-                            {{
-                                user.name
-                            }}
+                            {{ user.name }}
                         </td>
                         <td class="whitespace-nowrap px-6 py-4">
-                            {{
-                                user.email.split('@')[0]
-                            }}
+                            {{ user.email.split('@')[0] }}
                         </td>
                         <td v-if="!user.isBan" class="whitespace-nowrap px-6 py-4 text-green-500 text-center">
                             Hoạt động
@@ -141,15 +135,13 @@ onMounted(async () => {
                             Khóa
                         </td>
                         <td class="whitespace-nowrap px-6 py-4 text-center">
-                            {{
-                                dayjs(user.createdAt).format('LT L')
-                            }}
+                            {{ dayjs(user.createdAt).format('LT L') }}
                         </td>
                         <td class="whitespace-nowrap px-6 py-4 flex gap-2 items-center justify-center">
                             <button v-if="!user.isBan" class="p-2 text-red-600 hover:text-red-700 text-2xl" @click="() => {
-                                manageStore.showFeedbackModal()
-                                currentUser = user
-                            }">
+                            manageStore.showFeedbackModal()
+                            currentUser = user
+                        }">
                                 <i class="fa-solid fa-lock"></i>
                             </button>
                             <button v-else class="p-2 text-orange-400 hover:text-orange-500 text-2xl"
@@ -157,15 +149,15 @@ onMounted(async () => {
                                 <i class="fa-solid fa-unlock"></i>
                             </button>
                             <button class="p-2 text-yellow-300 hover:text-yellow-400 text-2xl" @click="() => {
-                                manageStore.showEditUserModal()
-                                currentUser = user
-                            }">
+                            manageStore.showEditUserModal()
+                            currentUser = user
+                        }">
                                 <i class="fa-solid fa-pen"></i>
                             </button>
                             <button class="p-2 text-gray-500 hover:text-gray-600 text-2xl" @click="() => {
-                                manageStore.showHistoryModal()
-                                currentUser = user
-                            }">
+                            manageStore.showHistoryModal()
+                            currentUser = user
+                        }">
                                 <i class="fa-regular fa-eye"></i>
                             </button>
                         </td>

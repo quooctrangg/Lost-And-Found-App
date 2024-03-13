@@ -87,7 +87,7 @@ watchEffect(async () => {
         </template>
         <template #body>
             <div class="w-full">
-                <Form v-if="userStore.isLoading == false" @submit="editUser" :validation-schema="formSchemaUser">
+                <Form v-if="userStore.isLoadingUpdate == false" @submit="editUser" :validation-schema="formSchemaUser">
                     <div>
                         <label for="email" class="label-custom">
                             Email:
@@ -123,12 +123,9 @@ watchEffect(async () => {
                             Trường / Khoa:
                         </label>
                         <Field as="select" name="schoolId" id="schoolId" class="input-custom" v-model="user.schoolId">
-                            <option value="">Chọn trường / khoa</option>
                             <option v-if="schoolStore.schools?.length" v-for="school in schoolStore.schools"
                                 :key="school.id" :value="school.id">
-                                {{
-                                    school.name
-                                }}
+                                {{ school.name }}
                             </option>
                         </Field>
                         <ErrorMessage name="schoolId" class="error" />

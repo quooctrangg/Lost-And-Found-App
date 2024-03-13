@@ -115,7 +115,7 @@ onMounted(async () => {
                         <td class="  font-medium text-center w-[10%]">
                             <router-link :to="{ name: 'post-detail', params: { id: post.id } }"
                                 class="hover:text-blue-500 hover:underline p-2">
-                                {{ i + 1 }}
+                                {{ (postStore.currentPage - 1) * 10 + i + 1 }}
                             </router-link>
                         </td>
                         <td>
@@ -133,9 +133,7 @@ onMounted(async () => {
                             Từ chối
                         </td>
                         <td class="text-center text-sm">
-                            {{
-                            dayjs(post.createdAt).format('LT DD/MM/YYYY')
-                        }}
+                            {{ dayjs(post.createdAt).format('LT DD/MM/YYYY') }}
                         </td>
                         <td v-if="post.verify !== -1">
                             <div class="" v-if="post.verify == 0">
@@ -165,9 +163,8 @@ onMounted(async () => {
                         </td>
                         <td class="">
                             <div class="">
-                                <button class="p-2 text-yellow-300 hover:text-yellow-200 text-2xl" @click="async () => {
-                            await deletePost(post.id)
-                        }">
+                                <button class="p-2 text-yellow-300 hover:text-yellow-200 text-2xl"
+                                    @click="async () => { await deletePost(post.id) }">
                                     <i class="fa-solid fa-trash-can"></i>
                                 </button>
                             </div>

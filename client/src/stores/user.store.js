@@ -11,6 +11,7 @@ export const useUserStore = defineStore('user', () => {
     const err = ref(null)
     const result = ref(null)
     const isLoading = ref(false)
+    const isLoadingUpdate = ref(false)
     const totalPages = ref(1)
     const currentPage = ref(1)
     const key = ref('')
@@ -161,7 +162,7 @@ export const useUserStore = defineStore('user', () => {
     const updateUser = async (data, id) => {
         err.value = null
         result.value = null
-        isLoading.value = true
+        isLoadingUpdate.value = true
         try {
             let res = await userService.updateUser(authStore.token, id, data)
             if (res.statusCode !== 200) throw new Error(res.message)
@@ -169,7 +170,7 @@ export const useUserStore = defineStore('user', () => {
         } catch (error) {
             err.value = error.message
         } finally {
-            isLoading.value = false
+            isLoadingUpdate.value = false
         }
     }
 
@@ -204,7 +205,7 @@ export const useUserStore = defineStore('user', () => {
     }
 
     return {
-        isShow, user, err, result, isLoading, users, totalPages,
+        isShow, user, err, result, isLoading, users, totalPages, isLoadingUpdate,
         currentPage, key, isBan, schoolId, getMe, updateAvatar, getProfileUser,
         updateProfile, updatePassword, getAllUsers, createUser,
         toggleBanUser, updateUser, forgotPassword, sendVerifyCode,

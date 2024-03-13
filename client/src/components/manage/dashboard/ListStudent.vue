@@ -128,7 +128,7 @@ onMounted(async () => {
         </div>
         <div class="text-end">
             <button @click="exportExcel"
-                class="text-sm p-1 border border-blue-500 text-blue-500 rounded-md hover:text-red-400 hover:border-red-400">
+                class="text-sm p-1 border border-blue-600 text-blue-500 rounded-md hover:text-red-400 hover:border-red-400">
                 Xuất file
                 <i class="fa-solid fa-file-export"></i>
             </button>
@@ -145,7 +145,7 @@ onMounted(async () => {
                 </tr>
             </thead>
             <tbody>
-                <tr v-if="data.length" v-for="(student, i) in data">
+                <tr v-if="data.length" v-for="(student, i) in data" class="even:bg-blue-100">
                     <td class="border border-slate-700 p-2 text-center">
                         {{ i + 1 }}
                     </td>

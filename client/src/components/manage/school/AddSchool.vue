@@ -31,7 +31,8 @@ const createSchool = async () => {
 </script>
 
 <template>
-    <fwb-modal v-if="manageStore.isShow.addSchool" @close="manageStore.closeAddSchoolModal" :size="'xs'" :persistent="true">
+    <fwb-modal v-if="manageStore.isShow.addSchool" @close="manageStore.closeAddSchoolModal" :size="'xs'"
+        :persistent="true">
         <template #header>
             <div class="flex items-center text-xl gap-2">
                 <i class="fa-solid fa-plus"></i>
@@ -40,7 +41,8 @@ const createSchool = async () => {
         </template>
         <template #body>
             <div class="w-full">
-                <Form @submit="createSchool" v-if="schoolStore.isLoading == false" :validation-schema="formSchemaSchool">
+                <Form @submit="createSchool" v-if="schoolStore.isLoading == false"
+                    :validation-schema="formSchemaSchool">
                     <label for="name" class="text-lg mx-2">Tên trường / khoa:</label>
                     <Field type="text" name="name" id="name" class="rounded-md w-full" v-model="name"
                         placeholder="Nhập tên trường / khoa" />

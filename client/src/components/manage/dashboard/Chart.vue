@@ -29,9 +29,13 @@ onMounted(async () => {
 </script>
 
 <template>
-    <div class="grid grid-cols-3 gap-2">
-        <Bar :option="props.option" :data="dashboardStore.chart.countType" class="row-span-2 col-span-2" />
-        <Doughnut :data="dashboardStore.chart.countLocation" />
-        <Pie :data="dashboardStore.chart.countItem" />
+    <div class="flex flex-col gap-2 items-center">
+        <div class="w-full max-w-[700px]">
+            <Bar :option="props.option" :data="dashboardStore.chart.countType" />
+        </div>
+        <div class="grid grid-cols-2 gap-2 w-full">
+            <Doughnut :data="dashboardStore.chart.countLocation" />
+            <Pie :data="dashboardStore.chart.countItem" />
+        </div>
     </div>
 </template>

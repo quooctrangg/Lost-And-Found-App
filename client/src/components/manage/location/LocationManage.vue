@@ -80,26 +80,20 @@ onMounted(async () => {
                     <tr v-if="locationStore.locations?.length" v-for="(location, i) in locationStore.locations"
                         :key="location.id" class="border-b transition duration-300 ease-in-out hover:bg-gray-300">
                         <td class="  font-medium text-center w-[10%]">
-                            {{
-                                i + 1
-                            }}
+                            {{ (locationStore.currentPage - 1) * 10 + i + 1 }}
                         </td>
                         <td class="w-[50%]">
-                            {{
-                                location.name
-                            }}
+                            {{ location.name }}
                         </td>
                         <td class="w-[20%]">
-                            {{
-                                location.symbol
-                            }}
+                            {{ location.symbol }}
                         </td>
                         <td class="w-[20%]">
                             <div class="flex gap-2 items-center justify-center">
                                 <button class="p-2 text-yellow-300 hover:text-yellow-200 text-2xl" @click="() => {
-                                            manageStore.showEditLocationModal()
-                                            currentLocation = location
-                                        }">
+                            manageStore.showEditLocationModal()
+                            currentLocation = location
+                        }">
                                     <i class="fa-solid fa-pen"></i>
                                 </button>
                                 <button class="p-2 text-red-500 hover:text-red-400 text-2xl"
@@ -125,8 +119,8 @@ onMounted(async () => {
             </table>
         </div>
         <div class="w-full text-center" v-if="locationStore.totalPages >= 2">
-            <FwbPagination v-model="locationStore.currentPage" :total-pages="locationStore.totalPages" :show-icons="true"
-                :show-labels="false" />
+            <FwbPagination v-model="locationStore.currentPage" :total-pages="locationStore.totalPages"
+                :show-icons="true" :show-labels="false" />
         </div>
         <AddLocation />
         <EditLocation :location="currentLocation" />
