@@ -14,15 +14,11 @@ const props = defineProps(['post'])
                     </div>
                     <div class="flex flex-col">
                         <p class="text-base truncate">
-                            {{
-            props.post?.User?.name
-        }}
+                            {{ props.post?.User?.name }}
                         </p>
                         <span class="text-xs italic">
                             <i class=" fa-regular fa-clock"></i>
-                            {{
-                dayjs(props.post?.createdAt).fromNow()
-            }}
+                            {{ dayjs(props.post?.updatedAt).fromNow() }}
                         </span>
                     </div>
                 </div>

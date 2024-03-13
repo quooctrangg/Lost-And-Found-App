@@ -1,10 +1,12 @@
 <script setup>
-import { ref, watchEffect } from 'vue';
+import { ref, watch, watchEffect } from 'vue';
 import { useAuthStore } from '../../stores/auth.store'
 import { useSearchHistoryStore } from '../../stores/search-history.store'
 
 const searchHistoryStore = useSearchHistoryStore()
 const authStore = useAuthStore()
+
+const emits = defineEmits(['key'])
 
 const key = ref('')
 const isSuggestions = ref(false)
@@ -55,6 +57,10 @@ const closeSuggestions = async () => {
     }, 100)
 }
 
+watch(key, (newval, oldval) => {
+    emits('key', key.value)
+})
+
 watchEffect(async () => {
     if (authStore.token) {
         await getAlls()
@@ -76,8 +82,8 @@ watchEffect(async () => {
                 class="px-3 py-1 flex hover:bg-gray-200">
                 <div class="flex-1 cursor-pointer" @click="() => { key = search.content }">
                     {{
-                        search.content
-                    }}
+                search.content
+            }}
                 </div>
                 <button @click="async () => { await deleteById(search.id) }" class="text-red-600 hover:text-red-800">
                     Xóa

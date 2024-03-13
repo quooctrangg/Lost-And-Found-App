@@ -150,7 +150,7 @@ export class PostService {
             const totalCount = await this.prismaService.post.count({
                 where: where,
                 orderBy: {
-                    createdAt: 'desc'
+                    updatedAt: 'desc'
                 }
             })
             let totalPages = Math.ceil(totalCount / pageSize)
@@ -160,7 +160,7 @@ export class PostService {
             const data = await this.prismaService.post.findMany({
                 where: where,
                 orderBy: {
-                    createdAt: 'desc'
+                    updatedAt: 'desc'
                 },
                 skip: next,
                 take: pageSize,

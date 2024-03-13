@@ -73,15 +73,11 @@ onMounted(async () => {
                 <router-link v-if="userStore?.user.id !== post?.User?.id"
                     :to="{ name: 'profile', params: { id: post?.User?.id } }">
                     <h1 class="text-base truncate font-semibold text-center hover:underline">
-                        {{
-        post?.User?.name
-    }}
+                        {{ post?.User?.name }}
                     </h1>
                 </router-link>
                 <h1 v-else class="text-base truncate font-semibold text-center">
-                    {{
-            post?.User?.name
-        }}
+                    {{ post?.User?.name }}
                 </h1>
                 <div v-if="post?.verify == 0" class="flex justify-end items-center">
                     <h1 class="p-1 border-yellow-200 border-2 rounded font-medium text-yellow-300">Đang chờ duyệt</h1>
@@ -119,7 +115,7 @@ onMounted(async () => {
                             </p>
                             <span class="text-xs italic">
                                 <i class=" fa-regular fa-clock"></i>
-                                {{ dayjs(post?.createdAt).fromNow() }}
+                                {{ dayjs(post?.updatedAt).fromNow() }}
                             </span>
                         </div>
                         <div v-if="userStore?.user.id !== post?.User?.id"

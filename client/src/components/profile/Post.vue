@@ -58,7 +58,7 @@ onMounted(async () => {
                     <div class="flex justify-between items-center">
                         <h2 class="text-sm italic">
                             <i class=" fa-regular fa-clock"></i>
-                            {{ dayjs(post.createdAt).fromNow() }}
+                            {{ dayjs(post.updatedAt).fromNow() }}
                         </h2>
                         <h1 class="flex gap-1">
                             <div v-if="post.type == true" class="flex gap-1">
