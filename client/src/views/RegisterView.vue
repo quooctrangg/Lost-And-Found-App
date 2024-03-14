@@ -1,15 +1,17 @@
 <script setup>
-import { onMounted, reactive } from 'vue';
+import { onMounted, reactive, watch } from 'vue';
 import { useSchoolStore } from '../stores/school.store'
 import { useAuthStore } from '../stores/auth.store'
+import { useMajorStore } from '../stores/major.store'
 import { useToast } from 'vue-toast-notification'
 import { useRouter } from "vue-router";
-import * as yup from "yup";
 import { Form, Field, ErrorMessage } from "vee-validate";
+import * as yup from "yup";
 import Loading from '../components/common/Loading.vue';
 import Footer from '../components/common/Footer.vue';
 
 const schoolStore = useSchoolStore()
+const majorStore = useMajorStore()
 const authStore = useAuthStore()
 const router = useRouter()
 const $toast = useToast()
@@ -19,7 +21,8 @@ const user = reactive({
     name: '',
     password: '',
     schoolId: '',
-    confirmPassword: ''
+    confirmPassword: '',
+    majorId: ''
 })
 
 const formSchemaRegister = yup.object().shape({
@@ -27,7 +30,8 @@ const formSchemaRegister = yup.object().shape({
     email: yup.string().required("Email phải có giá trị.").email("E-mail không đúng.").matches(/^[a-zA-Z0-9+_.-]+b\d{7}@student\.ctu\.edu\.vn$/i, 'Email không đúng định dạng của trường Đại học Cần Thơ.').max(50, "E-mail tối đa 50 ký tự."),
     password: yup.string().required('Mật khẩu phải có giá trị.').min(6, 'Tên phải ít nhất 6 ký tự.'),
     confirmPassword: yup.string().oneOf([yup.ref('password'), null], 'Mật khẩu xác nhận không trùng khớp.'),
-    schoolId: yup.string().required('Yêu cầu chọn trường / khoa.')
+    schoolId: yup.string().required('Yêu cầu chọn trường / khoa.'),
+    majorId: yup.string().required('Yêu cầu chọn chuyên ngành.')
 })
 
 const btnSubmit = async () => {
@@ -41,6 +45,15 @@ const btnSubmit = async () => {
         router.push('login')
     }, 1000)
 }
+
+watch(() => user.schoolId, async newval => {
+    user.majorId = ''
+    if (newval) {
+        await majorStore.getAllsBySchoolId(newval)
+    } else {
+        majorStore.majors = []
+    }
+})
 
 onMounted(async () => {
     await schoolStore.getSchool({})
@@ -85,12 +98,21 @@ onMounted(async () => {
                             <option value="">Chọn trường / khoa</option>
                             <option v-if="schoolStore.schools?.length" v-for="school in schoolStore.schools"
                                 :key="school.id" :value="school.id">
-                                {{
-                                    school.name
-                                }}
+                                {{ school.name }}
                             </option>
                         </Field>
                         <ErrorMessage name="schoolId" class="error" />
+                    </div>
+                    <div>
+                        <Field as="select" name="majorId" id="majorId" class="input-custom shadow-lg"
+                            v-model="user.majorId">
+                            <option value="">Chọn chuyên ngành</option>
+                            <option v-if="majorStore.majors?.length" v-for="major in majorStore.majors" :key="major.id"
+                                :value="major.id">
+                                {{ major.name }}
+                            </option>
+                        </Field>
+                        <ErrorMessage name="majorId" class="error" />
                     </div>
                     <div>
                         <button type="submit" class="btn-custom shadow-lg">
