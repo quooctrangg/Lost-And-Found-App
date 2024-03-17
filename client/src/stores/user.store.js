@@ -145,12 +145,27 @@ export const useUserStore = defineStore('user', () => {
         }
     }
 
-    const toggleBanUser = async (id, data) => {
+    const banUser = async (id, data) => {
         err.value = null
         result.value = null
         isLoading.value = true
         try {
-            let res = await userService.toggleBanUser(authStore.token, id, data)
+            let res = await userService.banUser(authStore.token, id, data)
+            if (res.statusCode !== 200) throw new Error(res.message)
+            result.value = res
+        } catch (error) {
+            err.value = error.message
+        } finally {
+            isLoading.value = false
+        }
+    }
+
+    const unBanUser = async (id) => {
+        err.value = null
+        result.value = null
+        isLoading.value = true
+        try {
+            let res = await userService.unBanUser(authStore.token, id)
             if (res.statusCode !== 200) throw new Error(res.message)
             result.value = res
         } catch (error) {
@@ -209,7 +224,7 @@ export const useUserStore = defineStore('user', () => {
         isShow, user, err, result, isLoading, users, totalPages, isLoadingUpdate,
         currentPage, key, isBan, majorId, schoolId, getMe, updateAvatar, getProfileUser,
         updateProfile, updatePassword, getAllUsers, createUser,
-        toggleBanUser, updateUser, forgotPassword, sendVerifyCode,
+        banUser, unBanUser, updateUser, forgotPassword, sendVerifyCode,
         closeUpdatePasswordModal, showUpdatePasswordModal,
         closeUpdateProfileModal, showUpdateProfileModal,
         closeUpdateAvatarModal, showUpdateAvatarModal,

@@ -1,17 +1,5 @@
 import createService from './api.service'
-
-const createQueryString = (options) => {
-    const queryString = Object.keys(options)
-        .map(key => {
-            if (options[key] !== null && options[key] !== undefined && options[key] !== 'null' && options[key] !== '') {
-                return `${encodeURIComponent(key)}=${encodeURIComponent(options[key])}`;
-            }
-            return '';
-        })
-        .filter(Boolean)
-        .join('&');
-    return queryString.length > 0 ? `?${queryString}` : '';
-}
+import { createQueryString } from '../untils'
 
 class userService {
     constructor(baseUrl = '/apis/user') {
@@ -89,8 +77,18 @@ class userService {
         })).data
     }
 
-    async toggleBanUser(token, id, data) {
-        return (await this.api.patch(`/toggle-ban/${id}`, data, {
+    async banUser(token, id, data) {
+        return (await this.api.patch(`/ban/${id}`, data, {
+            headers: {
+                "Content-Type": "application/json",
+                Accept: "application/json",
+                Authorization: `Bearer ${token}`
+            }
+        })).data
+    }
+
+    async unBanUser(token, id) {
+        return (await this.api.patch(`/un-ban/${id}`, {}, {
             headers: {
                 "Content-Type": "application/json",
                 Accept: "application/json",
