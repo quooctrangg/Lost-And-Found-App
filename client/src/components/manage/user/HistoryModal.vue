@@ -24,9 +24,12 @@ const props = defineProps(['user'])
                                 STT
                             </th>
                             <th class="px-6 py-4 w-[20%] text-center border border-black">
-                                Ngày
+                                Ngày khóa
                             </th>
-                            <th class="px-6 py-4 w-[70%] text-center border border-black">
+                            <th class="px-6 py-4 w-[20%] text-center border border-black">
+                                Thời gian khóa
+                            </th>
+                            <th class=" px-6 py-4 w-[70%] text-center border border-black">
                                 Lý do
                             </th>
                         </tr>
@@ -34,23 +37,20 @@ const props = defineProps(['user'])
                     <tbody>
                         <tr v-if="props.user?.Feedback.length" v-for="(feedback, i) in props.user?.Feedback" :key="i">
                             <td class="whitespace-nowrap px-6 py-4 w-[10%] border border-black text-center">
-                                {{
-                                    i + 1
-                                }}
+                                {{ i + 1 }}
                             </td>
                             <td class="whitespace-nowrap px-6 py-4 w-[20%] border border-black">
-                                {{
-                                    dayjs(feedback.createdAt).format('LT L')
-                                }}
+                                {{ dayjs(feedback.createdAt).format('LT L') }}
+                            </td>
+                            <td class="whitespace-nowrap px-6 py-4 w-[20%] border border-black">
+                                {{ feedback.time == -1 ? "Vĩnh viễn" : feedback.time + ' ngày' }}
                             </td>
                             <td class="whitespace-nowrap px-6 py-4 w-[70%] border border-black">
-                                {{
-                                    feedback.content
-                                }}
+                                {{ feedback.content }}
                             </td>
                         </tr>
                         <tr v-else class="text-center text-red-500 text-xl">
-                            <td colspan="3" class="border border-black p-2">
+                            <td colspan="4" class="border border-black p-2">
                                 Không có.
                             </td>
                         </tr>

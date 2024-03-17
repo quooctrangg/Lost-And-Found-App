@@ -115,7 +115,8 @@ onMounted(async () => {
                             </p>
                             <span class="text-xs italic">
                                 <i class=" fa-regular fa-clock"></i>
-                                {{ dayjs(post?.updatedAt).fromNow() }}
+                                {{ dayjs().diff(dayjs(post?.updatedAt), 'day') > 0
+        ? dayjs(post?.updatedAt).format('DD/MM/YYYY') : dayjs(post?.updatedAt).fromNow() }}
                             </span>
                         </div>
                         <div v-if="userStore?.user.id !== post?.User?.id"

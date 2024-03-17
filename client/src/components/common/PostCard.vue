@@ -18,7 +18,9 @@ const props = defineProps(['post'])
                         </p>
                         <span class="text-xs italic">
                             <i class=" fa-regular fa-clock"></i>
-                            {{ dayjs(props.post?.updatedAt).fromNow() }}
+                            {{ dayjs().diff(dayjs(props.post?.updatedAt), 'day') > 0 ?
+            dayjs(props.post?.updatedAt).format('DD/MM/YYYY')
+            : dayjs(props.post?.updatedAt).fromNow() }}
                         </span>
                     </div>
                 </div>

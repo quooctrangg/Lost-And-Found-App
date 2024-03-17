@@ -75,10 +75,13 @@ onMounted(async () => {
                         <th class="text-center pb-2 w-[10%]">
                             STT
                         </th>
-                        <th class="pb-2 w-[35%]">
+                        <th class="pb-2">
                             Chuyên ngành
                         </th>
-                        <th class="pb-2 w-[35%]">
+                        <th class="pb-2 text-center">
+                            Thời gian đào tạo
+                        </th>
+                        <th class="pb-2">
                             Trường / khoa
                         </th>
                         <th class="text-center pb-2 w-[20%]">
@@ -94,6 +97,9 @@ onMounted(async () => {
                         </td>
                         <td class="">
                             {{ major.name }}
+                        </td>
+                        <td class="text-center">
+                            {{ major.trainingDuration }}
                         </td>
                         <td class="">
                             {{ major.School.name }}

@@ -24,10 +24,10 @@ const emit = defineEmits(['currentPage'])
 
 const currentUser = ref(null)
 
-const toggleBanUser = async (user, feedback = null) => {
-    const conFirm = confirm(`Bạn có chắc chắn ${user.isBan ? 'mở' : ''} khóa?`)
+const banUser = async (user, feedback, time) => {
+    const conFirm = confirm(`Bạn có chắc chắn khóa?`)
     if (conFirm) {
-        await userStore.toggleBanUser(user.id, { feedback: feedback })
+        await userStore.banUser(user.id, { feedback: feedback, time: time })
         if (userStore.err) {
             $toast.error(userStore.err, { position: 'top-right' })
             return
@@ -35,6 +35,19 @@ const toggleBanUser = async (user, feedback = null) => {
         $toast.success(userStore.result.message, { position: 'top-right' })
         await userStore.getAllUsers({ page: userStore.currentPage, key: userStore.key, isBan: userStore.isBan, schoolId: userStore.schoolId })
         manageStore.closeFeedbackModal()
+    }
+}
+
+const unBanUser = async (id) => {
+    const conFirm = confirm(`Bạn có chắc chắn mở khóa?`)
+    if (conFirm) {
+        await userStore.unBanUser(id)
+        if (userStore.err) {
+            $toast.error(userStore.err, { position: 'top-right' })
+            return
+        }
+        $toast.success(userStore.result.message, { position: 'top-right' })
+        await userStore.getAllUsers({ page: userStore.currentPage, key: userStore.key, isBan: userStore.isBan, schoolId: userStore.schoolId })
     }
 }
 
@@ -170,7 +183,7 @@ onMounted(async () => {
                                 <i class="fa-solid fa-lock"></i>
                             </button>
                             <button v-else class="p-2 text-orange-400 hover:text-orange-500 text-2xl"
-                                @click="async () => { await toggleBanUser(user) }">
+                                @click="async () => { await unBanUser(user.id) }">
                                 <i class="fa-solid fa-unlock"></i>
                             </button>
                             <button class="p-2 text-yellow-300 hover:text-yellow-400 text-2xl" @click="() => {
@@ -208,7 +221,7 @@ onMounted(async () => {
         </div>
         <AddUserModal />
         <EditUserModal :user="currentUser" />
-        <FeedbackModal :user="currentUser" @user="async (e) => { await toggleBanUser(e.user, e.feedback) }" />
+        <FeedbackModal :user="currentUser" @user="async (e) => { await banUser(e.user, e.feedback, e.time) }" />
         <HistoryModal :user="currentUser" />
     </div>
 </template>

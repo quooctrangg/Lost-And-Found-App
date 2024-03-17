@@ -54,13 +54,13 @@ watchEffect(async () => {
 })
 </script>
 <template>
-    <header class="bg-sky-500 sticky top-0 z-50 p-1">
+    <header class="bg-[#045D86] sticky top-0 z-50 p-1">
         <div class="w-[80%] mx-auto flex justify-between items-center">
             <div class="">
                 <router-link :to="{ name: 'home' }">
                     <div class="flex items-center gap-2">
                         <img class="h-12 w-auto" src="/logo.png" alt="Logo">
-                        <p class="text-2xl break-words italic font-medium text-amber-300">
+                        <p class="text-2xl break-words italic font-medium text-[#FCD360]">
                             Nơi chia sẽ đồ vật thất lạc
                         </p>
                     </div>
@@ -68,12 +68,12 @@ watchEffect(async () => {
             </div>
             <div class="">
                 <div v-if="authStore.token == null" class="text-base font-medium flex gap-2 justify-end">
-                    <div class="hover:bg-green-600 text-white bg-green-400 p-2 rounded-md">
+                    <div class="hover:bg-[#07A6F0] text-white bg-[#0798DB] p-2 rounded-md">
                         <router-link :to="{ name: 'login' }">
                             <p>Đăng nhập</p>
                         </router-link>
                     </div>
-                    <div class="hover:bg-green-600 text-white bg-green-400 p-2 rounded-md">
+                    <div class="hover:bg-[#07A6F0] text-white bg-[#0798DB] p-2 rounded-md">
                         <router-link :to="{ name: 'register' }">
                             <p>Đăng ký</p>
                         </router-link>
@@ -89,9 +89,7 @@ watchEffect(async () => {
                         <div v-if="conversationStore.totalReadMessage !== 0"
                             class="absolute right-0 top-0 bg-red-500 rounded-full w-4 h-4  flex justify-center items-center">
                             <span class="text-[10px] text-white">
-                                {{
-                                    conversationStore.totalReadMessage !== 0 ? conversationStore.totalReadMessage : ''
-                                }}
+                                {{ conversationStore.totalReadMessage !== 0 ? conversationStore.totalReadMessage : '' }}
                             </span>
                         </div>
                         <div class="p-2 text-gray-100 hover:text-gray-300">
@@ -104,9 +102,7 @@ watchEffect(async () => {
                             <div v-if="notificationStore.totalRead"
                                 class="absolute right-0 top-0 bg-red-500 rounded-full w-4 h-4  flex justify-center items-center">
                                 <span class="text-[10px] text-white">
-                                    {{
-                                        notificationStore.totalRead
-                                    }}
+                                    {{ notificationStore.totalRead }}
                                 </span>
                             </div>
                             <div class="p-2 text-gray-100 hover:text-gray-300">
@@ -120,7 +116,7 @@ watchEffect(async () => {
                             <div class="h-10 w-10 overflow-hidden rounded-full flex items-center justify-center">
                                 <img class="h-full w-full object-cover" :src="userStore.user?.image" alt="logo user">
                             </div>
-                            <p class="text-md truncate font-semibold">
+                            <p class="text-md truncate font-semibold text-[#ffffff] min-w-[150px]">
                                 {{ userStore.user?.name }}
                             </p>
                         </div>
@@ -129,7 +125,8 @@ watchEffect(async () => {
                                 <i class="fa-regular fa-user"></i>
                                 Thông tin cá nhân
                             </router-link>
-                            <router-link :to="{ name: 'request' }" class="block border-b p-2 text-sm hover:text-gray-400">
+                            <router-link :to="{ name: 'request' }"
+                                class="block border-b p-2 text-sm hover:text-gray-400">
                                 <i class="fa-regular fa-square-check"></i>
                                 Yêu cầu
                             </router-link>

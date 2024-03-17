@@ -23,7 +23,7 @@ watchEffect(async () => {
 
 <template>
     <div v-if="suggestSore.isLoading == false" v-for="suggest in suggestSore.suggests"
-        class="p-3 border-[3px] border-blue-600 bg-sky-500 mt-2 rounded-lg shadow flex gap-2 cursor-pointer items-center">
+        class="border-2 border-blue-600 bg-white mt-2 rounded-md shadow flex gap-2 cursor-pointer items-center overflow-hidden">
         <div v-if="suggest?.Image.length"
             class="w-[35%] max-h-20 rounded-sm overflow-hidden flex items-center justify-center">
             <img :src="suggest?.Image[0]?.url" class="object-cover">
@@ -32,9 +32,10 @@ watchEffect(async () => {
             <h2 class="line-clamp-2 text-black">
                 {{ suggest?.description }}
             </h2>
-            <router-link class="text-end text-sm text-white underline hover:text-slate-200"
+            <router-link class="text-end text-sm text-red-500 underline hover:text-red-600 px-2 italic"
                 :to="{ name: 'post-detail', params: { id: suggest?.id } }">
                 Xem chi tiết
+                <i class="fa-solid fa-arrow-right"></i>
             </router-link>
         </div>
     </div>

@@ -3,7 +3,7 @@
 @tailwind utilities;
 
 .input-custom {
-    @apply bg-gray-50 border border-gray-300 text-gray-800 rounded-lg block w-full p-2
+    @apply bg-[#F9FAFB] border border-gray-400 text-[#6F6A7A] rounded-lg block w-full p-2 text-base
 }
 
 .checkbox-custom {
@@ -11,7 +11,7 @@
 }
 
 .btn-custom {
-    @apply bg-sky-500 w-full rounded-lg text-sm px-5 py-3 text-center text-white font-semibold
+    @apply bg-[#0068A3] w-full rounded-lg text-base px-5 py-3 text-center text-[#FFFFFF] font-semibold
 }
 
 .btn-custom:hover {
@@ -23,7 +23,7 @@
 }
 
 .h1-custom {
-    @apply text-2xl font-bold leading-tight tracking-tight text-center text-sky-500
+    @apply text-2xl font-bold leading-tight tracking-tight text-center text-[#0068A3]
 }
 
 .error {

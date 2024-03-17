@@ -118,9 +118,9 @@ onMounted(async () => {
                         <button type="submit" class="btn-custom shadow-lg">
                             Tạo tài khoản
                         </button>
-                        <p class="text-sm font-light text-gray-500 py-2">
+                        <p class="text-sm font-light text-[#5B5764] py-2">
                             Đã có tài khoản?
-                            <router-link class="font-medium text-primary-600 hover:underline hover:text-red-600"
+                            <router-link class="font-medium text-[#5B5764] hover:underline hover:text-red-600"
                                 :to="{ name: 'login' }">
                                 Đăng nhập tại đây.
                             </router-link>

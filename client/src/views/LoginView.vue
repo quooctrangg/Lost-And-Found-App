@@ -33,15 +33,15 @@ const submitLogin = async () => {
 </script>
 
 <template>
-    <section class="bg-white h-screen w-full py-14">
+    <section class="bg-[#FFFFFF] h-screen w-full py-14">
         <div class="flex items-center justify-center m-auto w-4/5 gap-3">
             <div class="w-2/4 p-6 flex flex-col items-center justify-center gap-4">
                 <div class="text-center">
-                    <h1 class="text-2xl font-semibold italic text-sky-600">
+                    <h1 class="text-2xl font-semibold italic text-[#0068A3]">
                         Hệ thống hỗ trợ tìm kiếm đồ thất lạc
                     </h1>
-                    <h1 class="text-lg text-sky-600">cho sinh viên</h1>
-                    <h1 class="text-2xl font-semibold italic text-sky-600 uppercase">
+                    <h1 class="text-lg text-[#0068A3]">cho sinh viên</h1>
+                    <h1 class="text-2xl font-semibold italic text-[#0068A3] uppercase">
                         Trường Đại học Cần Thơ
                     </h1>
                 </div>
@@ -65,7 +65,7 @@ const submitLogin = async () => {
                     <div>
                         <div class="flex items-center justify-between py-2">
                             <router-link
-                                class="text-sm font-medium text-primary-600 hover:underline hover:text-red-600 text-gray-500"
+                                class="text-sm font-medium text-primary-600 hover:underline hover:text-red-600 text-[#5B5764]"
                                 :to="{ name: 'forgot-password' }">
                                 Quên mật khẩu?
                             </router-link>
@@ -73,9 +73,9 @@ const submitLogin = async () => {
                         <button type="submit" class="btn-custom shadow-lg">
                             Đăng nhập
                         </button>
-                        <div class="text-sm font-light text-gray-500 py-2">
+                        <div class="text-sm font-light text-[#5B5764] py-2">
                             Bạn chưa có tài khoản?
-                            <router-link class="font-medium text-primary-600 hover:underline hover:text-red-600"
+                            <router-link class="font-medium text-[#5B5764] hover:underline hover:text-red-600"
                                 :to="{ name: 'register' }">
                                 Đăng ký.
                             </router-link>

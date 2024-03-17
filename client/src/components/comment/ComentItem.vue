@@ -29,34 +29,28 @@ const handleReply = async (content) => {
             <div class="bg-gray-100 rounded-lg shadow p-1">
                 <router-link :to="{ name: 'profile', params: { id: comment.User.id } }">
                     <h1 class="text-sm font-medium">
-                        {{
-                            comment.User?.name
-                        }}
+                        {{ comment.User?.name }}
                     </h1>
                 </router-link>
                 <div class="text-sm mt-1">
                     <span class="font-semibold text-blue-500">
                         <router-link :to="{ name: 'profile', params: { id: userReply?.id } }">
-                            {{
-                                userReply?.name
-                            }}
+                            {{ userReply?.name }}
                         </router-link>
                     </span>
-                    {{
-                        comment.content
-                    }}
+                    {{ comment.content }}
                 </div>
             </div>
             <div class="flex gap-2 text-xs indent-2">
                 <h1 class="text-gray-600">
-                    {{
-                        dayjs(comment.createdAt).fromNow()
-                    }}
+                    {{ dayjs().diff(dayjs(comment.createdAt), 'day') > 0
+            ? dayjs(comment.createdAt).format('DD/MM/YYYY') : dayjs(comment.createdAt).fromNow() }}
                 </h1>
-                <h1 v-if="commentStore.isReply.commentId !== comment.id" class="cursor-pointer hover:text-red-500" @click="() => {
-                    commentStore.isReply.isShow = true
-                    commentStore.isReply.commentId = comment.id
-                }">
+                <h1 v-if="commentStore.isReply.commentId !== comment.id" class="cursor-pointer hover:text-red-500"
+                    @click="() => {
+            commentStore.isReply.isShow = true
+            commentStore.isReply.commentId = comment.id
+        }">
                     Phản hồi
                 </h1>
             </div>
