@@ -9,4 +9,8 @@ export class CreateMajorDto {
     @IsNotEmpty()
     @IsString()
     name: string
+
+    @IsNumber()
+    @IsNotEmpty()
+    trainingDuration: number
 }

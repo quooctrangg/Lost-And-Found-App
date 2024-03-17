@@ -1,15 +1,18 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, Logger } from '@nestjs/common';
 import { PrismaService } from '../prisma/prisma.service';
-import { ForgotPasswordDto, VerifyCodeDto, createUserDto, toggleBanUserDto, updatePasswordDto, updateProfileDto, updateUserDto } from './dto';
+import { ForgotPasswordDto, VerifyCodeDto, CreateUserDto, BanUserDto, UpdatePasswordDto, UpdateProfileDto, UpdateUserDto } from './dto';
 import { PAGE_SIZE, ResponseData, USER_TYPES } from '../global';
 import { User } from '@prisma/client';
 import { CloudinaryService } from '../cloudinary/cloudinary.service';
 import * as argon2 from 'argon2';
 import { MailerService } from '@nestjs-modules/mailer';
+import { Cron, CronExpression } from '@nestjs/schedule';
 
 @Injectable()
 export class UserService {
     constructor(private readonly prismaService: PrismaService, private readonly cloudinaryService: CloudinaryService, private readonly mailerService: MailerService) { }
+
+    private readonly logger = new Logger(UserService.name);
 
     async getUser(user: User) {
         try {
@@ -112,7 +115,7 @@ export class UserService {
         }
     }
 
-    async createUser(createUserDto: createUserDto) {
+    async createUser(createUserDto: CreateUserDto) {
         try {
             const user = await this.prismaService.user.findFirst({
                 where: {
@@ -138,38 +141,67 @@ export class UserService {
         }
     }
 
-    async toggleBanUser(userId: number, toggleBanUserDto: toggleBanUserDto) {
+    async unBanUser(userId: number) {
         try {
             const user = await this.getUserById(userId)
             if (!user) {
                 return new ResponseData<User>(null, 400, 'Tài khoản không tồn tại')
             }
             if (!user.isBan) {
-                await this.prismaService.feedback.create({
-                    data: {
-                        content: toggleBanUserDto.feedback,
-                        userId: user.id
-                    }
-                })
+                return new ResponseData<string>(null, 400, 'Tài khoản không bị khóa')
             }
             await this.prismaService.user.update({
                 where: {
                     id: user.id
                 },
                 data: {
-                    isBan: !user.isBan
+                    isBan: false,
+                    banUntil: null
                 }
             })
-            if (!user.isBan) {
-                return new ResponseData<any>(null, 200, 'Khóa người dùng thành công')
-            }
             return new ResponseData<any>(null, 200, 'Mở khóa người dùng thành công')
         } catch (error) {
             return new ResponseData<string>(null, 500, 'Lỗi dịch vụ, thử lại sau')
         }
     }
 
-    async updateProfile(userId: number, updateProfileDto: updateProfileDto) {
+    async banUser(userId: number, banUserDto: BanUserDto) {
+        const now = new Date()
+        try {
+            const user = await this.getUserById(userId)
+            if (!user) {
+                return new ResponseData<User>(null, 400, 'Tài khoản không tồn tại')
+            }
+            if (user.isBan) {
+                return new ResponseData<string>(null, 400, 'Tài khoản đang bị khóa')
+            }
+            await this.prismaService.feedback.create({
+                data: {
+                    content: banUserDto.feedback,
+                    userId: user.id,
+                    time: banUserDto.time
+                }
+            })
+            let lockUntil: Date = null
+            if (banUserDto.time && banUserDto.time != -1) {
+                lockUntil = new Date(now.getTime() + 24 * 60 * 60 * 1000 * banUserDto.time)
+            }
+            await this.prismaService.user.update({
+                where: {
+                    id: userId
+                },
+                data: {
+                    isBan: true,
+                    banUntil: lockUntil
+                }
+            })
+            return new ResponseData<string>(null, 200, 'Khóa tài khoản thành công')
+        } catch (error) {
+            return new ResponseData<string>(null, 500, 'Lỗi dịch vụ, thử lại sau')
+        }
+    }
+
+    async updateProfile(userId: number, updateProfileDto: UpdateProfileDto) {
         try {
             const user = await this.getUserById(userId)
             if (!user) {
@@ -211,7 +243,7 @@ export class UserService {
         }
     }
 
-    async updateUser(userId: number, updateUserDto: updateUserDto, image: Express.Multer.File) {
+    async updateUser(userId: number, updateUserDto: UpdateUserDto, image: Express.Multer.File) {
         try {
             const data: { name?: string, image?: string, password?: string, majorId?: number } = {}
             const user = await this.getUserById(userId)
@@ -244,7 +276,7 @@ export class UserService {
         }
     }
 
-    async updatePassword(id: number, updatePasswordDto: updatePasswordDto) {
+    async updatePassword(id: number, updatePasswordDto: UpdatePasswordDto) {
         try {
             const user = await this.getUserById(id)
             if (!user) {
@@ -354,6 +386,35 @@ export class UserService {
             return new ResponseData<string>(null, 200, 'Gửi mã thành công')
         } catch (error) {
             return new ResponseData<string>(null, 500, 'Lỗi dịch vụ, thử lại sau')
+        }
+    }
+
+    @Cron(CronExpression.EVERY_DAY_AT_MIDNIGHT)
+    async autoUnBan() {
+        try {
+            await this.prismaService.user.updateMany({
+                where: {
+                    isBan: true,
+                    banUntil: {
+                        lte: new Date()
+                    }
+                },
+                data: {
+                    isBan: false,
+                    banUntil: null
+                }
+            })
+            this.logger.log('Mở khóa thành công các tài khoản bị khóa')
+        } catch (error) {
+            this.logger.error(error.message)
+        }
+    }
+
+    async autoBan() {
+        try {
+
+        } catch (error) {
+            this.logger.error(error.message)
         }
     }
 

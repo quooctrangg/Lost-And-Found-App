@@ -50,7 +50,7 @@ export class MajorService {
         const totalCount = await this.prismaService.major.count({
           where: where,
           orderBy: {
-            id: 'asc'
+            schoolId: 'asc'
           }
         })
         totalPages = Math.ceil(totalCount / pageSize)
@@ -60,7 +60,7 @@ export class MajorService {
       }
       const data = await this.prismaService.major.findMany({
         orderBy: {
-          id: 'asc'
+          schoolId: 'asc'
         },
         skip: next,
         take: pageSize,
@@ -88,7 +88,8 @@ export class MajorService {
       await this.prismaService.major.create({
         data: {
           name: createMajorDto.name,
-          schoolId: createMajorDto.schoolId
+          schoolId: createMajorDto.schoolId,
+          trainingDuration: createMajorDto.trainingDuration
         }
       })
       return new ResponseData<Major>(null, 200, 'Tạo thành công')

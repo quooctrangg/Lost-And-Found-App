@@ -2,7 +2,7 @@ import { Body, Controller, Get, Param, ParseIntPipe, Patch, Post, Query, Uploade
 import { UserService } from './user.service';
 import { GetUser, Role } from '../auth/decorator';
 import { User } from '@prisma/client';
-import { ForgotPasswordDto, VerifyCodeDto, createUserDto, toggleBanUserDto, updatePasswordDto, updateProfileDto, updateUserDto } from './dto';
+import { ForgotPasswordDto, VerifyCodeDto, CreateUserDto, BanUserDto, UpdatePasswordDto, UpdateProfileDto, UpdateUserDto } from './dto';
 import { FileInterceptor } from '@nestjs/platform-express';
 import { MyJWTGuard, RolesGuard } from '../auth/guard';
 import { USER_TYPES } from '../global';
@@ -35,21 +35,28 @@ export class UserController {
     @Post()
     @UseGuards(MyJWTGuard, RolesGuard)
     @Role(USER_TYPES.ADMIN)
-    createUser(@Body() createUserDto: createUserDto) {
+    createUser(@Body() createUserDto: CreateUserDto) {
         return this.userService.createUser(createUserDto)
     }
 
-    @Patch('toggle-ban/:id')
+    @Patch('ban/:id')
     @UseGuards(MyJWTGuard, RolesGuard)
     @Role(USER_TYPES.ADMIN)
-    toggleBanUser(@Param('id', ParseIntPipe) id: number, @Body() toggleBanUserDto: toggleBanUserDto) {
-        return this.userService.toggleBanUser(id, toggleBanUserDto)
+    banUser(@Param('id', ParseIntPipe) id: number, @Body() banUserDto: BanUserDto) {
+        return this.userService.banUser(id, banUserDto)
+    }
+
+    @Patch('un-ban/:id')
+    @UseGuards(MyJWTGuard, RolesGuard)
+    @Role(USER_TYPES.ADMIN)
+    unBanUser(@Param('id', ParseIntPipe) id: number) {
+        return this.userService.unBanUser(id)
     }
 
     @Patch('update-profile')
     @UseGuards(MyJWTGuard, RolesGuard)
     @Role(USER_TYPES.USER)
-    updateProfile(@GetUser() user: User, @Body() updateProfileDto: updateProfileDto) {
+    updateProfile(@GetUser() user: User, @Body() updateProfileDto: UpdateProfileDto) {
         return this.userService.updateProfile(user.id, updateProfileDto)
     }
 
@@ -65,14 +72,14 @@ export class UserController {
     @UseGuards(MyJWTGuard, RolesGuard)
     @Role(USER_TYPES.ADMIN)
     @UseInterceptors(FileInterceptor('image'))
-    updateUser(@Param('id', ParseIntPipe) id: number, @Body() updateUserDto: updateUserDto, @UploadedFile() image: Express.Multer.File) {
+    updateUser(@Param('id', ParseIntPipe) id: number, @Body() updateUserDto: UpdateUserDto, @UploadedFile() image: Express.Multer.File) {
         return this.userService.updateUser(id, updateUserDto, image)
     }
 
     @Patch('update-password')
     @UseGuards(MyJWTGuard, RolesGuard)
     @Role(USER_TYPES.USER)
-    updatePassword(@GetUser() user: User, @Body() updatePasswordDto: updatePasswordDto) {
+    updatePassword(@GetUser() user: User, @Body() updatePasswordDto: UpdatePasswordDto) {
         return this.userService.updatePassword(user.id, updatePasswordDto)
     }
 

@@ -9,4 +9,8 @@ export class UpdateMajorDto {
     @IsOptional()
     @IsString()
     name: string
+
+    @IsNumber()
+    @IsOptional()
+    trainingDuration: number
 }

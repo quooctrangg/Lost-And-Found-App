@@ -1,7 +1,7 @@
 import { IsEmail, IsNotEmpty, IsNumber, IsString, MaxLength, MinLength } from "class-validator"
 import { CONSTANTS_MAX, CONSTANTS_MIN } from "../../global"
 
-export class createUserDto {
+export class CreateUserDto {
     @IsEmail()
     @IsNotEmpty()
     @MaxLength(CONSTANTS_MAX.EMAIL_LEN)

@@ -11,15 +11,16 @@ datasource db {
 }
 
 model User {
-  id        Int      @id @default(autoincrement())
+  id        Int       @id @default(autoincrement())
   email     String
   name      String
   password  String
-  type      Int      @default(-1)
-  image     String   @default("https://res.cloudinary.com/dig0nsb6m/image/upload/v1704869331/hjv353yrt9hahuomkxey.png")
-  isBan     Boolean  @default(false)
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
+  type      Int       @default(-1)
+  image     String    @default("https://res.cloudinary.com/dig0nsb6m/image/upload/v1704869331/hjv353yrt9hahuomkxey.png")
+  isBan     Boolean   @default(false)
+  banUntil  DateTime?
+  createdAt DateTime  @default(now())
+  updatedAt DateTime  @updatedAt
 
   Feedback      Feedback[]
   SearchHistory SearchHistory[]
@@ -47,6 +48,7 @@ model VerifyCode {
 model Feedback {
   id        Int      @id @default(autoincrement())
   content   String
+  time      Int?
   createdAt DateTime @default(now())
 
   User   User @relation(fields: [userId], references: [id])
@@ -75,8 +77,9 @@ model School {
 }
 
 model Major {
-  id   Int    @id @default(autoincrement())
-  name String
+  id               Int    @id @default(autoincrement())
+  name             String
+  trainingDuration Float
 
   User User[]
 

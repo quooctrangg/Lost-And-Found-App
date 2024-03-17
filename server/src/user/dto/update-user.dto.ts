@@ -1,7 +1,7 @@
 import { IsNumber, IsOptional, IsString, MaxLength, MinLength } from "class-validator"
 import { CONSTANTS_MAX, CONSTANTS_MIN } from "../../global"
 
-export class updateUserDto {
+export class UpdateUserDto {
     @IsString()
     @IsOptional()
     @MaxLength(CONSTANTS_MAX.NAME_LEN)

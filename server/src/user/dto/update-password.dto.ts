@@ -1,7 +1,7 @@
 import { IsNotEmpty, IsString, MinLength } from "class-validator"
 import { CONSTANTS_MIN } from "../../global"
 
-export class updatePasswordDto {
+export class UpdatePasswordDto {
     @IsString()
     @IsNotEmpty()
     @MinLength(CONSTANTS_MIN.PASSWORD_LEN)
