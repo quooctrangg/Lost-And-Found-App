@@ -117,6 +117,10 @@ export class UserService {
 
     async createUser(createUserDto: CreateUserDto) {
         try {
+            const isEmail = this.validateEmail(createUserDto.email.toLowerCase())
+            if (!isEmail) {
+                return new ResponseData<User>(null, 400, 'Email không đúng định dạng')
+            }
             const user = await this.prismaService.user.findFirst({
                 where: {
                     email: createUserDto.email.toLowerCase()
@@ -410,9 +414,73 @@ export class UserService {
         }
     }
 
+    @Cron('0 0 1 2,8 *')
     async autoBan() {
+        const currentMonth = new Date().getMonth() + 1
+        const currentYear = new Date().getFullYear() % 100
         try {
-
+            const data = await this.prismaService.user.findMany({
+                where: {
+                    type: USER_TYPES.USER,
+                },
+                select: {
+                    id: true,
+                    email: true,
+                    Major: {
+                        select: {
+                            trainingDuration: true
+                        }
+                    }
+                }
+            })
+            const filter = data.map((e) => {
+                return { id: e.id, year: Number(e.email.match(/b(\d{2})/)[1]) + e.Major.trainingDuration }
+            })
+            switch (currentMonth) {
+                case 8:
+                    await filter.forEach(async e => {
+                        if (e.year <= currentYear) {
+                            await this.prismaService.user.update({
+                                where: {
+                                    id: e.id
+                                },
+                                data: {
+                                    isBan: true
+                                }
+                            })
+                            await this.prismaService.feedback.create({
+                                data: {
+                                    userId: e.id,
+                                    content: 'Tài khoản của bạn đã bị khóa do đã hết thời gian trương trình đào tạo.',
+                                    time: -1
+                                }
+                            })
+                        }
+                    })
+                    break;
+                case 2:
+                    await filter.forEach(async e => {
+                        if (e.year <= currentYear - 0.5) {
+                            await this.prismaService.user.update({
+                                where: {
+                                    id: e.id
+                                },
+                                data: {
+                                    isBan: true
+                                }
+                            })
+                            await this.prismaService.feedback.create({
+                                data: {
+                                    userId: e.id,
+                                    content: 'Tài khoản của bạn đã bị khóa do đã hết thời gian trương trình đào tạo.',
+                                    time: -1
+                                }
+                            })
+                        }
+                    })
+                    break;
+            }
+            this.logger.log('Đã khóa các tài khoản hết thời gian chương trình đạo tạo.')
         } catch (error) {
             this.logger.error(error.message)
         }
@@ -424,6 +492,11 @@ export class UserService {
                 id: id
             }
         })
+    }
+
+    validateEmail(email: string) {
+        const regex = /^[a-zA-Z0-9+_.-]+B\d{7}@student\.ctu\.edu\.vn$/i
+        return regex.test(email);
     }
 
     random6DigitNumber() {
