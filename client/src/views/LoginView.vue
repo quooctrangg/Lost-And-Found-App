@@ -6,6 +6,7 @@ import { useRouter } from "vue-router";
 import * as yup from "yup";
 import { Form, Field, ErrorMessage } from "vee-validate";
 import Footer from '../components/common/Footer.vue';
+import FeedbackModal from '../components/login/FeedbackModal.vue';
 
 const authStore = useAuthStore()
 const router = useRouter()
@@ -24,6 +25,11 @@ const formSchemaLogin = yup.object().shape({
 const submitLogin = async () => {
     await authStore.login(user)
     if (authStore.err) {
+        if (authStore.result.statusCode == 403) {
+            console.log(authStore.result);
+            authStore.showFeedbackModal()
+        }
+        console.log(1);
         $toast.error(authStore.err, { position: 'top-right' })
         return
     }
@@ -85,5 +91,6 @@ const submitLogin = async () => {
             </div>
         </div>
     </section>
+    <FeedbackModal :feedback="authStore.result?.data?.feedback" />
     <Footer />
 </template>
