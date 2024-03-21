@@ -44,6 +44,16 @@ class requestService {
             }
         })).data
     }
+
+    async getRequestsSuccessByUserId(token) {
+        return (await this.api.get('/request-success', {
+            headers: {
+                "Content-Type": "application/json",
+                Accept: "application/json",
+                Authorization: `Bearer ${token}`
+            }
+        })).data
+    }
 }
 
 export default new requestService()

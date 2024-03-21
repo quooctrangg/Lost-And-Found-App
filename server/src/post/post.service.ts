@@ -29,17 +29,19 @@ export class PostService {
 
     async createPost(userId: number, createPostDto: CreatPostDto, images: Express.Multer.File[]) {
         try {
-            let { description, itemId, sendProtection, locations, type } = createPostDto
+            let { description, itemId, done, locations, type } = createPostDto
             locations = locations.map(id => Number(id))
             const data: any = {
                 userId: userId,
                 description: description,
                 itemId: itemId,
                 type: Number(type) == 1 ? true : false,
-                sendProtection: Number(sendProtection) == 1 ? true : false,
                 Location: {
                     connect: locations.map((id) => ({ id }))
                 },
+            }
+            if (done && done == -1) {
+                data.done = done
             }
             if (images.length) {
                 const imagesId: number[] = await this.uploadFiles(images)
@@ -120,7 +122,9 @@ export class PostService {
             let { key, page, type, itemId, locations } = option
             const where: any = {
                 verify: 1,
-                done: false,
+                done: {
+                    not: 1
+                },
                 isDelete: false,
                 User: {
                     isBan: false
@@ -201,6 +205,7 @@ export class PostService {
             }
             let data: any = {
                 verify: verifyPostDto.verify,
+                updatedAt: new Date()
             }
             if (verifyPostDto.verify == -1) {
                 data.feedback = verifyPostDto.feedback
@@ -297,7 +302,7 @@ export class PostService {
                     Location: true
                 },
                 orderBy: {
-                    createdAt: 'desc'
+                    updatedAt: 'desc'
                 }
             })
             return new ResponseData<Post[]>(data, 200, 'Tìm thấy các bài viết')

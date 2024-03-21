@@ -90,7 +90,7 @@ onMounted(async () => {
                             Từ chối
                         </h1>
                     </div>
-                    <div v-if="post?.done == true" class="flex justify-end items-center">
+                    <div v-if="post?.done == 1" class="flex justify-end items-center">
                         <h1 class="p-1 border-blue-600 border-2 rounded font-medium text-blue-600">ĐÃ HOÀN THÀNH</h1>
                     </div>
                 </div>
@@ -139,7 +139,7 @@ onMounted(async () => {
                                     <p class="card-found">
                                         TÌM THẤY
                                     </p>
-                                    <p v-if="post?.sendProtection" class="card-sendProtection">
+                                    <p v-if="post?.done == -1" class="card-sendProtection">
                                         GỬI LẠI BAN QUẢN LÝ TÒA NHÀ
                                     </p>
                                 </div>
@@ -148,7 +148,7 @@ onMounted(async () => {
                                 </p>
                             </div>
                             <button
-                                v-if="userStore?.user.id !== post?.User?.id && post?.sendProtection == false && post?.done == false && post?.verify === 1"
+                                v-if="userStore?.user.id !== post?.User?.id && post?.done == 0 && post?.verify === 1"
                                 class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded"
                                 @click="postStore.showRequestModal">
                                 <i class="fa-regular fa-paper-plane mr-1"></i>

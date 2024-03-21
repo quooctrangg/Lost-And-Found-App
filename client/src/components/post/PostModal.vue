@@ -22,13 +22,13 @@ const data = reactive({
     type: '',
     itemId: '',
     locations: [],
-    sendProtection: false
+    done: false
 })
 
 const formDataSchema = yup.object().shape({
     type: yup.string().required('Yêu cầu chọn loại bài viết.'),
     itemId: yup.string().required('Yêu cầu chọn loại đồ vật.'),
-    description: yup.string().required("Miêu tả phải có giá trị.").min(10, 'Miêu tả phải ít nhất 1 ký tự.').max(1000, "Miêu tả có nhiều nhất 250 ký tự."),
+    description: yup.string().required("Miêu tả phải có giá trị.").min(10, 'Miêu tả phải ít nhất 10 ký tự.').max(1000, "Miêu tả có nhiều nhất 250 ký tự."),
     locations: yup.array().min(1, 'Chọn ít nhất 1 địa điểm')
 })
 
@@ -59,7 +59,9 @@ const submitPost = async () => {
     dataForm.append('description', data.description)
     dataForm.append('itemId', data.itemId)
     dataForm.append('type', Number(data.type))
-    dataForm.append('sendProtection', data.sendProtection == true ? 1 : 0)
+    if (data.done) {
+        dataForm.append('done', -1)
+    }
     if (data.locations.length > 1) {
         data.locations.forEach(e => {
             dataForm.append('locations', e)
@@ -88,7 +90,7 @@ const reset = () => {
     data.type = ''
     data.itemId = ''
     data.locations = []
-    data.sendProtection = false
+    data.done = false
     selectedFile.value = []
     urls.value = []
 }
@@ -129,7 +131,7 @@ onMounted(async () => {
                                 class="flex gap-2 items-center mt-5 text-lg text-red-600 font-medium">
                                 <input type="checkbox" name="sendProtection" id="sendProtection"
                                     class="w-5 h-5 text-blue-600 bg-gray-100 border-gray-300 rounded cursor-pointer "
-                                    v-model="data.sendProtection">
+                                    v-model="data.done">
                                 <label for="sendProtection">Đã gửi lại ban quản lý tòa nhà</label>
                             </div>
                         </div>

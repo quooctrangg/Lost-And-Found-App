@@ -80,6 +80,11 @@ onMounted(() => {
                     :to="{ name: 'request' }">
                     Yêu cầu
                 </router-link>
+                <router-link class="p-2"
+                    :class="currentPage == 'success' ? 'text-blue-500 border-b-4 border-blue-500' : ''"
+                    :to="{ name: 'success' }">
+                    Lịch sử
+                </router-link>
             </div>
             <router-view @currentPage="(e) => { currentPage = e }" />
         </div>

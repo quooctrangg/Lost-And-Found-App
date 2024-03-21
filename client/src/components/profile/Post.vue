@@ -68,14 +68,14 @@ onMounted(async () => {
                                 <p class="card-found">
                                     TÌM THẤY
                                 </p>
-                                <p v-if="post.sendProtection" class="card-sendProtection">
+                                <p v-if="post.done == -1" class="card-sendProtection">
                                     GỬI LẠI BAN QUẢN LÝ TÒA NHÀ
                                 </p>
                             </div>
                             <p v-else class="card-lost">
                                 THẤT LẠC
                             </p>
-                            <p v-if="post.done && !post.sendProtection" class="card-sendProtection">
+                            <p v-if="post.done == 1" class="card-sendProtection">
                                 ĐÃ HOÀN THÀNH
                             </p>
                         </h1>
@@ -85,7 +85,7 @@ onMounted(async () => {
                     </h3>
                     <h3 class="flex gap-1">
                         Trạng thái:
-                        <div v-if="post.done == false">
+                        <div>
                             <span v-if="post.verify == 0" class="text-yellow-400">
                                 Đang chờ
                             </span>
@@ -99,9 +99,6 @@ onMounted(async () => {
                                     {{ post.feedback }}
                                 </span>
                             </span>
-                        </div>
-                        <div v-else class="text-blue-700">
-                            Đã xong
                         </div>
                     </h3>
                     <h3 v-if="post.verify == 0" class="flex gap-3 items-center">

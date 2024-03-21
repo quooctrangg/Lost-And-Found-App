@@ -30,7 +30,7 @@ const props = defineProps(['post'])
                             <p class="card-found">
                                 TÌM THẤY
                             </p>
-                            <p v-if="props.post?.sendProtection" class="card-sendProtection">
+                            <p v-if="props.post?.done == -1" class="card-sendProtection">
                                 GỬI LẠI BAN QUẢN LÝ TÒA NHÀ
                             </p>
                         </div>

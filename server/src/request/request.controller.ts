@@ -34,4 +34,10 @@ export class RequestController {
   getAllRequestsByUserId(@GetUser() user: User) {
     return this.requestService.getAllRequestByUserId(user.id)
   }
+
+  @Get('request-success')
+  @Role(USER_TYPES.USER)
+  getRequestsSuccessByUserId(@GetUser() user: User) {
+    return this.requestService.getRequestsSuccessByUserId(user.id)
+  }
 }

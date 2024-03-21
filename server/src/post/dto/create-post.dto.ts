@@ -1,4 +1,4 @@
-import { IsArray, IsNotEmpty, IsNumber, IsString, MaxLength, MinLength } from "class-validator"
+import { IsArray, IsNotEmpty, IsNumber, IsOptional, IsString, MaxLength, MinLength } from "class-validator"
 import { POST_SIZE } from "../../global"
 
 export class CreatPostDto {
@@ -21,6 +21,6 @@ export class CreatPostDto {
     locations: number[]
 
     @IsNumber()
-    @IsNotEmpty()
-    sendProtection: number
+    @IsOptional()
+    done: number
 }

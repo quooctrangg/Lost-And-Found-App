@@ -50,6 +50,11 @@ const routes = [
         path: 'request',
         name: 'request',
         component: () => import('../components/profile/Request.vue')
+      },
+      {
+        path: 'success',
+        name: 'success',
+        component: () => import('../components/profile/HistoryRequestSuccess.vue')
       }
     ]
   },

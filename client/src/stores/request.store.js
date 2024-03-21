@@ -70,5 +70,20 @@ export const useRequestStore = defineStore('request', () => {
         }
     }
 
-    return { err, result, isLoading, createRequest, acceptRequest, rejectRequest, getAllRequestsByUserId }
+    const getRequestsSuccessByUserId = async () => {
+        err.value = null
+        result.value = null
+        isLoading.value = true
+        try {
+            let res = await requestService.getRequestsSuccessByUserId(authStore.token)
+            if (res.statusCode !== 200) throw new Error(res.message)
+            result.value = res
+        } catch (error) {
+            err.value = error.message
+        } finally {
+            isLoading.value = false
+        }
+    }
+
+    return { err, result, isLoading, createRequest, acceptRequest, rejectRequest, getAllRequestsByUserId, getRequestsSuccessByUserId }
 })

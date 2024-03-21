@@ -31,7 +31,9 @@ export class SuggestService {
           where: {
             isDelete: false,
             verify: 1,
-            done: false,
+            done: {
+              not: 1
+            },
             userId: {
               not: userId
             }
@@ -65,7 +67,9 @@ export class SuggestService {
           itemId: {
             in: listItem
           },
-          done: false,
+          done: {
+            not: 1
+          },
           userId: {
             not: userId
           }
@@ -88,6 +92,8 @@ export class SuggestService {
       })
       return new ResponseData<Post[]>(suggest, 200, 'Gợi ý thành công')
     } catch (error) {
+      console.log(error);
+
       return new ResponseData<string>(null, 500, 'Lỗi dịch vụ, thử lại sau')
     }
   }

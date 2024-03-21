@@ -21,7 +21,7 @@ export class RequestService {
       if (userId === isPost.userId) {
         return new ResponseData<string>(null, 400, 'Bạn không thể yêu cầu bài viết của bạn')
       }
-      if (isPost.type == true && isPost.sendProtection == true) {
+      if (isPost.type == true && isPost.done == -1) {
         return new ResponseData<string>(null, 400, 'Đồ vật đang ở ban quản lý tòa nhà')
       }
       const isRequest = await this.prismaService.request.findFirst({
@@ -89,7 +89,7 @@ export class RequestService {
           id: isRequest.postId
         },
         data: {
-          done: true
+          done: 1
         }
       })
       return new ResponseData<string>(null, 200, 'Yêu cầu đã được chấp nhận')
@@ -155,6 +155,54 @@ export class RequestService {
         }
       })
       return new ResponseData<Request[]>(data, 200, 'Tìm thấy thành công')
+    } catch (error) {
+      return new ResponseData<string>(null, 500, 'Lỗi dịch vụ, thử lại sau')
+    }
+  }
+
+  async getRequestsSuccessByUserId(userId: number) {
+    try {
+      const data = await this.prismaService.request.findMany({
+        where: {
+          OR: [
+            {
+              userId: userId
+            },
+            {
+              Post: {
+                userId: userId
+              }
+            }
+          ],
+          status: 1
+        },
+        select: {
+          User: {
+            select: {
+              id: true,
+              name: true
+            }
+          },
+          Post: {
+            select: {
+              Item: true,
+              User: {
+                select: {
+                  id: true,
+                  name: true
+                }
+              },
+              type: true
+            }
+          },
+          updatedAt: true,
+          description: true
+        },
+        orderBy: {
+          updatedAt: 'desc'
+        }
+      })
+      return new ResponseData<any>(data, 200, 'Tìm thành công')
     } catch (error) {
       return new ResponseData<string>(null, 500, 'Lỗi dịch vụ, thử lại sau')
     }

@@ -124,7 +124,7 @@ onMounted(async () => {
                                             class="border-2 border-green-600 p-1 text-xs font-semibold text-green-600 rounded">
                                             TÌM THẤY
                                         </p>
-                                        <p v-if="post.sendProtection"
+                                        <p v-if="post.done == -1"
                                             class="border-2 border-blue-600 p-1 text-xs font-semibold text-blue-600 rounded">
                                             GỬI LẠI BAN QUẢN LÝ TÒA NHÀ
                                         </p>
@@ -133,7 +133,7 @@ onMounted(async () => {
                                         class="border-2 border-orange-500 p-1 text-xs font-semibold text-orange-500 rounded">
                                         THẤT LẠC
                                     </p>
-                                    <p v-if="post.done"
+                                    <p v-if="post.done == 1"
                                         class="border-2 border-blue-600 p-1 text-xs font-semibold text-blue-600 rounded">
                                         ĐÃ HOÀN THÀNH
                                     </p>

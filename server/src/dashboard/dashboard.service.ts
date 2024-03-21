@@ -55,10 +55,11 @@ export class DashboardService {
           }
         }
       })
-      let done = 0
-      const postCount = await this.prismaService.post.count({
+      const done = await this.prismaService.post.count({
         where: {
-          done: true,
+          done: {
+            not: 0
+          },
           isDelete: false,
           verify: 1,
           createdAt: {
@@ -67,18 +68,6 @@ export class DashboardService {
           }
         }
       })
-      const sendProtectionCount = await this.prismaService.post.count({
-        where: {
-          isDelete: false,
-          verify: 1,
-          sendProtection: true,
-          createdAt: {
-            gte: start,
-            lte: end
-          }
-        }
-      })
-      done = postCount + sendProtectionCount
       return new ResponseData<any>({ user, post, request, done }, 200, 'Thống kê thành công')
     } catch (error) {
       return new ResponseData<string>(null, 500, 'Lỗi dịch vụ, thử lại sau')
@@ -205,7 +194,7 @@ export class DashboardService {
       })
       const sendProtection = await this.prismaService.post.findMany({
         where: {
-          sendProtection: true,
+          done: -1,
           updatedAt: {
             gte: start,
             lte: end
