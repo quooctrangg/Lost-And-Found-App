@@ -22,7 +22,7 @@ const handleSendComment = async (content) => {
 </script>
 
 <template>
-    <div class="w-[70%] bg-white rounded-md p-2 shadow border-2">
+    <div class="w-full bg-white rounded-md p-2 shadow border-2">
         <div class="p-2 text-sm text-gray-700 underline">
             {{ commentStore.comments.length }} bình luận
         </div>

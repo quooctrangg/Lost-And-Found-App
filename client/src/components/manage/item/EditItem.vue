@@ -39,7 +39,8 @@ watchEffect(async () => {
 </script>
 
 <template>
-    <fwb-modal v-if="manageStore.isShow.editItem" @close="manageStore.closeEditItemModal" :size="'xs'" :persistent="true">
+    <fwb-modal v-if="manageStore.isShow.editItem" @close="manageStore.closeEditItemModal" :size="'xs'"
+        :persistent="true">
         <template #header>
             <div class="flex items-center text-xl gap-2">
                 <i class="fa-solid fa-plus"></i>
@@ -62,11 +63,10 @@ watchEffect(async () => {
         </template>
         <template #footer>
             <div class="flex justify-end gap-2">
-                <fwb-button @click="manageStore.closeEditItemModal" color="alternative">
+                <fwb-button @click="manageStore.closeEditItemModal" color="red">
                     Hủy
                 </fwb-button>
-                <label for="btn-submit"
-                    class="bg-green-500 rounded-lg text-sm px-5 py-3 text-center text-white font-semibold cursor-pointer hover:bg-green-600">
+                <label for="btn-submit" class="btn-submit">
                     Sửa
                 </label>
             </div>

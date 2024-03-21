@@ -84,9 +84,11 @@ const submitUpdatePassword = async () => {
                     <label for="newPassword" class="text-lg mx-2">Mật khẩu mới:</label>
                     <div class="mb-3">
                         <div class="flex items-center gap-1">
-                            <Field name="newPassword" :type="changeType.newPassword ? 'text' : 'password'" id="newPassword"
-                                class="rounded-md w-full" placeholder="Nhập mật khẩu mới" v-model="data.newPassword" />
-                            <button type="button" class="text-2xl p-1" @click="() => { toggleChangeType('newPassword') }">
+                            <Field name="newPassword" :type="changeType.newPassword ? 'text' : 'password'"
+                                id="newPassword" class="rounded-md w-full" placeholder="Nhập mật khẩu mới"
+                                v-model="data.newPassword" />
+                            <button type="button" class="text-2xl p-1"
+                                @click="() => { toggleChangeType('newPassword') }">
                                 <i v-if="changeType.newPassword" class="fa-regular fa-eye"></i>
                                 <i v-else class="fa-regular fa-eye-slash"></i>
                             </button>
@@ -116,11 +118,10 @@ const submitUpdatePassword = async () => {
         </template>
         <template #footer>
             <div class="flex justify-end gap-2">
-                <fwb-button @click="userStore.closeUpdatePasswordModal" color="alternative">
+                <fwb-button @click="userStore.closeUpdatePasswordModal" color="red">
                     Hủy
                 </fwb-button>
-                <label for="btn-submit"
-                    class="bg-green-500 rounded-lg text-sm px-5 py-3 text-center text-white font-semibold cursor-pointer hover:bg-green-600">
+                <label for="btn-submit" class="btn-submit">
                     Đổi
                 </label>
             </div>

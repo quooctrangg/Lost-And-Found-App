@@ -48,7 +48,8 @@ watchEffect(async () => {
         </template>
         <template #body>
             <div class="w-full">
-                <Form @submit="updateSchool" v-if="schoolStore.isLoading == false" :validation-schema="formSchemaSchool">
+                <Form @submit="updateSchool" v-if="schoolStore.isLoading == false"
+                    :validation-schema="formSchemaSchool">
                     <Field type="text" name="name" id="name" class="rounded-md w-full" v-model="name"
                         placeholder="Nhập tên trường / khoa" />
                     <ErrorMessage name="name" class="error" />
@@ -61,11 +62,10 @@ watchEffect(async () => {
         </template>
         <template #footer>
             <div class="flex justify-end gap-2">
-                <fwb-button @click="manageStore.closeEditSchoolModal" color="alternative">
+                <fwb-button @click="manageStore.closeEditSchoolModal" color="red">
                     Hủy
                 </fwb-button>
-                <label for="btn-submit"
-                    class="bg-green-500 rounded-lg text-sm px-5 py-3 text-center text-white font-semibold cursor-pointer hover:bg-green-600">
+                <label for="btn-submit" class="btn-submit">
                     Sửa
                 </label>
             </div>

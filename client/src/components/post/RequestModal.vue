@@ -1,5 +1,5 @@
 <script setup>
-import { FwbModal } from 'flowbite-vue'
+import { FwbModal, FwbButton } from 'flowbite-vue'
 import { usePostStore } from '../../stores/post.store'
 import { useRequestStore } from '../../stores/request.store'
 import { Form, Field, ErrorMessage } from "vee-validate";
@@ -46,8 +46,10 @@ const btnSubmit = async () => {
             <h1 v-if="props.request" class="text-lg font-medium mb-2">Tôi muốn nhận đồ vật này</h1>
             <h1 v-else class="text-lg font-medium mb-2">Tôi muốn gửi trả đồ vật này</h1>
             <p v-if="props.request" class="text-sm">
-                Vui lòng mô tả càng nhiều chi tiết về mặt hàng không hiển thị hoặc không được mô tả để công cụ tìm có thể
-                nhận ra bạn là chủ sở hữu. Và nếu có thể, hãy cung cấp càng nhiều thông tin càng tốt về nơi bạn làm mất đồ
+                Vui lòng mô tả càng nhiều chi tiết về mặt hàng không hiển thị hoặc không được mô tả để công cụ tìm có
+                thể
+                nhận ra bạn là chủ sở hữu. Và nếu có thể, hãy cung cấp càng nhiều thông tin càng tốt về nơi bạn làm mất
+                đồ
                 (ví dụ: thời gian và địa điểm). Hãy cẩn thận khi chia sẻ thông tin cá nhân.
             </p>
             <Form @submit="btnSubmit" :validation-schema="formDataSchema">
@@ -59,12 +61,10 @@ const btnSubmit = async () => {
         </template>
         <template #footer>
             <div class="flex justify-end gap-2">
-                <button @click="postStore.closeRequestModal" class="px-2 py-1 bg-red-500 rounded-lg text-white">
-                    <i class="fa-solid fa-xmark"></i>
+                <fwb-button @click="postStore.closeRequestModal" color="red">
                     Hủy
-                </button>
-                <label for="btn-submit"
-                    class="bg-green-500 rounded-lg text-sm px-5 py-3 text-center text-white font-semibold cursor-pointer hover:bg-green-600">
+                </fwb-button>
+                <label for="btn-submit" class="btn-submit">
                     Gửi
                 </label>
             </div>

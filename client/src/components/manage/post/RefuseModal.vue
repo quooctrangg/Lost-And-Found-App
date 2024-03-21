@@ -39,11 +39,10 @@ const btnSubmit = async () => {
         </template>
         <template #footer>
             <div class="flex justify-end gap-2">
-                <fwb-button @click="manageStore.closeRefuseModal" color="alternative">
+                <fwb-button @click="manageStore.closeRefuseModal" color="red">
                     Hủy
                 </fwb-button>
-                <label for="btn-submit"
-                    class="bg-green-500 rounded-lg text-sm px-5 py-3 text-center text-white font-semibold cursor-pointer hover:bg-green-600">
+                <label for="btn-submit" class="btn-submit">
                     Xác nhận
                 </label>
             </div>

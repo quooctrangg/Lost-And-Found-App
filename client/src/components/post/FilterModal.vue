@@ -1,5 +1,5 @@
 <script setup>
-import { FwbModal } from 'flowbite-vue'
+import { FwbModal, FwbButton } from 'flowbite-vue'
 import { ref } from 'vue';
 import { usePostStore } from '../../stores/post.store'
 import { useItemStore } from '../../stores/item.store'
@@ -54,7 +54,6 @@ onMounted(async () => {
                 Lọc
             </div>
         </template>
-
         <template #body>
             <div class="flex flex-col gap-1 text-sm">
                 <label class="italic">Loại bài viết:</label>
@@ -77,9 +76,7 @@ onMounted(async () => {
                     <select name="item" id="item" class="rounded-lg  w-full" v-model="itemId">
                         <option value="null">Tất cả</option>
                         <option v-if="itemStore.items?.length" v-for="item in itemStore.items" :value="item.id">
-                            {{
-        item.name
-    }}
+                            {{ item.name }}
                         </option>
                     </select>
                 </div>
@@ -90,24 +87,19 @@ onMounted(async () => {
                         <input type="checkbox" :name="location.id" :id="location.id" :value="location.id"
                             v-model="locations"
                             class="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 rounded cursor-pointer" />
-                        {{
-        location.name
-    }}
+                        {{ location.name }}
                     </label>
                 </div>
             </div>
         </template>
-
         <template #footer>
             <div class="flex justify-end gap-2">
-                <button class="px-3 py-2 bg-red-500 rounded-lg text-white" @click="reset">
-                    <i class="fa-solid fa-arrows-rotate"></i>
+                <fwb-button @click="reset" color="alternative">
                     Đặt lại
-                </button>
-                <button @click="submit" class="px-3 py-2 bg-blue-500 rounded-lg text-white">
-                    <i class="fa-regular fa-circle-xmark"></i>
+                </fwb-button>
+                <fwb-button @click="submit" color="blue">
                     Hoàn tất
-                </button>
+                </fwb-button>
             </div>
         </template>
     </fwb-modal>

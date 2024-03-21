@@ -106,7 +106,7 @@ onMounted(async () => {
                 </tbody>
                 <tbody v-else>
                     <tr class="text-center text-red-500 text-xl">
-                        <td colspan="3" class="p-6">
+                        <td colspan="3" class="h-screen">
                             <Loading />
                         </td>
                     </tr>

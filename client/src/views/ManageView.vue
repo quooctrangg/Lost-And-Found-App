@@ -25,15 +25,15 @@ const name = {
                     <i class="fa-solid fa-chart-pie"></i>
                     Thống kê
                 </router-link>
-                <router-link :to="{ name: 'user-manage' }" class="rounded-lg shadow p-2 font-medium"
-                    :class="currentPage == 'user' ? 'bg-white text-sky-400 border-2 border-blue-400' : 'text-white  bg-sky-400 hover:bg-sky-500'">
-                    <i class="fa-solid fa-user-gear"></i>
-                    Tài khoản
-                </router-link>
                 <router-link :to="{ name: 'post-manage' }" class="rounded-lg shadow p-2 font-medium"
                     :class="currentPage == 'post' ? 'bg-white text-sky-400 border-2 border-blue-400' : 'text-white  bg-sky-400 hover:bg-sky-500'">
                     <i class="fa-regular fa-clipboard"></i>
                     Bài viết
+                </router-link>
+                <router-link :to="{ name: 'user-manage' }" class="rounded-lg shadow p-2 font-medium"
+                    :class="currentPage == 'user' ? 'bg-white text-sky-400 border-2 border-blue-400' : 'text-white  bg-sky-400 hover:bg-sky-500'">
+                    <i class="fa-solid fa-user-gear"></i>
+                    Tài khoản
                 </router-link>
                 <router-link :to="{ name: 'item-manage' }" class="rounded-lg shadow p-2 font-medium"
                     :class="currentPage == 'item' ? 'bg-white text-sky-400 border-2 border-blue-400' : 'text-white  bg-sky-400 hover:bg-sky-500'">
@@ -52,7 +52,7 @@ const name = {
                 </router-link>
                 <router-link :to="{ name: 'major-manage' }" class="rounded-lg shadow p-2 font-medium"
                     :class="currentPage == 'major' ? 'bg-white text-sky-400 border-2 border-blue-400' : 'text-white  bg-sky-400 hover:bg-sky-500'">
-                    <i class="fa-solid fa-house"></i>
+                    <i class="fa-solid fa-book"></i>
                     Chuyên ngành
                 </router-link>
             </div>

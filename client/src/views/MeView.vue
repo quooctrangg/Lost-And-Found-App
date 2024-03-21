@@ -29,10 +29,10 @@ onMounted(() => {
 <template>
     <div class="w-[80%] mx-auto min-h-[100vh]">
         <div class="bg-gray-50 rounded p-4 flex gap-5 shadow">
-            <div class="relative">
-                <img class="w-32 h-32 border-2 rounded-full object-cover hover:border-sky-300"
+            <div class="relative" @click="userStore.showUpdateAvatarModal">
+                <img class="w-32 h-32 border-2 rounded-full object-cover hover:border-sky-300 cursor-pointer"
                     :src="userStore.user?.image" alt="logo">
-                <div @click="userStore.showUpdateAvatarModal"
+                <div
                     class="absolute bottom-4 right-4 mb-2 mr-2 bg-gray-300 rounded-full h-6 w-6 flex justify-center items-center text-lg hover:bg-gray-50 cursor-pointer">
                     <i class="fa-solid fa-camera"></i>
                 </div>
@@ -58,15 +58,11 @@ onMounted(() => {
                 </h2>
             </div>
             <div class="flex flex-col gap-1 justify-end">
-                <button
-                    class="bg-sky-400 rounded-lg text-sm p-2 text-center text-slate-700 font-semibold hover:bg-sky-500"
-                    @click="userStore.showUpdateProfileModal">
+                <button class="btn-click" @click="userStore.showUpdateProfileModal">
                     <i class="fa-solid fa-pen"></i>
                     Chỉnh sửa thông tin
                 </button>
-                <button
-                    class="bg-sky-400 rounded-lg text-sm p-2 text-center text-slate-700 font-semibold hover:bg-sky-500"
-                    @click="userStore.showUpdatePasswordModal">
+                <button class="btn-click" @click="userStore.showUpdatePasswordModal">
                     <i class="fa-solid fa-key"></i>
                     Đổi mật khẩu
                 </button>

@@ -25,7 +25,7 @@ const user = reactive({
 })
 const formSchemaUser = yup.object().shape({
     name: yup.string().required("Tên phải có giá trị.").min(1, 'Tên phải ít nhất 1 ký tự.').max(50, "Tên có nhiều nhất 50 ký tự."),
-    email: yup.string().required("Email phải có giá trị.").email("E-mail không đúng.").max(50, "E-mail tối đa 50 ký tự."),
+    email: yup.string().required("Email phải có giá trị.").email("E-mail không đúng.").matches(/^[a-zA-Z0-9+_.-]+b\d{7}@student\.ctu\.edu\.vn$/i, 'Email không đúng định dạng của trường Đại học Cần Thơ.').max(50, "E-mail tối đa 50 ký tự."),
     password: yup.string().required('Mật khẩu phải có giá trị.').min(6, 'Tên phải ít nhất 6 ký tự.'),
     schoolId: yup.string().required('Yêu cầu chọn trường / khoa.'),
     majorId: yup.string().required('Yêu cầu chọn chuyên ngành.')
@@ -124,11 +124,10 @@ watch(() => user.schoolId, async newval => {
         </template>
         <template #footer>
             <div class="flex justify-end gap-2">
-                <fwb-button @click="manageStore.closeAddUserModal" color="alternative">
+                <fwb-button @click="manageStore.closeAddUserModal" color="red">
                     Hủy
                 </fwb-button>
-                <label for="btn-submit"
-                    class="bg-green-500 rounded-lg text-sm px-5 py-3 text-center text-white font-semibold cursor-pointer hover:bg-green-600">
+                <label for="btn-submit" class="btn-submit">
                     Thêm
                 </label>
             </div>

@@ -60,10 +60,10 @@ const submitImage = async () => {
         </template>
         <template #footer>
             <div class="flex justify-end gap-2">
-                <fwb-button @click="userStore.closeUpdateAvatarModal" color="alternative">
+                <fwb-button @click="userStore.closeUpdateAvatarModal" color="red">
                     Hủy
                 </fwb-button>
-                <fwb-button @click="async () => { await submitImage() }" color="green">
+                <fwb-button @click="async () => { await submitImage() }" color="blue">
                     Đổi
                 </fwb-button>
             </div>

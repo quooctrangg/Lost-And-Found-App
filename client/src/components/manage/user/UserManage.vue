@@ -120,28 +120,28 @@ onMounted(async () => {
                     <i class="fa-solid fa-user-plus"></i>
                 </button>
             </div>
-            <table class="table-fixed w-full">
+            <table class="table-auto w-full">
                 <thead class="border-b border-black font-medium">
                     <tr class="text-left">
-                        <th class="px-6 py-4 text-center">
+                        <th class="p-2 text-center">
                             STT
                         </th>
-                        <th class="px-6 py-4">
+                        <th class="p-2">
                             Hình
                         </th>
-                        <th class="px-6 py-4">
+                        <th class="p-2">
                             Tên
                         </th>
-                        <th class="px-6 py-4">
+                        <th class="p-2">
                             Email
                         </th>
-                        <th class="px-6 py-4 text-center">
+                        <th class="p-2 text-center">
                             Trạng thái
                         </th>
-                        <th class="px-6 py-4 text-center">
+                        <th class="p-2 text-center">
                             Ngày tham gia
                         </th>
-                        <th class="px-6 py-4 text-center">
+                        <th class="p-2 text-center">
                             Tùy chọn
                         </th>
                     </tr>
@@ -149,33 +149,33 @@ onMounted(async () => {
                 <tbody v-if="userStore.isLoading == false">
                     <tr v-if="userStore.users?.length" v-for="(user, i) in userStore.users" :key="user.id"
                         class="border-b transition duration-300 ease-in-out hover:bg-gray-300">
-                        <td class="whitespace-nowrap px-6 py-4 font-medium text-center">
+                        <td class="whitespace-nowrap p-2 font-medium text-center">
                             <router-link :to="{ name: 'profile', params: { id: `${user.id}` } }"
                                 class="text-lg text-blue-500 underline p-2 hover:text-blue-600">
                                 {{ (userStore.currentPage - 1) * 10 + i + 1 }}
                             </router-link>
                         </td>
-                        <td class="whitespace-nowrap px-6 py-4">
+                        <td class="whitespace-nowrap p-2">
                             <div class="w-20 h-20 overflow-hidden flex items-center justify-center rounded-full">
                                 <img :src="user.image" alt="logo">
                             </div>
                         </td>
-                        <td class="whitespace-nowrap px-6 py-4">
+                        <td class="whitespace-nowrap p-2 truncate">
                             {{ user.name }}
                         </td>
-                        <td class="whitespace-nowrap px-6 py-4">
+                        <td class="whitespace-nowrap p-2">
                             {{ user.email.split('@')[0] }}
                         </td>
-                        <td v-if="!user.isBan" class="whitespace-nowrap px-6 py-4 text-green-500 text-center">
+                        <td v-if="!user.isBan" class="whitespace-nowrap p-2 text-green-500 text-center">
                             Hoạt động
                         </td>
-                        <td v-else class="whitespace-nowrap px-6 py-4 text-red-500 text-center">
+                        <td v-else class="whitespace-nowrap p-2 text-red-500 text-center">
                             Khóa
                         </td>
-                        <td class="whitespace-nowrap px-6 py-4 text-center">
+                        <td class="p-2 text-center">
                             {{ dayjs(user.createdAt).format('LT L') }}
                         </td>
-                        <td class="whitespace-nowrap px-6 py-4 flex gap-2 items-center justify-center">
+                        <td class="whitespace-nowrap p-2 flex gap-2 items-center justify-center">
                             <button v-if="!user.isBan" class="p-2 text-red-600 hover:text-red-700 text-2xl" @click="() => {
                                 manageStore.showFeedbackModal()
                                 currentUser = user
@@ -208,7 +208,7 @@ onMounted(async () => {
                 </tbody>
                 <tbody v-else>
                     <tr class="text-center text-red-500 text-xl">
-                        <td colspan="7" class="p-6">
+                        <td colspan="7" class="h-screen">
                             <Loading />
                         </td>
                     </tr>

@@ -97,19 +97,19 @@ const btnSendCode = async () => {
                             Mã xác nhận:
                         </label>
                         <div class="grid grid-cols-3 gap-2 w-full mb-4">
-                            <Field type="number" name="code" id="code" class="input-custom col-span-2" placeholder="XXXXXX"
-                                v-model="user.code" />
+                            <Field type="number" name="code" id="code" class="input-custom col-span-2"
+                                placeholder="XXXXXX" v-model="user.code" />
                             <button type="button" @click="async () => { await btnSendCode() }"
                                 v-if="userStore.isLoading == false && timeout == false"
-                                class="grow shrink-0 bg-blue-500 text-white text-sm font-semibold rounded-md p-2 hover:bg-blue-600">
+                                class="grow shrink-0 btn-submit">
                                 Lấy mã
                             </button>
                             <button v-else-if="userStore.isLoading == false && timeout == true" type="button"
-                                class="w-full rounded-lg px-5 py-3 text-white text-sm font-semibold bg-blue-500 flex justify-center items-center cursor-not-allowed">
+                                class="w-full flex justify-center items-center cursor-not-allowed btn-submit">
                                 {{ seconds }}s
                             </button>
                             <button v-else type="button"
-                                class="w-full rounded-lg px-5 py-3 text-white font-semibold bg-blue-500 flex justify-center items-center cursor-not-allowed">
+                                class="w-full flex justify-center items-center cursor-not-allowed btn-submit">
                                 <div class="custom-loader"></div>
                             </button>
                         </div>
