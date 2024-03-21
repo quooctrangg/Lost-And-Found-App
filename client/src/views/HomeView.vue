@@ -89,7 +89,7 @@ onUnmounted(() => {
                 <PostCard v-if="posts.length" v-for=" post  in  posts " :post="post" />
             </div>
             <div v-if="userStore.user?.id"
-                class="w-[30%] bg-white rounded-md shadow border-2 border-blue-500 h-fit p-2 sticky top-11">
+                class="w-[30%] bg-white rounded-md shadow border-2 border-blue-500 h-fit p-2 sticky top-16">
                 <SuggestCard />
             </div>
         </div>

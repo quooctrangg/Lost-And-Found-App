@@ -206,10 +206,11 @@ export class DashboardService {
       const sendProtection = await this.prismaService.post.findMany({
         where: {
           sendProtection: true,
-          createdAt: {
+          updatedAt: {
             gte: start,
             lte: end
-          }
+          },
+          verify: 1
         },
         include: {
           User: {

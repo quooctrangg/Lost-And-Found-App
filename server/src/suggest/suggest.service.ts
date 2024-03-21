@@ -31,7 +31,10 @@ export class SuggestService {
           where: {
             isDelete: false,
             verify: 1,
-            done: false
+            done: false,
+            userId: {
+              not: userId
+            }
           },
           include: {
             Image: true,
@@ -62,7 +65,10 @@ export class SuggestService {
           itemId: {
             in: listItem
           },
-          done: false
+          done: false,
+          userId: {
+            not: userId
+          }
         },
         include: {
           Image: true,

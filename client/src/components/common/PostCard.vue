@@ -19,7 +19,7 @@ const props = defineProps(['post'])
                         <span class="text-xs italic">
                             <i class=" fa-regular fa-clock"></i>
                             {{ dayjs().diff(dayjs(props.post?.updatedAt), 'day') > 0 ?
-            dayjs(props.post?.updatedAt).format('DD/MM/YYYY')
+            dayjs(props.post?.updatedAt).format('LT L')
             : dayjs(props.post?.updatedAt).fromNow() }}
                         </span>
                     </div>
@@ -27,15 +27,14 @@ const props = defineProps(['post'])
                 <div class="flex gap-5 items-center">
                     <div>
                         <div v-if="props.post?.type === true" class="flex gap-1">
-                            <p class="border-2 border-green-600 p-1 text-xs font-semibold text-green-600 rounded">
+                            <p class="card-found">
                                 TÌM THẤY
                             </p>
-                            <p v-if="props.post?.sendProtection"
-                                class="border-2 border-blue-600 p-1 text-xs font-semibold text-blue-600 rounded">
+                            <p v-if="props.post?.sendProtection" class="card-sendProtection">
                                 GỬI LẠI BAN QUẢN LÝ TÒA NHÀ
                             </p>
                         </div>
-                        <p v-else class="border-2 border-orange-500 p-1 text-xs font-semibold text-orange-500 rounded">
+                        <p v-else class="card-lost">
                             THẤT LẠC
                         </p>
                     </div>

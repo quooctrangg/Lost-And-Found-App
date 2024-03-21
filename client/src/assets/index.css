@@ -57,3 +57,15 @@
 .active {
     @apply bg-sky-500 text-white
 }
+
+.card-found {
+    @apply border-2 border-green-600 p-1 text-xs font-semibold text-green-600 rounded
+}
+
+.card-sendProtection {
+    @apply border-2 border-blue-600 p-1 text-xs font-semibold text-blue-600 rounded
+}
+
+.card-lost {
+    @apply border-2 border-orange-500 p-1 text-xs font-semibold text-orange-500 rounded
+}

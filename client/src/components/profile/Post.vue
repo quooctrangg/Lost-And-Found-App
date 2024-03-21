@@ -65,20 +65,17 @@ onMounted(async () => {
                         </h2>
                         <h1 class="flex gap-1">
                             <div v-if="post.type == true" class="flex gap-1">
-                                <p class="border-2 border-green-600 p-1 text-xs font-semibold  text-green-600 rounded">
+                                <p class="card-found">
                                     TÌM THẤY
                                 </p>
-                                <p v-if="post.sendProtection"
-                                    class="border-2 border-blue-500 p-1 text-xs font-semibold text-blue-500 rounded">
+                                <p v-if="post.sendProtection" class="card-sendProtection">
                                     GỬI LẠI BAN QUẢN LÝ TÒA NHÀ
                                 </p>
                             </div>
-                            <p v-else
-                                class="border-2 border-orange-500 p-1 text-xs font-semibold text-orange-500 rounded">
+                            <p v-else class="card-lost">
                                 THẤT LẠC
                             </p>
-                            <p v-if="post.done"
-                                class="border-2 border-blue-500 p-1 text-xs font-semibold text-blue-500 rounded">
+                            <p v-if="post.done && !post.sendProtection" class="card-sendProtection">
                                 ĐÃ HOÀN THÀNH
                             </p>
                         </h1>

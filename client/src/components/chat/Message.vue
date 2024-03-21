@@ -17,17 +17,15 @@ const props = defineProps(['message'])
             :class="userStore.user.id === props.message.User.id ? 'message_right' : 'message_left'">
             <p v-if="!props.message.isImage" class="w-full"
                 :class="userStore.user.id === props.message.User.id ? '' : 'text-left'">
-                {{
-                    props.message?.content
-                }}
+                {{ props.message?.content }}
             </p>
             <p v-else class="w-full bg-white" :class="userStore.user.id === props.message.User.id ? '' : 'text-left'">
                 <img class="w-[200px] object-cover" :src="props.message?.content">
             </p>
             <span class="text-xs ">
-                {{
-                    dayjs(props.message?.createdAt).fromNow()
-                }}
+                {{ dayjs().diff(dayjs(props.message?.createdAt), 'day') > 0 ?
+            dayjs(props.message?.createdAt).format('LT L') :
+            dayjs(props.message?.createdAt).fromNow() }}
             </span>
         </div>
     </div>

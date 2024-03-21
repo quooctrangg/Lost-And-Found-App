@@ -81,7 +81,13 @@ onMounted(async () => {
                         {{ post?.User?.name }}
                     </h1>
                     <div v-if="post?.verify == 0" class="flex justify-end items-center">
-                        <h1 class="p-1 border-yellow-200 border-2 rounded font-medium text-yellow-300">Đang chờ duyệt
+                        <h1 class="p-1 border-yellow-200 border-2 rounded font-medium text-yellow-300">
+                            Đang chờ duyệt
+                        </h1>
+                    </div>
+                    <div v-else-if="post?.verify == -1" class="flex justify-end items-center">
+                        <h1 class="p-1 border-red-600 border-2 rounded font-medium text-red-600">
+                            Từ chối
                         </h1>
                     </div>
                     <div v-if="post?.done == true" class="flex justify-end items-center">
@@ -118,7 +124,7 @@ onMounted(async () => {
                                 <span class="text-xs italic">
                                     <i class=" fa-regular fa-clock"></i>
                                     {{ dayjs().diff(dayjs(post?.updatedAt), 'day') > 0
-                ? dayjs(post?.updatedAt).format('DD/MM/YYYY') : dayjs(post?.updatedAt).fromNow() }}
+                ? dayjs(post?.updatedAt).format('LT L') : dayjs(post?.updatedAt).fromNow() }}
                                 </span>
                             </div>
                             <div v-if="userStore?.user.id !== post?.User?.id"
@@ -130,16 +136,14 @@ onMounted(async () => {
                         <div class="flex gap-3 items-center">
                             <div class="flex justify-end items-center">
                                 <div v-if="post?.type" class="flex gap-1">
-                                    <p v-if="post?.sendProtection"
-                                        class="border-2 border-red-500 p-1 text-xs font-semibold text-red-500 rounded">
-                                        GỬI LẠI BAN QUẢN LÝ TÒA NHÀ
-                                    </p>
-                                    <p class="border-2 border-blue-500 p-1 text-xs font-semibold text-blue-500 rounded">
+                                    <p class="card-found">
                                         TÌM THẤY
                                     </p>
+                                    <p v-if="post?.sendProtection" class="card-sendProtection">
+                                        GỬI LẠI BAN QUẢN LÝ TÒA NHÀ
+                                    </p>
                                 </div>
-                                <p v-else
-                                    class="border-2 border-orange-500 p-1 text-xs font-semibold text-orange-500 rounded">
+                                <p v-else class="card-lost">
                                     THẤT LẠC
                                 </p>
                             </div>
