@@ -73,11 +73,11 @@ watchEffect(async () => {
                             <p>Đăng nhập</p>
                         </router-link>
                     </div>
-                    <div class="hover:bg-[#07A6F0] text-white bg-[#0798DB] p-2 rounded-md">
+                    <!-- <div class="hover:bg-[#07A6F0] text-white bg-[#0798DB] p-2 rounded-md">
                         <router-link :to="{ name: 'register' }">
                             <p>Đăng ký</p>
                         </router-link>
-                    </div>
+                    </div> -->
                 </div>
                 <div v-else class="flex gap-5 items-center">
                     <router-link :to="{ name: 'home' }" class="text-2xl">

@@ -79,13 +79,13 @@ const submitLogin = async () => {
                         <button type="submit" class="btn-custom shadow-lg">
                             Đăng nhập
                         </button>
-                        <div class="text-sm font-light text-[#5B5764] py-2">
+                        <!-- <div class="text-sm font-light text-[#5B5764] py-2">
                             Bạn chưa có tài khoản?
                             <router-link class="font-medium text-[#5B5764] hover:underline hover:text-red-600"
                                 :to="{ name: 'register' }">
                                 Đăng ký.
                             </router-link>
-                        </div>
+                        </div> -->
                     </div>
                 </Form>
             </div>

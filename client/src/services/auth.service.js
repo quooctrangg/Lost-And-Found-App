@@ -9,13 +9,13 @@ class authService {
         return (await this.api.post('/login', data)).data
     }
 
-    async register(data) {
-        return (await this.api.post('/register', data)).data
-    }
+    // async register(data) {
+    //     return (await this.api.post('/register', data)).data
+    // }
 
-    async confirmUser(data) {
-        return (await this.api.patch('/confirm', data)).data
-    }
+    // async confirmUser(data) {
+    //     return (await this.api.patch('/confirm', data)).data
+    // }
 }
 
 export default new authService()

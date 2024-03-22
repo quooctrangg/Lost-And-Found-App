@@ -119,13 +119,13 @@ const btnSendCode = async () => {
                         <button type="submit" class="btn-custom">
                             Đổi mật khẩu
                         </button>
-                        <p class="text-sm font-light text-gray-500 py-2">
+                        <!-- <p class="text-sm font-light text-gray-500 py-2">
                             Bạn chưa có tài khoản?
                             <router-link class="font-medium text-primary-600 hover:underline hover:text-red-600"
                                 :to="{ name: 'register' }">
                                 Đăng ký.
                             </router-link>
-                        </p>
+                        </p> -->
                     </div>
                 </Form>
             </div>

@@ -11,13 +11,13 @@ export class AuthController {
         return this.authService.login(loginDto)
     }
 
-    @Post('register')
-    register(@Body() registerDto: RegisterDto) {
-        return this.authService.register(registerDto)
-    }
+    // @Post('register')
+    // register(@Body() registerDto: RegisterDto) {
+    //     return this.authService.register(registerDto)
+    // }
 
-    @Patch('confirm')
-    confirm(@Body() confirmEmailDto: ConfirmEmailDto) {
-        return this.authService.confirm(confirmEmailDto)
-    }
+    // @Patch('confirm')
+    // confirm(@Body() confirmEmailDto: ConfirmEmailDto) {
+    //     return this.authService.confirm(confirmEmailDto)
+    // }
 }

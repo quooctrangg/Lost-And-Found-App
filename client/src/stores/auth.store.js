@@ -31,41 +31,41 @@ export const useAuthStore = defineStore('auth', () => {
         }
     }
 
-    const register = async data => {
-        err.value = null
-        result.value = null
-        isLoading.value = true
-        try {
-            let res = await authService.register(data)
-            if (res.statusCode !== 200) throw new Error(res.message)
-            result.value = res
-        } catch (error) {
-            err.value = error.message
-        } finally {
-            isLoading.value = false
-        }
-    }
+    // const register = async data => {
+    //     err.value = null
+    //     result.value = null
+    //     isLoading.value = true
+    //     try {
+    //         let res = await authService.register(data)
+    //         if (res.statusCode !== 200) throw new Error(res.message)
+    //         result.value = res
+    //     } catch (error) {
+    //         err.value = error.message
+    //     } finally {
+    //         isLoading.value = false
+    //     }
+    // }
 
-    const confirmUser = async data => {
-        err.value = null
-        result.value = null
-        isLoading.value = true
-        try {
-            let res = await authService.confirmUser(data)
-            if (res.statusCode !== 200) throw new Error(res.message)
-            result.value = res
-        } catch (error) {
-            err.value = error.message
-        } finally {
-            isLoading.value = false
-        }
-    }
+    // const confirmUser = async data => {
+    //     err.value = null
+    //     result.value = null
+    //     isLoading.value = true
+    //     try {
+    //         let res = await authService.confirmUser(data)
+    //         if (res.statusCode !== 200) throw new Error(res.message)
+    //         result.value = res
+    //     } catch (error) {
+    //         err.value = error.message
+    //     } finally {
+    //         isLoading.value = false
+    //     }
+    // }
 
     const closeFeedbackModal = () => { isShow.feedback = false }
 
     const showFeedbackModal = () => { isShow.feedback = true }
 
-    return { err, result, isLoading, token, isShow, login, register, confirmUser, closeFeedbackModal, showFeedbackModal }
+    return { err, result, isLoading, token, isShow, login, closeFeedbackModal, showFeedbackModal }
 }, {
     persist: {
         key: 'auth',
