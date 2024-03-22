@@ -45,7 +45,7 @@ const props = defineProps(['post'])
                     {{ props.post?.description }}
                 </h2>
             </div>
-            <div v-if="props.post?.Image.length" class="grid gap-2 test"
+            <div v-if="props.post?.Image.length" class="grid gap-2 test overflow-hidden"
                 :class="props.post.Image.length ? `grid-cols-${props.post?.Image.length}` : ''">
                 <div v-for="image in post.Image" :key="image.id"
                     class="w-full break-inside-avoid flex items-center justify-center">

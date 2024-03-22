@@ -4,33 +4,59 @@
 <template>
     <footer class="rounded-lg shadow border-2 bg-[#045D86] mt-5">
         <div class="w-full max-w-screen-xl mx-auto p-2">
-            <div class="flex items-center justify-between">
-                <a href="/" class="flex items-center gap-2 p-2">
-                    <img src="/logo.png" class="h-16" alt="Logo" />
-                    <span class="self-center text-xl font-bold italic text-[#f5ffff]">
-                        Trường Đại học Cần Thơ
-                    </span>
+            <div class="grid grid-cols-3">
+                <a href="https://www.ctu.edu.vn/" class="flex items-center gap-2 p-2">
+                    <img src="/Asset_45logomobile.png" class="w-[80%]" alt="logo" />
                 </a>
-                <ul class="flex gap-3 items-center text-base font-medium text-[#f5ffff]">
+                <ul class="col-span-2 flex items-center text-3xl font-medium text-[#f5ffff] justify-end gap-5">
                     <li>
-                        <a href="#" class="hover:underline">Giới thiệu</a>
+                        <a target="_blank" href="https://www.facebook.com/CTUDHCT/" class="hover:underline">
+                            <i class="fa-brands fa-facebook"></i>
+                        </a>
                     </li>
                     <li>
-                        <a href="#" class="hover:underline">Chính sách bảo mật</a>
+                        <a target="_blank" href="https://www.youtube.com/ctudhct" class="hover:underline">
+                            <i class="fa-brands fa-youtube"></i>
+                        </a>
                     </li>
                     <li>
-                        <a href="#" class="hover:underline">Cấp phép</a>
+                        <a target="_blank" href="https://www.instagram.com/ctudhct/" class="hover:underline">
+                            <i class="fa-brands fa-instagram"></i>
+                        </a>
                     </li>
                     <li>
-                        <a href="#" class="hover:underline">Liên hệ</a>
+                        <a target="_blank" href="https://www.linkedin.com/school/ctudhct/" class="hover:underline">
+                            <i class="fa-brands fa-linkedin-in"></i>
+                        </a>
+                    </li>
+                    <li>
+                        <a target="_blank" href="https://www.tiktok.com/@ctudhct" class="hover:underline">
+                            <i class="fa-brands fa-tiktok"></i>
+                        </a>
                     </li>
                 </ul>
             </div>
             <hr class="border-gray-200 mx-auto py-4" />
-            <span class="block text-base text-[#f5ffff] text-center">
-                © 2024
-                <a href="/" class="hover:underline">CTU™</a>.
-                Đã đăng ký bản quyền.
+            <span class="text-[#f5ffff] flex flex-col text-center">
+                <a target="_blank" href="https://yu.ctu.edu.vn/dtn.html" class="hover:underline text-lg font-semibold">
+                    © 2024 ĐOÀN THANH NIÊN - HỘI SINH VIÊN TRƯỜNG ĐẠI HỌC CẦN THƠ
+                </a>
+                <div class="text-sm flex flex-col gap-1 items-center">
+                    <div>
+                        <i class="fa-solid fa-location-dot"></i>
+                        Khu II, đường 3/2, P. Xuân Khánh, Q. Ninh Kiều, TP. Cần Thơ.
+                    </div>
+                    <div class="flex gap-2">
+                        <div>
+                            <i class="fa-solid fa-phone"></i>
+                            (84-292) 3830309
+                        </div>
+                        <div>
+                            <i class="fa-solid fa-envelope"></i>
+                            vpdoan_hoi@ctu.edu.vn
+                        </div>
+                    </div>
+                </div>
             </span>
         </div>
     </footer>

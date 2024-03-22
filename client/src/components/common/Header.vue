@@ -113,7 +113,8 @@ watchEffect(async () => {
                     </div>
                     <div class="group relative cursor-pointer">
                         <div class="menu-hover flex items-center gap-1">
-                            <div class="h-10 w-10 overflow-hidden rounded-full flex items-center justify-center">
+                            <div
+                                class="h-10 w-10 overflow-hidden rounded-full flex items-center justify-center bg-white">
                                 <img class="h-full w-full object-cover" :src="userStore.user?.image" alt="logo user">
                             </div>
                             <p class="text-md truncate font-semibold text-[#ffffff] min-w-[150px]">
