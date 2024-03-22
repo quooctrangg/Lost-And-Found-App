@@ -3,7 +3,7 @@ import { ref, onMounted } from 'vue';
 import { useUserStore } from '../stores/user.store'
 import Footer from '../components/common/Footer.vue';
 import UpdatePassword from '../components/profile/UpdatePassword.vue';
-import UpdateProfileModal from '../components/profile/UpdateProfileModal.vue';
+// import UpdateProfileModal from '../components/profile/UpdateProfileModal.vue';
 import UpdateAvatarModal from '../components/profile/UpdateAvatarModal.vue';
 import ScrollToTop from '@/components/common/ScrollToTop.vue';
 import dayjs from 'dayjs'
@@ -58,10 +58,10 @@ onMounted(() => {
                 </h2>
             </div>
             <div class="flex flex-col gap-1 justify-end">
-                <button class="btn-click" @click="userStore.showUpdateProfileModal">
+                <!-- <button class="btn-click" @click="userStore.showUpdateProfileModal">
                     <i class="fa-solid fa-pen"></i>
                     Chỉnh sửa thông tin
-                </button>
+                </button> -->
                 <button class="btn-click" @click="userStore.showUpdatePasswordModal">
                     <i class="fa-solid fa-key"></i>
                     Đổi mật khẩu
@@ -91,7 +91,7 @@ onMounted(() => {
     </div>
     <Footer class="mt-5" />
     <UpdatePassword />
-    <UpdateProfileModal />
+    <!-- <UpdateProfileModal /> -->
     <UpdateAvatarModal />
     <ScrollToTop />
 </template>

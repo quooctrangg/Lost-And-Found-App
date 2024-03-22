@@ -20,7 +20,7 @@ export const useUserStore = defineStore('user', () => {
     const schoolId = ref(null)
     const isShow = reactive({
         updatePassword: false,
-        updateProfile: false,
+        // updateProfile: false,
         updateAvatar: false,
     })
 
@@ -82,20 +82,20 @@ export const useUserStore = defineStore('user', () => {
         }
     }
 
-    const updateProfile = async (data) => {
-        err.value = null
-        result.value = null
-        isLoading.value = true
-        try {
-            let res = await userService.updateProfile(authStore.token, data)
-            if (res.statusCode !== 200) throw new Error(res.message)
-            result.value = res
-        } catch (error) {
-            err.value = error.message
-        } finally {
-            isLoading.value = false
-        }
-    }
+    // const updateProfile = async (data) => {
+    //     err.value = null
+    //     result.value = null
+    //     isLoading.value = true
+    //     try {
+    //         let res = await userService.updateProfile(authStore.token, data)
+    //         if (res.statusCode !== 200) throw new Error(res.message)
+    //         result.value = res
+    //     } catch (error) {
+    //         err.value = error.message
+    //     } finally {
+    //         isLoading.value = false
+    //     }
+    // }
 
     const updatePassword = async (data) => {
         err.value = null
@@ -223,7 +223,7 @@ export const useUserStore = defineStore('user', () => {
     return {
         isShow, user, err, result, isLoading, users, totalPages, isLoadingUpdate,
         currentPage, key, isBan, majorId, schoolId, getMe, updateAvatar, getProfileUser,
-        updateProfile, updatePassword, getAllUsers, createUser,
+        updatePassword, getAllUsers, createUser,
         banUser, unBanUser, updateUser, forgotPassword, sendVerifyCode,
         closeUpdatePasswordModal, showUpdatePasswordModal,
         closeUpdateProfileModal, showUpdateProfileModal,

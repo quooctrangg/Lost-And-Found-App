@@ -53,12 +53,12 @@ export class UserController {
         return this.userService.unBanUser(id)
     }
 
-    @Patch('update-profile')
-    @UseGuards(MyJWTGuard, RolesGuard)
-    @Role(USER_TYPES.USER)
-    updateProfile(@GetUser() user: User, @Body() updateProfileDto: UpdateProfileDto) {
-        return this.userService.updateProfile(user.id, updateProfileDto)
-    }
+    // @Patch('update-profile')
+    // @UseGuards(MyJWTGuard, RolesGuard)
+    // @Role(USER_TYPES.USER)
+    // updateProfile(@GetUser() user: User, @Body() updateProfileDto: UpdateProfileDto) {
+    //     return this.userService.updateProfile(user.id, updateProfileDto)
+    // }
 
     @Patch('update-avatar')
     @UseGuards(MyJWTGuard, RolesGuard)

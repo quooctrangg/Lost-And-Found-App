@@ -205,26 +205,26 @@ export class UserService {
         }
     }
 
-    async updateProfile(userId: number, updateProfileDto: UpdateProfileDto) {
-        try {
-            const user = await this.getUserById(userId)
-            if (!user) {
-                return new ResponseData<User>(null, 400, 'Tài khoản không tồn tại')
-            }
-            await this.prismaService.user.update({
-                where: {
-                    id: user.id
-                },
-                data: {
-                    name: updateProfileDto.name,
-                    majorId: updateProfileDto.majorId
-                }
-            })
-            return new ResponseData<any>(null, 200, 'Cập nhật thông tin thành công')
-        } catch (error) {
-            return new ResponseData<string>(null, 500, 'Lỗi dịch vụ, thử lại sau')
-        }
-    }
+    // async updateProfile(userId: number, updateProfileDto: UpdateProfileDto) {
+    //     try {
+    //         const user = await this.getUserById(userId)
+    //         if (!user) {
+    //             return new ResponseData<User>(null, 400, 'Tài khoản không tồn tại')
+    //         }
+    //         await this.prismaService.user.update({
+    //             where: {
+    //                 id: user.id
+    //             },
+    //             data: {
+    //                 name: updateProfileDto.name,
+    //                 majorId: updateProfileDto.majorId
+    //             }
+    //         })
+    //         return new ResponseData<any>(null, 200, 'Cập nhật thông tin thành công')
+    //     } catch (error) {
+    //         return new ResponseData<string>(null, 500, 'Lỗi dịch vụ, thử lại sau')
+    //     }
+    // }
 
     async updateAvatar(userId: number, image: Express.Multer.File) {
         try {
