@@ -66,7 +66,7 @@ onMounted(async () => {
 <template>
     <div class="w-[80%] mx-auto flex mt-2 justify-center gap-2">
         <div class="w-[70%]">
-            <div v-if="postStore.isLoading == false" class="bg-white rounded-md p-4 shadow border-2">
+            <div v-if="!postStore.isLoading" class="bg-white rounded-md p-4 shadow border-2">
                 <div class="mb-3 grid grid-cols-3">
                     <div class="cursor-pointer hover:text-red-500 p-1" @click="goBack">
                         <i class="fa-solid fa-arrow-left"></i>

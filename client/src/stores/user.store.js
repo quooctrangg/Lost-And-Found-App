@@ -10,8 +10,6 @@ export const useUserStore = defineStore('user', () => {
     const users = ref(null)
     const err = ref(null)
     const result = ref(null)
-    const isLoading = ref(false)
-    const isLoadingUpdate = ref(false)
     const totalPages = ref(1)
     const currentPage = ref(1)
     const key = ref('')
@@ -23,14 +21,17 @@ export const useUserStore = defineStore('user', () => {
         // updateProfile: false,
         updateAvatar: false,
     })
+    const isLoading = ref(false)
+    const isLoadingUpdate = ref(false)
+    const isLoadingFeedback = ref(false)
 
     const closeUpdatePasswordModal = () => { isShow.updatePassword = false }
 
     const showUpdatePasswordModal = () => { isShow.updatePassword = true }
 
-    const closeUpdateProfileModal = () => { isShow.updateProfile = false }
+    // const closeUpdateProfileModal = () => { isShow.updateProfile = false }
 
-    const showUpdateProfileModal = () => { isShow.updateProfile = true }
+    // const showUpdateProfileModal = () => { isShow.updateProfile = true }
 
     const closeUpdateAvatarModal = () => { isShow.updateAvatar = false }
 
@@ -148,7 +149,7 @@ export const useUserStore = defineStore('user', () => {
     const banUser = async (id, data) => {
         err.value = null
         result.value = null
-        isLoading.value = true
+        isLoadingFeedback.value = true
         try {
             let res = await userService.banUser(authStore.token, id, data)
             if (res.statusCode !== 200) throw new Error(res.message)
@@ -156,7 +157,7 @@ export const useUserStore = defineStore('user', () => {
         } catch (error) {
             err.value = error.message
         } finally {
-            isLoading.value = false
+            isLoadingFeedback.value = false
         }
     }
 
@@ -221,12 +222,11 @@ export const useUserStore = defineStore('user', () => {
     }
 
     return {
-        isShow, user, err, result, isLoading, users, totalPages, isLoadingUpdate,
+        isShow, user, err, result, isLoading, users, totalPages, isLoadingUpdate, isLoadingFeedback,
         currentPage, key, isBan, majorId, schoolId, getMe, updateAvatar, getProfileUser,
         updatePassword, getAllUsers, createUser,
         banUser, unBanUser, updateUser, forgotPassword, sendVerifyCode,
         closeUpdatePasswordModal, showUpdatePasswordModal,
-        closeUpdateProfileModal, showUpdateProfileModal,
         closeUpdateAvatarModal, showUpdateAvatarModal,
     }
 },

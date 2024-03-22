@@ -89,7 +89,7 @@ onMounted(async () => {
                         </th>
                     </tr>
                 </thead>
-                <tbody v-if="majorStore.isLoading == false">
+                <tbody v-if="!majorStore.isLoading">
                     <tr v-if="majorStore.majors?.length" v-for="(major, i) in majorStore.majors" :key="major.id"
                         class="border-b transition duration-300 ease-in-out hover:bg-gray-300">
                         <td class="font-medium text-center w-[10%]">

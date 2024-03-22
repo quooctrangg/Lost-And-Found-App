@@ -34,7 +34,7 @@ onMounted(async () => {
                 <th class="border border-slate-600 bg-blue-300 p-2">Thời gian</th>
             </tr>
         </thead>
-        <tbody v-if="requestStore.isLoading == false">
+        <tbody v-if="!requestStore.isLoading">
             <tr v-if="data.length" v-for="(success, i) in data" class="even:bg-blue-100">
                 <td class="border border-slate-700 p-2 text-center">
                     {{ i + 1 }}

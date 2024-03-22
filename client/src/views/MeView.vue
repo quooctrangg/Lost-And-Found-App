@@ -1,6 +1,7 @@
 <script setup>
 import { ref, onMounted } from 'vue';
 import { useUserStore } from '../stores/user.store'
+import { FwbButton } from 'flowbite-vue'
 import Footer from '../components/common/Footer.vue';
 import UpdatePassword from '../components/profile/UpdatePassword.vue';
 // import UpdateProfileModal from '../components/profile/UpdateProfileModal.vue';
@@ -58,14 +59,14 @@ onMounted(() => {
                 </h2>
             </div>
             <div class="flex flex-col gap-1 justify-end">
-                <!-- <button class="btn-click" @click="userStore.showUpdateProfileModal">
+                <!-- <fwb-button  @click="userStore.showUpdateProfileModal" color="alternative">
                     <i class="fa-solid fa-pen"></i>
                     Chỉnh sửa thông tin
-                </button> -->
-                <button class="btn-click" @click="userStore.showUpdatePasswordModal">
+                </fwb-button> -->
+                <fwb-button @click="userStore.showUpdatePasswordModal" color="alternative">
                     <i class="fa-solid fa-key"></i>
                     Đổi mật khẩu
-                </button>
+                </fwb-button>
             </div>
         </div>
         <div>

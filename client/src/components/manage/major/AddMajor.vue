@@ -39,18 +39,17 @@ const createMajor = async () => {
 </script>
 
 <template>
-    <fwb-modal v-if="manageStore.isShow.addMajor" @close="manageStore.closeAddMajorModal" :size="'xl'"
-        :persistent="true">
-        <template #header>
-            <div class="flex items-center text-xl gap-2">
-                <i class="fa-solid fa-plus"></i>
-                Thêm chuyên ngành
-            </div>
-        </template>
-        <template #body>
-            <div class="w-full">
-                <Form @submit="createMajor" v-if="majorStore.isLoading == false" :validation-schema="formSchemaMajor"
-                    class="flex flex-col gap-1">
+    <Form @submit="createMajor" :validation-schema="formSchemaMajor">
+        <fwb-modal v-if="manageStore.isShow.addMajor" @close="manageStore.closeAddMajorModal" :size="'xl'"
+            :persistent="true">
+            <template #header>
+                <div class="flex items-center text-xl gap-2">
+                    <i class="fa-solid fa-plus"></i>
+                    Thêm chuyên ngành
+                </div>
+            </template>
+            <template #body>
+                <div v-if="!majorStore.isLoading" class="w-full">
                     <label for="name" class="text-lg mx-2">Tên chuyên ngành:</label>
                     <Field type="text" name="name" id="name" class="rounded-md w-full" v-model="name"
                         placeholder="Nhập tên chuyên ngành" />
@@ -68,22 +67,21 @@ const createMajor = async () => {
                         </option>
                     </Field>
                     <ErrorMessage name="schoolId" class="error" />
-                    <button type="submit" hidden id="btn-submit"></button>
-                </Form>
+                </div>
                 <div v-else>
                     <Loading />
                 </div>
-            </div>
-        </template>
-        <template #footer>
-            <div class="flex justify-end gap-2">
-                <fwb-button @click="manageStore.closeAddMajorModal" color="red">
-                    Hủy
-                </fwb-button>
-                <label for="btn-submit" class="btn-submit">
-                    Thêm
-                </label>
-            </div>
-        </template>
-    </fwb-modal>
+            </template>
+            <template #footer>
+                <div class="flex justify-end gap-2">
+                    <fwb-button color="blue">
+                        Thêm
+                    </fwb-button>
+                    <fwb-button @click="manageStore.closeAddMajorModal" color="red">
+                        Hủy
+                    </fwb-button>
+                </div>
+            </template>
+        </fwb-modal>
+    </Form>
 </template>

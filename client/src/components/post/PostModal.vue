@@ -102,17 +102,16 @@ onMounted(async () => {
 </script>
 
 <template>
-    <fwb-modal v-if="postStore.isShow.post" @close="postStore.closePostModal" size="5xl" :not-escapable="true"
-        @click:outside="() => { }">
-        <template #header>
-            <div class="flex items-center gap-2 font-semibold text-2xl">
-                <i class="fa-regular fa-clipboard"></i>
-                Đăng bài
-            </div>
-        </template>
-        <template #body>
-            <Form v-if="postStore.isLoading == false" @submit="submitPost" :validation-schema="formDataSchema">
-                <div class="flex flex-col gap-3">
+    <Form v-if="postStore.isShow.post" @submit="submitPost" :validation-schema="formDataSchema">
+        <fwb-modal @close="postStore.closePostModal" size="5xl" :not-escapable="true">
+            <template #header>
+                <div class="flex items-center gap-2 font-semibold text-2xl">
+                    <i class="fa-regular fa-clipboard"></i>
+                    Đăng bài
+                </div>
+            </template>
+            <template #body>
+                <div class="flex flex-col gap-3" v-if="!postStore.isLoading">
                     <div class="grid grid-cols-2 gap-5">
                         <div class=" flex flex-col">
                             <label class="mt-2 mb-1" for="description">Mô tả</label>
@@ -177,19 +176,24 @@ onMounted(async () => {
                             @change="onFileSelected">
                     </div>
                 </div>
-                <button type="submit" hidden id="btn-submit"></button>
-            </Form>
-            <Loading v-else />
-        </template>
-        <template #footer>
-            <div class="flex justify-end gap-2">
-                <fwb-button @click="reset" color="alternative">
-                    Đặt lại
-                </fwb-button>
-                <label for="btn-submit" class="btn-submit">
-                    Đăng
-                </label>
-            </div>
-        </template>
-    </fwb-modal>
+                <Loading v-else />
+            </template>
+            <template #footer>
+                <div class="flex justify-end gap-2">
+                    <fwb-button v-if="!postStore.isLoading" color="blue">
+                        Đăng
+                    </fwb-button>
+                    <fwb-button v-else color="blue" disabled>
+                        Đăng
+                    </fwb-button>
+                    <fwb-button v-if="!postStore.isLoading" @click="reset" color="alternative">
+                        Đặt lại
+                    </fwb-button>
+                    <fwb-button v-else color="alternative" disabled>
+                        Đặt lại
+                    </fwb-button>
+                </div>
+            </template>
+        </fwb-modal>
+    </Form>
 </template>

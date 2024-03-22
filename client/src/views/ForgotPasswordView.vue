@@ -100,11 +100,10 @@ const btnSendCode = async () => {
                             <Field type="number" name="code" id="code" class="input-custom col-span-2"
                                 placeholder="XXXXXX" v-model="user.code" />
                             <button type="button" @click="async () => { await btnSendCode() }"
-                                v-if="userStore.isLoading == false && timeout == false"
-                                class="grow shrink-0 btn-submit">
+                                v-if="!userStore.isLoading && timeout == false" class="grow shrink-0 btn-submit">
                                 Lấy mã
                             </button>
-                            <button v-else-if="userStore.isLoading == false && timeout == true" type="button"
+                            <button v-else-if="!userStore.isLoading && timeout == true" type="button"
                                 class="w-full flex justify-center items-center cursor-not-allowed btn-submit">
                                 {{ seconds }}s
                             </button>

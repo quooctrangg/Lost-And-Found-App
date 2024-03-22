@@ -46,18 +46,16 @@ watchEffect(async () => {
 </script>
 
 <template>
-    <fwb-modal v-if="manageStore.isShow.editMajor" @close="manageStore.closeEditMajorModal" :size="'sm'"
-        :persistent="true">
-        <template #header>
-            <div class="flex items-center text-xl gap-2">
-                <i class="fa-solid fa-plus"></i>
-                Chỉnh sửa chuyên ngành
-            </div>
-        </template>
-        <template #body>
-            <div class="w-full">
-                <Form @submit="updateMajor" v-if="majorStore.isLoading == false" :validation-schema="formSchemaMajor"
-                    class="flex flex-col gap-1">
+    <Form v-if="manageStore.isShow.editMajor" @submit="updateMajor" :validation-schema="formSchemaMajor">
+        <fwb-modal @close="manageStore.closeEditMajorModal" :size="'sm'" :persistent="true">
+            <template #header>
+                <div class="flex items-center text-xl gap-2">
+                    <i class="fa-solid fa-plus"></i>
+                    Chỉnh sửa chuyên ngành
+                </div>
+            </template>
+            <template #body>
+                <div v-if="!majorStore.isLoading" class="w-full">
                     <label for="name" class="text-lg mx-2">Tên chuyên ngành:</label>
                     <Field type="text" name="name" id="name" class="rounded-md w-full" v-model="name"
                         placeholder="Nhập tên chuyên ngành" />
@@ -73,22 +71,21 @@ watchEffect(async () => {
                             {{ school.name }}
                         </option>
                     </Field>
-                    <button type="submit" hidden id="btn-submit"></button>
-                </Form>
+                </div>
                 <div v-else>
                     <Loading />
                 </div>
-            </div>
-        </template>
-        <template #footer>
-            <div class="flex justify-end gap-2">
-                <fwb-button @click="manageStore.closeEditMajorModal" color="red">
-                    Hủy
-                </fwb-button>
-                <label for="btn-submit" class="btn-submit">
-                    Sửa
-                </label>
-            </div>
-        </template>
-    </fwb-modal>
+            </template>
+            <template #footer>
+                <div class="flex justify-end gap-2">
+                    <fwb-button color="blue">
+                        Sửa
+                    </fwb-button>
+                    <fwb-button @click="manageStore.closeEditMajorModal" color="red">
+                        Hủy
+                    </fwb-button>
+                </div>
+            </template>
+        </fwb-modal>
+    </Form>
 </template>

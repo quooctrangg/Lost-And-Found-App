@@ -1,5 +1,6 @@
 <script setup>
 import { useToast } from 'vue-toast-notification'
+import { FwbButton } from 'flowbite-vue'
 import { useDashboardtore } from '../../../stores/dashboard.store'
 import { onMounted, ref, watch } from 'vue';
 import { FwbPagination } from 'flowbite-vue'
@@ -127,11 +128,10 @@ onMounted(async () => {
             </h1>
         </div>
         <div class="text-end">
-            <button @click="exportExcel"
-                class="text-sm p-1 border border-blue-600 text-blue-500 rounded-md hover:text-red-400 hover:border-red-400">
+            <fwb-button @click="exportExcel" color='blue' outline>
                 Xuất file
                 <i class="fa-solid fa-file-export"></i>
-            </button>
+            </fwb-button>
         </div>
         <table class="table-auto border-collapse border border-slate-500 w-full mt-2">
             <thead>

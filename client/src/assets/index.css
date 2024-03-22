@@ -18,22 +18,6 @@
     @apply bg-sky-600 text-stone-100
 }
 
-.btn-submit {
-    @apply bg-blue-600 rounded-lg text-sm px-5 py-3 text-center text-white font-semibold cursor-pointer
-}
-
-.btn-submit:hover {
-    @apply bg-blue-700
-}
-
-.btn-click {
-    @apply bg-sky-400 rounded-lg text-sm p-2 text-center text-slate-700 font-semibold
-}
-
-.btn-click:hover {
-    @apply bg-sky-500
-}
-
 .label-custom {
     @apply block mb-2 text-sm font-medium text-gray-800
 }

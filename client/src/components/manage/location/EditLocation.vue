@@ -44,18 +44,16 @@ watchEffect(async () => {
 </script>
 
 <template>
-    <fwb-modal v-if="manageStore.isShow.editLocation" @close="manageStore.closeEditLocationModal" :size="'xs'"
-        :persistent="true">
-        <template #header>
-            <div class="flex items-center text-xl gap-2">
-                <i class="fa-solid fa-plus"></i>
-                Chỉnh sửa vị trí
-            </div>
-        </template>
-        <template #body>
-            <div class="w-full">
-                <Form @submit="updateLocation" v-if="locationStore.isLoading == false"
-                    :validation-schema="formSchemaLocation">
+    <Form v-if="manageStore.isShow.editLocation" @submit="updateLocation" :validation-schema="formSchemaLocation">
+        <fwb-modal @close="manageStore.closeEditLocationModal" :size="'xs'" :persistent="true">
+            <template #header>
+                <div class="flex items-center text-xl gap-2">
+                    <i class="fa-solid fa-plus"></i>
+                    Chỉnh sửa vị trí
+                </div>
+            </template>
+            <template #body>
+                <div v-if="!locationStore.isLoading" class="w-full">
                     <label for="name" class="text-lg mx-2">Tên vị trí:</label>
                     <div class="mb-3">
                         <Field type="text" name="name" id="name" class="rounded-md w-full" v-model="data.name"
@@ -68,22 +66,21 @@ watchEffect(async () => {
                             placeholder="Nhập tên ký hiệu" />
                         <ErrorMessage name="symbol" class="error" />
                     </div>
-                    <button type="submit" hidden id="btn-submit"></button>
-                </Form>
+                </div>
                 <div v-else>
                     <Loading />
                 </div>
-            </div>
-        </template>
-        <template #footer>
-            <div class="flex justify-end gap-2">
-                <fwb-button @click="manageStore.closeEditLocationModal" color="red">
-                    Hủy
-                </fwb-button>
-                <label for="btn-submit" class="btn-submit">
-                    Sửa
-                </label>
-            </div>
-        </template>
-    </fwb-modal>
+            </template>
+            <template #footer>
+                <div class="flex justify-end gap-2">
+                    <fwb-button color="blue">
+                        Sửa
+                    </fwb-button>
+                    <fwb-button @click="manageStore.closeEditLocationModal" color="red">
+                        Hủy
+                    </fwb-button>
+                </div>
+            </template>
+        </fwb-modal>
+    </Form>
 </template>

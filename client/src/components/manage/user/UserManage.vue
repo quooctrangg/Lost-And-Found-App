@@ -146,7 +146,7 @@ onMounted(async () => {
                         </th>
                     </tr>
                 </thead>
-                <tbody v-if="userStore.isLoading == false">
+                <tbody v-if="!userStore.isLoading">
                     <tr v-if="userStore.users?.length" v-for="(user, i) in userStore.users" :key="user.id"
                         class="border-b transition duration-300 ease-in-out hover:bg-gray-300">
                         <td class="whitespace-nowrap p-2 font-medium text-center">

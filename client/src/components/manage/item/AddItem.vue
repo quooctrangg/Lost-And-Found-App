@@ -31,36 +31,35 @@ const createItem = async () => {
 </script>
 
 <template>
-    <fwb-modal v-if="manageStore.isShow.addItem" @close="manageStore.closeAddItemModal" :size="'xs'" :persistent="true">
-        <template #header>
-            <div class="flex items-center text-xl gap-2">
-                <i class="fa-solid fa-plus"></i>
-                Thêm danh mục
-            </div>
-        </template>
-        <template #body>
-            <div class="w-full">
-                <Form @submit="createItem" v-if="itemStore.isLoading == false" :validation-schema="formSchemaItem">
+    <Form v-if="manageStore.isShow.addItem" @submit="createItem" :validation-schema="formSchemaItem">
+        <fwb-modal @close="manageStore.closeAddItemModal" :size="'xs'" :persistent="true">
+            <template #header>
+                <div class="flex items-center text-xl gap-2">
+                    <i class="fa-solid fa-plus"></i>
+                    Thêm danh mục
+                </div>
+            </template>
+            <template #body>
+                <div v-if="!itemStore.isLoading" class="w-full">
                     <label for="name" class="text-lg mx-2">Tên danh mục:</label>
                     <Field type="text" name="name" id="name" class="rounded-md w-full" v-model="name"
                         placeholder="Nhập tên danh mục" />
                     <ErrorMessage name="name" class="error" />
-                    <button type="submit" hidden id="btn-submit"></button>
-                </Form>
+                </div>
                 <div v-else>
                     <Loading />
                 </div>
-            </div>
-        </template>
-        <template #footer>
-            <div class="flex justify-end gap-2">
-                <fwb-button @click="manageStore.closeAddItemModal" color="red">
-                    Hủy
-                </fwb-button>
-                <label for="btn-submit" class="btn-submit">
-                    Thêm
-                </label>
-            </div>
-        </template>
-    </fwb-modal>
+            </template>
+            <template #footer>
+                <div class="flex justify-end gap-2">
+                    <fwb-button color="blue">
+                        Thêm
+                    </fwb-button>
+                    <fwb-button @click="manageStore.closeAddItemModal" color="red">
+                        Hủy
+                    </fwb-button>
+                </div>
+            </template>
+        </fwb-modal>
+    </Form>
 </template>

@@ -109,7 +109,7 @@ onMounted(async () => {
                         </th>
                     </tr>
                 </thead>
-                <tbody v-if="postStore.isLoading == false">
+                <tbody v-if="!postStore.isLoading">
                     <tr v-if="postStore.posts.length" v-for="(post, i) in postStore.posts" :key="post.id"
                         class="border-b transition duration-300 ease-in-out hover:bg-gray-300">
                         <td class="  font-medium text-center w-[10%]">

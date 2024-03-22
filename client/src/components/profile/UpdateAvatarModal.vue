@@ -42,7 +42,7 @@ const submitImage = async () => {
             </div>
         </template>
         <template #body>
-            <div v-if="userStore.isLoading == false" class="w-full flex justify-center">
+            <div v-if="!userStore.isLoading" class="w-full flex justify-center">
                 <div class="h-36 w-36 border-dashed border-black border-2 rounded-full overflow-hidden">
                     <label for="images" class="cursor-pointer h-full w-full flex justify-center items-center">
                         <div v-if="url == null" class="flex flex-col items-center gap-2">
@@ -60,11 +60,17 @@ const submitImage = async () => {
         </template>
         <template #footer>
             <div class="flex justify-end gap-2">
-                <fwb-button @click="userStore.closeUpdateAvatarModal" color="red">
+                <fwb-button v-if="!userStore.isLoading" @click="async () => { await submitImage() }" color="blue">
+                    Đổi
+                </fwb-button>
+                <fwb-button v-else disabled>
+                    Đổi
+                </fwb-button>
+                <fwb-button v-if="!userStore.isLoading" @click="userStore.closeUpdateAvatarModal" color="red">
                     Hủy
                 </fwb-button>
-                <fwb-button @click="async () => { await submitImage() }" color="blue">
-                    Đổi
+                <fwb-button v-else color="red" disabled>
+                    Hủy
                 </fwb-button>
             </div>
         </template>

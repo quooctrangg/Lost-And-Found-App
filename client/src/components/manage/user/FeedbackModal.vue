@@ -24,21 +24,21 @@ const sumitFeedback = () => {
 </script>
 
 <template>
-    <fwb-modal v-if="manageStore.isShow.feedback" @close="manageStore.closeFeedbackModal" :persistent="true">
-        <template #header>
-            <div class="flex items-center text-xl gap-2">
-                Phản hồi
-            </div>
-        </template>
-        <template #body>
-            <Form @submit="sumitFeedback" :validation-schema="formSchemaFeedback">
+    <Form v-if="manageStore.isShow.feedback" @submit="sumitFeedback" :validation-schema="formSchemaFeedback">
+        <fwb-modal @close="manageStore.closeFeedbackModal" :persistent="true">
+            <template #header>
+                <div class="flex items-center text-xl gap-2">
+                    Phản hồi
+                </div>
+            </template>
+            <template #body>
                 <div class="w-full">
                     <div class="flex gap-2 items-center">
                         <label for="email" class="label-custom">
                             Email:
                         </label>
-                        <input type="email" maxlength="50" name="email" id="email" class="input-custom"
-                            v-model="props.user.email" disabled>
+                        <Field name="email" id="email" type="email" class="input-custom" v-model="props.user.email"
+                            disabled />
                     </div>
                     <div class="mt-3">
                         <label for="time" class="label-custom">Thời gian khóa:</label>
@@ -55,19 +55,18 @@ const sumitFeedback = () => {
                             placeholder="Nhập lý do khóa" v-model="feedback" rows="5" />
                         <ErrorMessage name="feedback" class="error" />
                     </div>
-                    <button type="submit" hidden id="btn-submit"></button>
                 </div>
-            </Form>
-        </template>
-        <template #footer>
-            <div class="flex justify-end gap-2">
-                <fwb-button @click="manageStore.closeFeedbackModal" color="red">
-                    Hủy
-                </fwb-button>
-                <label for="btn-submit" class="btn-submit">
-                    Khóa
-                </label>
-            </div>
-        </template>
-    </fwb-modal>
+            </template>
+            <template #footer>
+                <div class="flex justify-end gap-2">
+                    <fwb-button color="blue">
+                        Khóa
+                    </fwb-button>
+                    <fwb-button @click="manageStore.closeFeedbackModal" color="red">
+                        Hủy
+                    </fwb-button>
+                </div>
+            </template>
+        </fwb-modal>
+    </Form>
 </template>

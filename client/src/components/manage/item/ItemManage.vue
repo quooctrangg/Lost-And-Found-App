@@ -74,7 +74,7 @@ onMounted(async () => {
                         </th>
                     </tr>
                 </thead>
-                <tbody v-if="itemStore.isLoading == false">
+                <tbody v-if="!itemStore.isLoading">
                     <tr v-if="itemStore.items?.length" v-for="(item, i) in itemStore.items" :key="item.id"
                         class="border-b transition duration-300 ease-in-out hover:bg-gray-300">
                         <td class="  font-medium text-center w-[10%]">

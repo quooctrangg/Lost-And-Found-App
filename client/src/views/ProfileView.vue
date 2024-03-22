@@ -61,7 +61,7 @@ onMounted(async () => {
 </script>
 
 <template>
-    <div v-if="userStore.isLoading == false" class="w-[80%] mx-auto min-h-[100vh]">
+    <div v-if="!userStore.isLoading" class="w-[80%] mx-auto min-h-[100vh]">
         <div class="bg-gray-50 rounded p-4 flex gap-5 shadow">
             <div class="cursor-pointer hover:text-red-500 p-1 text-xl" @click="goBack">
                 <i class="fa-solid fa-arrow-left"></i>

@@ -2,6 +2,7 @@
 import { onMounted } from 'vue';
 import { useRequestStore } from '../../stores/request.store'
 import { ref } from 'vue';
+import { FwbButton } from 'flowbite-vue'
 import { useToast } from 'vue-toast-notification'
 import Loading from '../common/Loading.vue';
 import dayjs from 'dayjs';
@@ -52,7 +53,7 @@ onMounted(async () => {
 </script>
 
 <template>
-    <div v-if="requestStore.isLoading == false">
+    <div v-if="!requestStore.isLoading">
         <div v-if="requests.length" v-for="request in requests" :key="request.id"
             class="border bg-white rounded-md shadow p-2 my-2">
             <div class="border-b flex justify-between items-center">
@@ -71,14 +72,12 @@ onMounted(async () => {
                     </div>
                 </div>
                 <div class="flex gap-2 text-sm">
-                    <button @click="async () => { await acceptRequest(request.id) }"
-                        class="p-1 border-2 font-semibold border-blue-500 rounded-lg text-blue-500 hover:bg-blue-500 hover:text-white">
+                    <fwb-button @click="async () => { await acceptRequest(request.id) }" color="blue" outline>
                         Chấp nhận
-                    </button>
-                    <button @click="async () => { await rejectRequest(request.id) }"
-                        class="p-1 border-2 font-semibold border-red-500 rounded-lg text-red-500 hover:bg-red-500 hover:text-white">
+                    </fwb-button>
+                    <fwb-button @click="async () => { await rejectRequest(request.id) }" color="red" outline>
                         Từ chối
-                    </button>
+                    </fwb-button>
                 </div>
             </div>
             <div class="">

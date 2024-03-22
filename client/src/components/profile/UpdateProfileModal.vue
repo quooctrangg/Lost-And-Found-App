@@ -61,7 +61,7 @@ onMounted(async () => {
             </div>
         </template>
         <template #body>
-            <div v-if="userStore.isLoading == false" class="w-full">
+            <div v-if="!userStore.isLoading" class="w-full">
                 <Form @submit="submitUpdateProfile" :validation-schema="formSchemaProfile">
                     <div>
                         <label for="email" class="text-lg mx-2">Email:</label>

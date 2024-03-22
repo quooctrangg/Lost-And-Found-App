@@ -24,7 +24,7 @@ watchEffect(async () => {
 <template>
     <div>
         <h1 class="text-center font-semibold text-lg text-blue-500 italic border-b ">Gợi ý cho bạn</h1>
-        <div v-if="suggestSore.isLoading == false" v-for="suggest in suggestSore.suggests" :key="suggest.id">
+        <div v-if="!suggestSore.isLoading" v-for="suggest in suggestSore.suggests" :key="suggest.id">
             <router-link
                 class="border-2 bg-white mt-2 rounded-md shadow-lg flex gap-2 cursor-pointer items-center overflow-hidden px-1 py-2"
                 :to="{ name: 'post-detail', params: { id: suggest?.id } }">

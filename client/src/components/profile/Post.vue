@@ -42,7 +42,7 @@ onMounted(async () => {
 </script>
 
 <template>
-    <div v-if="postStore.isLoading == false">
+    <div v-if="!postStore.isLoading">
         <div v-if="posts.length" v-for="(post, i) in posts" :key="post.id"
             class="border-2 w-full border-blue-600 p-2 rounded-lg mt-2">
             <div class="flex gap-2 w-full">

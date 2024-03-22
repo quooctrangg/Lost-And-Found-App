@@ -290,6 +290,9 @@ export class UserService {
             if (!passwordMatched) {
                 return new ResponseData<string>(null, 400, 'Mật khẩu không chính xác')
             }
+            if (updatePasswordDto.currentPassword == updatePasswordDto.newPassword) {
+                return new ResponseData<string>(null, 400, 'Mật khẩu mới giống mật khẩu cũ')
+            }
             const hashedPassword = await argon2.hash(updatePasswordDto.newPassword)
             await this.prismaService.user.update({
                 where: {

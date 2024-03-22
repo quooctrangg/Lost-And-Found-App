@@ -57,16 +57,16 @@ watch(() => user.schoolId, async newval => {
 </script>
 
 <template>
-    <fwb-modal v-if="manageStore.isShow.addUser" @close="manageStore.closeAddUserModal" :persistent="true">
-        <template #header>
-            <div class="flex items-center text-xl gap-2">
-                <i class="fa-solid fa-user-plus"></i>
-                Thêm tài khoản
-            </div>
-        </template>
-        <template #body>
-            <div class="w-full">
-                <Form v-if="userStore.isLoading == false" @submit="createUser" :validation-schema="formSchemaUser">
+    <Form v-if="manageStore.isShow.addUser" @submit="createUser" :validation-schema="formSchemaUser">
+        <fwb-modal @close="manageStore.closeAddUserModal" :persistent="true">
+            <template #header>
+                <div class="flex items-center text-xl gap-2">
+                    <i class="fa-solid fa-user-plus"></i>
+                    Thêm tài khoản
+                </div>
+            </template>
+            <template #body>
+                <div class="w-full" v-if="!userStore.isLoading">
                     <div>
                         <label for="email" class="label-custom">
                             Email:
@@ -115,22 +115,27 @@ watch(() => user.schoolId, async newval => {
                         </Field>
                         <ErrorMessage name="majorId" class="error" />
                     </div>
-                    <button type="submit" hidden id="btn-submit"></button>
-                </Form>
+                </div>
                 <div v-else>
                     <Loading />
                 </div>
-            </div>
-        </template>
-        <template #footer>
-            <div class="flex justify-end gap-2">
-                <fwb-button @click="manageStore.closeAddUserModal" color="red">
-                    Hủy
-                </fwb-button>
-                <label for="btn-submit" class="btn-submit">
-                    Thêm
-                </label>
-            </div>
-        </template>
-    </fwb-modal>
+            </template>
+            <template #footer>
+                <div class="flex justify-end gap-2">
+                    <fwb-button v-if="!userStore.isLoading" color="blue">
+                        Thêm
+                    </fwb-button>
+                    <fwb-button v-else color="blue" disabled>
+                        Thêm
+                    </fwb-button>
+                    <fwb-button v-if="!userStore.isLoading" @click="manageStore.closeAddUserModal" color="red">
+                        Hủy
+                    </fwb-button>
+                    <fwb-button v-else color="red" disabled>
+                        Hủy
+                    </fwb-button>
+                </div>
+            </template>
+        </fwb-modal>
+    </Form>
 </template>

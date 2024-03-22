@@ -63,7 +63,7 @@ onMounted(async () => {
 
 <template>
     <section class="bg-white h-screen w-full py-14">
-        <div v-if="authStore.isLoading == false" class="flex items-center justify-center m-auto w-[30%]">
+        <div v-if="!authStore.isLoading" class="flex items-center justify-center m-auto w-[30%]">
             <div class="w-full bg-white">
                 <Form class="flex flex-col gap-8" @submit="btnSubmit" :validation-schema="formSchemaRegister">
                     <h1 class="h1-custom italic">

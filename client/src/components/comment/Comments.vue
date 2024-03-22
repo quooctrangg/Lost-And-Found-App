@@ -26,7 +26,7 @@ const handleSendComment = async (content) => {
         <div class="p-2 text-sm text-gray-700 underline">
             {{ commentStore.comments.length }} bình luận
         </div>
-        <div v-if="commentStore.isLoading == false" class="p-2">
+        <div v-if="!commentStore.isLoading" class="p-2">
             <CommentItem v-if="commentStore.parentComments.length" v-for="parentComment in commentStore.parentComments"
                 :key="parentComment.id" :comment="parentComment"
                 :replies="commentStore.getReplies(commentStore.comments, parentComment.id)" />

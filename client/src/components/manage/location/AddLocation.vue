@@ -36,18 +36,16 @@ const createLocation = async () => {
 </script>
 
 <template>
-    <fwb-modal v-if="manageStore.isShow.addLocation" @close="manageStore.closeAddLocationModal" :size="'xs'"
-        :persistent="true">
-        <template #header>
-            <div class="flex items-center text-xl gap-2">
-                <i class="fa-solid fa-plus"></i>
-                Thêm vị trí
-            </div>
-        </template>
-        <template #body>
-            <div class="w-full">
-                <Form @submit="createLocation" v-if="locationStore.isLoading == false"
-                    :validation-schema="formSchemaLocation">
+    <Form v-if="manageStore.isShow.addLocation" @submit="createLocation" :validation-schema="formSchemaLocation">
+        <fwb-modal @close="manageStore.closeAddLocationModal" :size="'xs'" :persistent="true">
+            <template #header>
+                <div class="flex items-center text-xl gap-2">
+                    <i class="fa-solid fa-plus"></i>
+                    Thêm vị trí
+                </div>
+            </template>
+            <template #body>
+                <div v-if="!locationStore.isLoading" class="w-full">
                     <label for="name" class="text-lg">Tên vị trí:</label>
                     <div class="mb-3">
                         <Field type="text" name="name" id="name" class="rounded-md w-full" v-model="data.name"
@@ -60,22 +58,21 @@ const createLocation = async () => {
                             placeholder="Nhập tên ký hiệu" />
                         <ErrorMessage name="symbol" class="error" />
                     </div>
-                    <button type="submit" hidden id="btn-submit"></button>
-                </Form>
+                </div>
                 <div v-else>
                     <Loading />
                 </div>
-            </div>
-        </template>
-        <template #footer>
-            <div class="flex justify-end gap-2">
-                <fwb-button @click="manageStore.closeAddLocationModal" color="red">
-                    Hủy
-                </fwb-button>
-                <label for="btn-submit" class="btn-submit">
-                    Thêm
-                </label>
-            </div>
-        </template>
-    </fwb-modal>
+            </template>
+            <template #footer>
+                <div class="flex justify-end gap-2">
+                    <fwb-button color="blue">
+                        Thêm
+                    </fwb-button>
+                    <fwb-button @click="manageStore.closeAddLocationModal" color="red">
+                        Hủy
+                    </fwb-button>
+                </div>
+            </template>
+        </fwb-modal>
+    </Form>
 </template>

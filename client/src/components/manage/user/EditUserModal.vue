@@ -93,22 +93,22 @@ watchEffect(async () => {
 </script>
 
 <template>
-    <fwb-modal v-if="manageStore.isShow.editUser" @close="manageStore.closeEditUserModal" :persistent="true">
-        <template #header>
-            <div class="flex items-center text-xl gap-2">
-                <i class="fa-solid fa-pen"></i>
-                Cập nhật tài khoản
-            </div>
-        </template>
-        <template #body>
-            <div class="w-full">
-                <Form v-if="userStore.isLoadingUpdate == false" @submit="editUser" :validation-schema="formSchemaUser">
+    <Form v-if="manageStore.isShow.editUser" @submit="editUser" :validation-schema="formSchemaUser">
+        <fwb-modal @close="manageStore.closeEditUserModal" :persistent="true">
+            <template #header>
+                <div class="flex items-center text-xl gap-2">
+                    <i class="fa-solid fa-pen"></i>
+                    Cập nhật tài khoản
+                </div>
+            </template>
+            <template #body>
+                <div class="w-full" v-if="!userStore.isLoadingUpdate">
                     <div>
                         <label for="email" class="label-custom">
                             Email:
                         </label>
-                        <input type="email" maxlength="50" name="email" id="email" class="input-custom"
-                            v-model="props.user.email" disabled>
+                        <Field name="email" id="email" type="email" class="input-custom" v-model="props.user.email"
+                            disabled />
                     </div>
                     <div class="flex flex-col items-center justify-center gap-2 mt-4">
                         <div class="h-36 w-36 border-dashed border-black border-2 rounded-full overflow-hidden">
@@ -165,22 +165,27 @@ watchEffect(async () => {
                         <input minlength="6" type="text" name="password" id="password" class="input-custom"
                             v-model="user.password">
                     </div>
-                    <button type="submit" hidden id="btn-submit"></button>
-                </Form>
+                </div>
                 <div v-else>
                     <Loading />
                 </div>
-            </div>
-        </template>
-        <template #footer>
-            <div class="flex justify-end gap-2">
-                <fwb-button @click="manageStore.closeEditUserModal" color="red">
-                    Hủy
-                </fwb-button>
-                <label for="btn-submit" class="btn-submit">
-                    Cập nhật
-                </label>
-            </div>
-        </template>
-    </fwb-modal>
+            </template>
+            <template #footer>
+                <div class="flex justify-end gap-2">
+                    <fwb-button v-if="!userStore.isLoadingUpdate" color="blue">
+                        Cập nhật
+                    </fwb-button>
+                    <fwb-button v-else color="blue" disabled>
+                        Cập nhật
+                    </fwb-button>
+                    <fwb-button v-if="!userStore.isLoadingUpdate" @click="manageStore.closeEditUserModal" color="red">
+                        Hủy
+                    </fwb-button>
+                    <fwb-button v-else color="red" disabled>
+                        Hủy
+                    </fwb-button>
+                </div>
+            </template>
+        </fwb-modal>
+    </Form>
 </template>
