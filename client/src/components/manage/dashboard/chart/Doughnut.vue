@@ -17,7 +17,7 @@ const options = {
     maintainAspectRatio: false,
     plugins: {
         title: {
-            text: 'Biểu đồ thống kê theo vị trí',
+            text: 'Biểu đồ thống kê số lượt bài viết theo vị trí',
             display: true,
         }
     }
