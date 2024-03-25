@@ -54,8 +54,8 @@ const setDate = (option) => {
     return result
 }
 
-const exportExcel = () => {
-
+const exportExcel = async () => {
+    await dashboardStore.downloadExcel(props.option)
 }
 
 watch(() => props.option, async (newval) => {

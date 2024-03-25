@@ -7,7 +7,7 @@ import type { Response } from 'express'
 import * as moment from 'moment-timezone';
 
 @Controller('dashboard')
-// @UseGuards(MyJWTGuard, RolesGuard)
+@UseGuards(MyJWTGuard, RolesGuard)
 export class DashboardController {
   constructor(private readonly dashboardService: DashboardService) { }
 
@@ -30,7 +30,7 @@ export class DashboardController {
   }
 
   @Get('download-excel')
-  // @Role(USER_TYPES.ADMIN)
+  @Role(USER_TYPES.ADMIN)
   async downloadExcel(@Res({ passthrough: true }) res: Response, @Query() option: { type: string, month: string, year: string, to: string, from: string }) {
     const { data, name } = await this.dashboardService.downloadExcel(option)
     res.setHeader("Content-Type", "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet")

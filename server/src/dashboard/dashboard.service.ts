@@ -352,8 +352,9 @@ export class DashboardService {
     })
     let book = new Workbook()
     let sheet = book.addWorksheet('DanhSach')
+    let name = this.setDate(option)
     rows.unshift(['Người tìm thấy', 'Trường / khoa', 'Chuyên ngành', 'Người thất lạc', 'Loại đồ', 'Ngày'])
-    rows.unshift([''])
+    rows.unshift([name])
     rows.unshift(['Danh sách các sinh viên nhặt và trả lại thành công'])
     sheet.addRows(rows)
     sheet.getColumn(1).width = 20.5
@@ -363,7 +364,9 @@ export class DashboardService {
     sheet.getColumn(5).width = 20.5
     sheet.getColumn(6).width = 20.5
     sheet.mergeCells(1, 1, 1, 6)
+    sheet.mergeCells(2, 1, 2, 6)
     sheet.getCell('A1').alignment = { vertical: 'middle', horizontal: 'center' }
+    sheet.getCell('A2').alignment = { vertical: 'middle', horizontal: 'center' }
     sheet.getCell('A1').font = { size: 20, bold: true };
     for (let i = 0; i < 6; i++) {
       sheet.getCell(3, i + 1).font = { size: 13, bold: true }
@@ -384,7 +387,7 @@ export class DashboardService {
         };
       }
     }
-    return { data: book, name: this.setDate(option) }
+    return { data: book, name: name }
   }
 
   getMSSV(email: string) {
@@ -393,18 +396,17 @@ export class DashboardService {
     return match ? match[0] : null;
   }
 
-
   setDate(option) {
     let result = ''
     switch (option.type) {
       case 'month':
-        result = `Thang ${option.month}-${option.year}`
+        result = `Tháng ${option.month}-${option.year}`
         break;
       case 'year':
-        result = `Nam ${option.year}`
+        result = `Năm ${option.year}`
         break;
       case 'any':
-        result = `Tu ngay ${moment(option.to).format('DD-MM-YYYY')} đen ${moment(option.from).format('DD-MM-YYYY')}`
+        result = `Từ ngày ${moment(option.to).format('DD-MM-YYYY')} đến ${moment(option.from).format('DD-MM-YYYY')}`
         break;
     }
     return result

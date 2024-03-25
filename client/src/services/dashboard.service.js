@@ -1,5 +1,6 @@
 import createService from './api.service'
 import { createQueryString } from '../untils'
+import FileSaver from 'file-saver'
 
 class dashboardService {
     constructor(baseUrl = '/apis/dashboard') {
@@ -37,6 +38,18 @@ class dashboardService {
                 Authorization: `Bearer ${token}`
             }
         })).data
+    }
+
+    async downloadExcel(token, option) {
+        let parameter = createQueryString(option)
+        const response = (await this.api.get(`/download-excel${parameter}`, {
+            headers: {
+                Authorization: `Bearer ${token}`
+            },
+            responseType: 'blob'
+        })).data
+        const file = new Blob([response], { type: 'application/vnd.ms-excel' })
+        FileSaver.saveAs(file, 'Danh sach.xlsx');
     }
 }
 
