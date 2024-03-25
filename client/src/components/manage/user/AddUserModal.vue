@@ -5,7 +5,7 @@ import { useUserStore } from '../../../stores/user.store'
 import { useSchoolStore } from '../../../stores/school.store'
 import { useMajorStore } from '../../../stores/major.store'
 import { useToast } from 'vue-toast-notification'
-import { reactive, watch } from 'vue'
+import { reactive, ref, watch } from 'vue'
 import Loading from '../../common/Loading.vue'
 import * as yup from "yup";
 import { Form, Field, ErrorMessage } from "vee-validate";
@@ -16,6 +16,8 @@ const schoolStore = useSchoolStore()
 const majorStore = useMajorStore()
 const $toast = useToast()
 
+const isShow = ref(false)
+const selectedFile = ref(null)
 const user = reactive({
     name: '',
     email: '',
@@ -47,25 +49,55 @@ const createUser = async () => {
     manageStore.closeAddUserModal()
 }
 
+const onFileSelected = (e) => {
+    selectedFile.value = e.target.files[0]
+}
+
+const createUsers = async () => {
+    if (!selectedFile.value) return
+    const data = new FormData()
+    data.append('file', selectedFile.value)
+    await userStore.createUsers(data)
+    if (userStore.err) {
+        $toast.error(userStore.err, { position: 'top-right' })
+        return
+    }
+    $toast.success(userStore.result.message, { position: 'top-right' })
+    selectedFile.value = null
+    await userStore.getAllUsers({ page: userStore.currentPage, key: userStore.key, isBan: userStore.isBan, schoolId: userStore.schoolId })
+    manageStore.closeAddUserModal()
+}
+
 watch(() => user.schoolId, async newval => {
     if (newval) {
         user.majorId = ''
         await majorStore.getAllsBySchoolId(newval)
     }
 })
-
 </script>
 
 <template>
-    <Form v-if="manageStore.isShow.addUser" @submit="createUser" :validation-schema="formSchemaUser">
-        <fwb-modal @close="manageStore.closeAddUserModal" :persistent="true">
-            <template #header>
-                <div class="flex items-center text-xl gap-2">
-                    <i class="fa-solid fa-user-plus"></i>
-                    Thêm tài khoản
-                </div>
-            </template>
-            <template #body>
+    <fwb-modal v-if="manageStore.isShow.addUser" @close="manageStore.closeAddUserModal" :persistent="true">
+        <template #header>
+            <div class="flex items-center text-xl gap-2">
+                <i class="fa-solid fa-user-plus"></i>
+                Thêm tài khoản
+                <fwb-button v-if="isShow" @click="isShow = false" color="alternative">
+                    Một tài khoản
+                </fwb-button>
+                <fwb-button v-else disabled color="alternative">
+                    Một tài khoản
+                </fwb-button>
+                <fwb-button v-if="!isShow" @click="isShow = true" color="alternative">
+                    Nhiều tài khoản
+                </fwb-button>
+                <fwb-button v-else disabled color="alternative">
+                    Nhiều tài khoản
+                </fwb-button>
+            </div>
+        </template>
+        <template #body>
+            <Form v-if="!isShow" @submit="createUser" :validation-schema="formSchemaUser">
                 <div class="w-full" v-if="!userStore.isLoading">
                     <div>
                         <label for="email" class="label-custom">
@@ -115,14 +147,34 @@ watch(() => user.schoolId, async newval => {
                         </Field>
                         <ErrorMessage name="majorId" class="error" />
                     </div>
+                    <div class="flex justify-end gap-2 mt-4">
+                        <fwb-button v-if="!userStore.isLoading" color="blue">
+                            Thêm
+                        </fwb-button>
+                        <fwb-button v-else color="blue" disabled>
+                            Thêm
+                        </fwb-button>
+                        <fwb-button v-if="!userStore.isLoading" @click="manageStore.closeAddUserModal" color="red">
+                            Hủy
+                        </fwb-button>
+                        <fwb-button v-else color="red" disabled>
+                            Hủy
+                        </fwb-button>
+                    </div>
                 </div>
                 <div v-else>
                     <Loading />
                 </div>
-            </template>
-            <template #footer>
-                <div class="flex justify-end gap-2">
-                    <fwb-button v-if="!userStore.isLoading" color="blue">
+            </Form>
+            <div v-else>
+                <div v-if="!userStore.isLoading">
+                    <input type="file" accept=".xls, .xlsx" @change="onFileSelected">
+                </div>
+                <div v-else>
+                    <Loading />
+                </div>
+                <div class="flex justify-end gap-2 mt-4">
+                    <fwb-button v-if="!userStore.isLoading" @click="createUsers" color="blue">
                         Thêm
                     </fwb-button>
                     <fwb-button v-else color="blue" disabled>
@@ -135,7 +187,8 @@ watch(() => user.schoolId, async newval => {
                         Hủy
                     </fwb-button>
                 </div>
-            </template>
-        </fwb-modal>
-    </Form>
+            </div>
+        </template>
+    </fwb-modal>
+
 </template>

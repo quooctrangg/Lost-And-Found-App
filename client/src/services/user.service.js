@@ -77,6 +77,16 @@ class userService {
         })).data
     }
 
+    async createUsers(token, data) {
+        return (await this.api.postForm('/users', data, {
+            headers: {
+                "Content-Type": "application/json",
+                Accept: "application/json",
+                Authorization: `Bearer ${token}`
+            }
+        })).data
+    }
+
     async banUser(token, id, data) {
         return (await this.api.patch(`/ban/${id}`, data, {
             headers: {

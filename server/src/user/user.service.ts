@@ -8,7 +8,6 @@ import { MailerService } from '@nestjs-modules/mailer';
 import { Cron, CronExpression } from '@nestjs/schedule';
 import { Workbook } from 'exceljs'
 import * as argon2 from 'argon2';
-import { number } from 'joi';
 
 @Injectable()
 export class UserService {
@@ -185,9 +184,9 @@ export class UserService {
                 }
             })
             if (user.length) {
-                return new ResponseData<string>(null, 200, 'Tồn tại email đã được đăng ký')
+                return new ResponseData<string>(null, 400, 'Tồn tại email đã được đăng ký')
             }
-            const objects = data.map(row => {
+            let objects: any[] = data.map(row => {
                 const obj = {};
                 for (let i = 1; i < row.length; i++) {
                     obj[keys[i - 1]] = row[i];
@@ -202,19 +201,22 @@ export class UserService {
             if (userErr.length) {
                 return new ResponseData<any>(null, 400, 'Dữ liệu người dùng không hợp lệ')
             }
-            objects.forEach(async (e: any) => {
-                const hashedPassword = await argon2.hash(String(e.password))
+            for (let index = 0; index < objects.length; index++) {
+                const hashedPassword = await argon2.hash(String(objects[index].password))
                 await this.prismaService.user.create({
                     data: {
-                        email: e.email,
-                        name: e.name,
+                        email: objects[index].email,
+                        name: objects[index].name,
                         password: hashedPassword,
-                        majorId: e.majorId
+                        majorId: objects[index].majorId,
+                        type: 1
                     }
                 })
-            })
+            }
             return new ResponseData<string>(null, 200, 'Tạo tất cả tài khoản thành công')
         } catch (error) {
+            console.log(error);
+
             return new ResponseData<string>(null, 500, 'Lỗi dịch vụ, thử lại sau')
         }
     }

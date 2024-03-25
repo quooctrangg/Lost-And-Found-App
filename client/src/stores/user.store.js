@@ -146,6 +146,21 @@ export const useUserStore = defineStore('user', () => {
         }
     }
 
+    const createUsers = async (data) => {
+        err.value = null
+        result.value = null
+        isLoading.value = true
+        try {
+            let res = await userService.createUsers(authStore.token, data)
+            if (res.statusCode !== 200) throw new Error(res.message)
+            result.value = res
+        } catch (error) {
+            err.value = error.message
+        } finally {
+            isLoading.value = false
+        }
+    }
+
     const banUser = async (id, data) => {
         err.value = null
         result.value = null
@@ -224,7 +239,7 @@ export const useUserStore = defineStore('user', () => {
     return {
         isShow, user, err, result, isLoading, users, totalPages, isLoadingUpdate, isLoadingFeedback,
         currentPage, key, isBan, majorId, schoolId, getMe, updateAvatar, getProfileUser,
-        updatePassword, getAllUsers, createUser,
+        updatePassword, getAllUsers, createUser, createUsers,
         banUser, unBanUser, updateUser, forgotPassword, sendVerifyCode,
         closeUpdatePasswordModal, showUpdatePasswordModal,
         closeUpdateAvatarModal, showUpdateAvatarModal,
