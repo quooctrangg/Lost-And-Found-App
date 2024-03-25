@@ -39,6 +39,14 @@ export class UserController {
         return this.userService.createUser(createUserDto)
     }
 
+    @Post('users')
+    // @UseGuards(MyJWTGuard, RolesGuard)
+    // @Role(USER_TYPES.ADMIN)
+    @UseInterceptors(FileInterceptor('file'))
+    createUsers(@UploadedFile() file: Express.Multer.File) {
+        return this.userService.createUsers(file)
+    }
+
     @Patch('ban/:id')
     @UseGuards(MyJWTGuard, RolesGuard)
     @Role(USER_TYPES.ADMIN)

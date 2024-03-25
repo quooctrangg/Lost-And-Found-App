@@ -30,8 +30,8 @@ model User {
   Conversation  Conversation[]
   Comment       Comment[]
 
-  Major   Major? @relation(fields: [majorId], references: [id])
-  majorId Int?
+  Major   Major @relation(fields: [majorId], references: [id])
+  majorId Int
 
   @@map("users")
 }

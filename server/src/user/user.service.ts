@@ -4,9 +4,11 @@ import { ForgotPasswordDto, VerifyCodeDto, CreateUserDto, BanUserDto, UpdatePass
 import { PAGE_SIZE, ResponseData, USER_TYPES } from '../global';
 import { User } from '@prisma/client';
 import { CloudinaryService } from '../cloudinary/cloudinary.service';
-import * as argon2 from 'argon2';
 import { MailerService } from '@nestjs-modules/mailer';
 import { Cron, CronExpression } from '@nestjs/schedule';
+import { Workbook } from 'exceljs'
+import * as argon2 from 'argon2';
+import { number } from 'joi';
 
 @Injectable()
 export class UserService {
@@ -140,6 +142,78 @@ export class UserService {
                 }
             })
             return new ResponseData<User>(null, 200, 'Tạo tài khoản thành công')
+        } catch (error) {
+            return new ResponseData<string>(null, 500, 'Lỗi dịch vụ, thử lại sau')
+        }
+    }
+
+    async createUsers(file: Express.Multer.File) {
+        const keys = ['email', 'name', 'password', 'majorId']
+        try {
+            const workbook = new Workbook();
+            await workbook.xlsx.load(file.buffer);
+            const worksheet = workbook.getWorksheet(1);
+            const keysworksheet = worksheet.getRow(1).values
+            const isEqual = keys.every((key, index) => key === keysworksheet[index + 1]);
+            if (!isEqual) {
+                return new ResponseData<string>(null, 400, 'Không đúng định dạng dữ liệu')
+            }
+            const data = [];
+            worksheet.eachRow((row, i) => {
+                if (i !== 1) {
+                    data.push(row.values);
+                }
+            });
+            const filterMajorId = data.map(e => e[4])
+            const listMajorId = [...new Set(filterMajorId)] as number[]
+            const major = await this.prismaService.major.findMany({
+                where: {
+                    id: {
+                        in: data.map(e => e[4])
+                    }
+                }
+            })
+
+            if (major.length !== listMajorId.length) {
+                return new ResponseData<string>(null, 200, 'Có những id ngành không tồn tại')
+            }
+            const user = await this.prismaService.user.findMany({
+                where: {
+                    email: {
+                        in: data.map(e => e[1])
+                    }
+                }
+            })
+            if (user.length) {
+                return new ResponseData<string>(null, 200, 'Tồn tại email đã được đăng ký')
+            }
+            const objects = data.map(row => {
+                const obj = {};
+                for (let i = 1; i < row.length; i++) {
+                    obj[keys[i - 1]] = row[i];
+                }
+                return obj;
+            });
+            const userErr = objects.filter((e: any) => {
+                if (!(this.validateEmail(e.email)) || String(e.password).length < 6 || ((typeof e.majorId) != 'number')) {
+                    return e
+                }
+            })
+            if (userErr.length) {
+                return new ResponseData<any>(null, 400, 'Dữ liệu người dùng không hợp lệ')
+            }
+            objects.forEach(async (e: any) => {
+                const hashedPassword = await argon2.hash(String(e.password))
+                await this.prismaService.user.create({
+                    data: {
+                        email: e.email,
+                        name: e.name,
+                        password: hashedPassword,
+                        majorId: e.majorId
+                    }
+                })
+            })
+            return new ResponseData<string>(null, 200, 'Tạo tất cả tài khoản thành công')
         } catch (error) {
             return new ResponseData<string>(null, 500, 'Lỗi dịch vụ, thử lại sau')
         }
