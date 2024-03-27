@@ -22,7 +22,10 @@ export class RequestService {
         return new ResponseData<string>(null, 400, 'Bạn không thể yêu cầu bài viết của bạn')
       }
       if (isPost.type == true && isPost.done == -1) {
-        return new ResponseData<string>(null, 400, 'Đồ vật đang ở ban quản lý tòa nhà')
+        return new ResponseData<string>(null, 400, 'Đồ vật đang ở Ban quản lý tòa nhà')
+      }
+      if (isPost.type == true && isPost.done == -2) {
+        return new ResponseData<string>(null, 400, 'Đồ vật đang ở Đoàn thanh niên')
       }
       const isRequest = await this.prismaService.request.findFirst({
         where: {

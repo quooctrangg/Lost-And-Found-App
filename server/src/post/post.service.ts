@@ -40,7 +40,7 @@ export class PostService {
                     connect: locations.map((id) => ({ id }))
                 },
             }
-            if (done && done == -1) {
+            if (done && done < 0 && type == 1) {
                 data.done = done
             }
             if (images.length) {

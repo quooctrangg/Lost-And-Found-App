@@ -124,17 +124,18 @@ onMounted(async () => {
                                             class="border-2 border-green-600 p-1 text-xs font-semibold text-green-600 rounded">
                                             TÌM THẤY
                                         </p>
-                                        <p v-if="post.done == -1"
-                                            class="border-2 border-blue-600 p-1 text-xs font-semibold text-blue-600 rounded">
-                                            GỬI LẠI BAN QUẢN LÝ TÒA NHÀ
+                                        <p v-if="post.done == -1" class="card-send">
+                                            GỬI TẠI BAN QUẢN LÝ TÒA NHÀ
+                                        </p>
+                                        <p v-else-if="post.done == -2" class="card-send">
+                                            GỬI TẠI ĐOÀN THANH NIÊN
                                         </p>
                                     </div>
                                     <p v-else
                                         class="border-2 border-orange-500 p-1 text-xs font-semibold text-orange-500 rounded">
                                         THẤT LẠC
                                     </p>
-                                    <p v-if="post.done == 1"
-                                        class="border-2 border-blue-600 p-1 text-xs font-semibold text-blue-600 rounded">
+                                    <p v-if="post.done == 1" class="card-send">
                                         ĐÃ HOÀN THÀNH
                                     </p>
                                 </h1>

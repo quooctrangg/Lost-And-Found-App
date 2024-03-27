@@ -139,12 +139,18 @@ onMounted(async () => {
                                     <p class="card-found">
                                         TÌM THẤY
                                     </p>
-                                    <p v-if="post?.done == -1" class="card-sendProtection">
-                                        GỬI LẠI BAN QUẢN LÝ TÒA NHÀ
+                                    <p v-if="post?.done == -1" class="card-send">
+                                        GỬI TẠI BAN QUẢN LÝ TÒA NHÀ
+                                    </p>
+                                    <p v-else-if="post?.done == -2" class="card-send">
+                                        GỬI TẠI ĐOÀN THANH NIÊN
                                     </p>
                                 </div>
                                 <p v-else class="card-lost">
                                     THẤT LẠC
+                                </p>
+                                <p v-if="post?.done == 1" class="card-send">
+                                    ĐÃ HOÀN THÀNH
                                 </p>
                             </div>
                             <button

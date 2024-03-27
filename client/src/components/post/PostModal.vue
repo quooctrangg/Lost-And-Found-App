@@ -59,8 +59,8 @@ const submitPost = async () => {
     dataForm.append('description', data.description)
     dataForm.append('itemId', data.itemId)
     dataForm.append('type', Number(data.type))
-    if (data.done) {
-        dataForm.append('done', -1)
+    if (data.done != 0 && Number(data.type) == 1) {
+        dataForm.append('done', data.done)
     }
     if (data.locations.length > 1) {
         data.locations.forEach(e => {
@@ -90,9 +90,15 @@ const reset = () => {
     data.type = ''
     data.itemId = ''
     data.locations = []
-    data.done = false
+    data.done = 0
     selectedFile.value = []
     urls.value = []
+}
+
+const unCheckRadio = (e) => {
+    if (data.done != 0 && e == data.done) {
+        data.done = 0
+    }
 }
 
 onMounted(async () => {
@@ -127,11 +133,25 @@ onMounted(async () => {
                             </Field>
                             <ErrorMessage name="type" class="error" />
                             <div v-if="data.type && data.type == 1"
-                                class="flex gap-2 items-center mt-5 text-lg text-red-600 font-medium">
-                                <input type="checkbox" name="sendProtection" id="sendProtection"
-                                    class="w-5 h-5 text-blue-600 bg-gray-100 border-gray-300 rounded cursor-pointer "
-                                    v-model="data.done">
-                                <label for="sendProtection">Đã gửi lại ban quản lý tòa nhà</label>
+                                class="flex flex-col gap-2 mt-5 text-lg text-red-600 font-medium">
+                                <div class="flex gap-2 items-center">
+                                    <input type="radio" name="send" id="sendProtection" :value="-1"
+                                        @click="unCheckRadio(-1)"
+                                        class="w-5 h-5 text-blue-600 bg-gray-100 border-gray-300 focus:ring-blue-500 cursor-pointer"
+                                        v-model="data.done">
+                                    <label for="sendProtection" class="cursor-pointer">
+                                        Đã gửi tại Ban quản lý tòa nhà
+                                    </label>
+                                </div>
+                                <div class="flex gap-2 items-center">
+                                    <input type="radio" name="send" id="sendYouthGroup" :value="-2"
+                                        @click="unCheckRadio(-2)"
+                                        class="w-5 h-5 text-blue-600 bg-gray-100 border-gray-300 focus:ring-blue-500 cursor-pointer"
+                                        v-model="data.done">
+                                    <label for="sendYouthGroup" class="cursor-pointer">
+                                        Đã gửi tại Đoàn thanh niên
+                                    </label>
+                                </div>
                             </div>
                         </div>
                         <div class="flex flex-col">
