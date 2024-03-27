@@ -119,9 +119,7 @@ onMounted(async () => {
                             </router-link>
                         </td>
                         <td>
-                            <div class="line-clamp-2 text-sm">
-                                {{ post.description }}
-                            </div>
+                            <div class="line-clamp-2 text-sm" v-html="post.description"></div>
                         </td>
                         <td v-if="post.verify == 0" class=" text-yellow-300 text-center">
                             Chờ duyệt

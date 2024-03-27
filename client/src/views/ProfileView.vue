@@ -109,9 +109,8 @@ onMounted(async () => {
                             <img :src="post.Image[0].url" class="w-48 h-48 border-2 rounded-lg object-cover">
                         </div>
                         <div class="flex-1 flex flex-col gap-2">
-                            <h1 class="">
-                                {{ post.description }}
-                            </h1>
+                            <h1 class="" v-html="post.description"></h1>
+                            <hr class="border-t">
                             <div class="flex justify-between items-center">
                                 <h2 class="text-sm italic">
                                     <i class="fa-regular fa-clock"></i>

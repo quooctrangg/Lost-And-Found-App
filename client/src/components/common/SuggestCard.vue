@@ -33,9 +33,7 @@ watchEffect(async () => {
                     <img :src="suggest?.Image[0]?.url" class="object-cover">
                 </div>
                 <div class="w-[50%] overflow-hidden flex-1 flex flex-col gap-1">
-                    <h2 class="line-clamp-2 text-black text-justify">
-                        {{ suggest?.description }}
-                    </h2>
+                    <h2 class="line-clamp-2 text-black text-justify" v-html="suggest?.description"></h2>
                     <h2 class="text-end text-sm italic text-blue-600 font-semibold px-2">
                         {{ '#' + suggest.Item.name }}
                     </h2>

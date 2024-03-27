@@ -1,10 +1,9 @@
-import { IsArray, IsNotEmpty, IsNumber, IsOptional, IsString, MaxLength, MinLength } from "class-validator"
+import { IsArray, IsNotEmpty, IsNumber, IsOptional, IsString, MinLength } from "class-validator"
 import { POST_SIZE } from "../../global"
 
 export class CreatPostDto {
     @IsString()
     @IsNotEmpty()
-    @MaxLength(POST_SIZE.DESCRIPTION_MAX)
     @MinLength(POST_SIZE.DESCRIPTION_MIN)
     description: string
 

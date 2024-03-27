@@ -164,10 +164,9 @@ onMounted(async () => {
                     </div>
                     <div class="">
                         <div>
-                            <p class="text-base indent-2 text-justify  ">
-                                {{ post?.description }}
-                            </p>
+                            <p class="text-base indent-2 text-justify" v-html="post?.description"></p>
                         </div>
+                        <hr class="border-t m-2">
                         <h2 class="text-gray-500 flex gap-1 items-center text-sm">
                             <i class="fa-solid fa-location-dot"></i>
                             <div v-for="(location, i) in post?.Location">

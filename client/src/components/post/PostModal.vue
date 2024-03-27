@@ -3,11 +3,12 @@ import { FwbModal, FwbButton } from 'flowbite-vue'
 import { usePostStore } from '../../stores/post.store'
 import { useItemStore } from '../../stores/item.store'
 import { useLocationStore } from '../../stores/location.store'
-import { onMounted, reactive, ref, watch } from 'vue';
-import * as yup from "yup";
+import { onMounted, reactive, ref } from 'vue';
 import { Form, Field, ErrorMessage } from "vee-validate";
 import { useToast } from 'vue-toast-notification'
+import * as yup from "yup";
 import Loading from '../common/Loading.vue';
+import Editor from 'primevue/editor';
 
 const postStore = usePostStore()
 const itemStore = useItemStore()
@@ -28,7 +29,7 @@ const data = reactive({
 const formDataSchema = yup.object().shape({
     type: yup.string().required('Yêu cầu chọn loại bài viết.'),
     itemId: yup.string().required('Yêu cầu chọn loại đồ vật.'),
-    description: yup.string().required("Miêu tả phải có giá trị.").min(10, 'Miêu tả phải ít nhất 10 ký tự.').max(1000, "Miêu tả có nhiều nhất 250 ký tự."),
+    description: yup.string().required("Miêu tả phải có giá trị."),
     locations: yup.array().min(1, 'Chọn ít nhất 1 địa điểm')
 })
 
@@ -121,9 +122,19 @@ onMounted(async () => {
                     <div class="grid grid-cols-2 gap-5">
                         <div class=" flex flex-col">
                             <label class="mt-2 mb-1" for="description">Mô tả</label>
-                            <Field type="text" name="description" id="description" as="textarea"
+                            <Field type="text" name="description" id="description" as="textarea" hidden
                                 class="w-full rounded-md" placeholder="Nhập mô tả ..." v-model="data.description"
                                 rows="4" />
+                            <Editor v-model="data.description" editorStyle="height: 200px">
+                                <template v-slot:toolbar>
+                                    <span class="ql-formats">
+                                        <button v-tooltip.bottom="'Bold'" class="ql-bold"></button>
+                                        <button v-tooltip.bottom="'Italic'" class="ql-italic"></button>
+                                        <button v-tooltip.bottom="'Underline'" class="ql-underline"></button>
+                                        <select v-tooltip.bottom="'Color'" class="ql-color"></select>
+                                    </span>
+                                </template>
+                            </Editor>
                             <ErrorMessage name="description" class="error" />
                             <label class="mt-2 mb-1" for="type">Loại bài viết</label>
                             <Field as="select" name="type" id="type" class="input-custom" v-model="data.type">

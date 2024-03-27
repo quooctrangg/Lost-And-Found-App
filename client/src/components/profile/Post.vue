@@ -52,11 +52,10 @@ onMounted(async () => {
                 <div class="flex-1 flex flex-col gap-2">
                     <h1 class="">
                         <router-link :to="{ name: 'post-detail', params: { id: post.id } }">
-                            <p class="text-base text-justify">
-                                {{ post.description }}
-                            </p>
+                            <p class="text-base text-justify" v-html="post.description"></p>
                         </router-link>
                     </h1>
+                    <hr class="border-t">
                     <div class="flex justify-between items-center">
                         <h2 class="text-sm italic">
                             <i class=" fa-regular fa-clock"></i>
