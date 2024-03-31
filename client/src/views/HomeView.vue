@@ -74,7 +74,7 @@ onUnmounted(() => {
         <div class="flex gap-2 justify-center mt-3">
             <InputSearch @key="e => { option.key = e }" />
             <button v-if="userStore.user?.id"
-                class="px-3 py-2 bg-blue-500 rounded-xl hover:bg-blue-400 text-white font-semibold"
+                class="px-3 py-2 bg-blue-500 rounded-xl hover:bg-blue-700 text-white font-semibold"
                 @click="postStore.showPostModal">
                 <i class="fa-solid fa-plus"></i>
                 Đăng bài
