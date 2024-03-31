@@ -2,9 +2,11 @@ from sklearn.metrics.pairwise import cosine_similarity
 from sklearn.feature_extraction.text import TfidfVectorizer
 import pandas as pd
 import sys
+import os
 
 def suggest_items_based_on_description(descriptions):
-    data = pd.read_csv("D:\project\lostandfound\server\src\suggest\scripts\data.csv")
+    current_dir = os.path.dirname(__file__)
+    data = pd.read_csv(os.path.join(current_dir, 'data.csv'))
     df = pd.DataFrame(data)
 
     tfidf_vectorizer = TfidfVectorizer()
