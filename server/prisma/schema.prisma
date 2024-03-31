@@ -12,7 +12,7 @@ datasource db {
 
 model User {
   id        Int       @id @default(autoincrement())
-  email     String
+  studentId String
   name      String
   password  String
   type      Int       @default(-1)
@@ -38,7 +38,7 @@ model User {
 
 model VerifyCode {
   id        Int      @id @default(autoincrement())
-  email     String
+  studentId String
   code      Int
   createdAt DateTime @default(now())
 

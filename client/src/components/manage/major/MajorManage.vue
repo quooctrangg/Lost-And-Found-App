@@ -96,7 +96,10 @@ onMounted(async () => {
                             {{ (majorStore.currentPage - 1) * 10 + i + 1 }}
                         </td>
                         <td class="">
-                            {{ major.name }}
+                            {{ major.name }} -
+                            <span class="text-sm text-gray-500">
+                                {{ `#${major.id}` }}
+                            </span>
                         </td>
                         <td class="text-center">
                             {{ major.trainingDuration }}

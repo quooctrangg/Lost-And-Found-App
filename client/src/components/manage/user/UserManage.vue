@@ -133,7 +133,7 @@ onMounted(async () => {
                             Tên
                         </th>
                         <th class="p-2">
-                            Email
+                            MSSV
                         </th>
                         <th class="p-2 text-center">
                             Trạng thái

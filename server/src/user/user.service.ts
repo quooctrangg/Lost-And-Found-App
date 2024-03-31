@@ -1,6 +1,6 @@
 import { Injectable, Logger } from '@nestjs/common';
 import { PrismaService } from '../prisma/prisma.service';
-import { ForgotPasswordDto, VerifyCodeDto, CreateUserDto, BanUserDto, UpdatePasswordDto, UpdateProfileDto, UpdateUserDto } from './dto';
+import { ForgotPasswordDto, VerifyCodeDto, CreateUserDto, BanUserDto, UpdatePasswordDto, UpdateUserDto } from './dto';
 import { PAGE_SIZE, ResponseData, USER_TYPES } from '../global';
 import { User } from '@prisma/client';
 import { CloudinaryService } from '../cloudinary/cloudinary.service';
@@ -93,7 +93,7 @@ export class UserService {
                 select: {
                     id: true,
                     name: true,
-                    email: true,
+                    studentId: true,
                     image: true,
                     isBan: true,
                     createdAt: true,
@@ -118,22 +118,18 @@ export class UserService {
 
     async createUser(createUserDto: CreateUserDto) {
         try {
-            const isEmail = this.validateEmail(createUserDto.email.toLowerCase())
-            if (!isEmail) {
-                return new ResponseData<User>(null, 400, 'Email không đúng định dạng')
-            }
             const user = await this.prismaService.user.findFirst({
                 where: {
-                    email: createUserDto.email.toLowerCase()
+                    studentId: createUserDto.studentId.toLowerCase()
                 }
             })
             if (user) {
-                return new ResponseData<User>(null, 400, 'Email đã được sử dụng')
+                return new ResponseData<User>(null, 400, 'Mã số sinh viên đã được sử dụng')
             }
             const hashedPassword = await argon2.hash(createUserDto.password)
             await this.prismaService.user.create({
                 data: {
-                    email: createUserDto.email.toLowerCase(),
+                    studentId: createUserDto.studentId.toLowerCase(),
                     password: hashedPassword,
                     name: createUserDto.name,
                     majorId: createUserDto.majorId,
@@ -147,7 +143,7 @@ export class UserService {
     }
 
     async createUsers(file: Express.Multer.File) {
-        const keys = ['email', 'name', 'password', 'majorId']
+        const keys = ['studentId', 'name', 'password', 'majorId']
         try {
             const workbook = new Workbook();
             await workbook.xlsx.load(file.buffer);
@@ -178,13 +174,13 @@ export class UserService {
             }
             const user = await this.prismaService.user.findMany({
                 where: {
-                    email: {
-                        in: data.map(e => e[1])
+                    studentId: {
+                        in: data.map(e => e[1].toLowerCase())
                     }
                 }
             })
             if (user.length) {
-                return new ResponseData<string>(null, 400, 'Tồn tại email đã được đăng ký')
+                return new ResponseData<string>(null, 400, 'Tồn tại MSSV đã được đăng ký')
             }
             let objects: any[] = data.map(row => {
                 const obj = {};
@@ -194,7 +190,7 @@ export class UserService {
                 return obj;
             });
             const userErr = objects.filter((e: any) => {
-                if (!(this.validateEmail(e.email)) || String(e.password).length < 6 || ((typeof e.majorId) != 'number')) {
+                if (String(e.password).length < 6 || ((typeof e.majorId) != 'number')) {
                     return e
                 }
             })
@@ -205,7 +201,7 @@ export class UserService {
                 const hashedPassword = await argon2.hash(String(objects[index].password))
                 await this.prismaService.user.create({
                     data: {
-                        email: objects[index].email,
+                        studentId: objects[index].studentId.toLowerCase(),
                         name: objects[index].name,
                         password: hashedPassword,
                         majorId: objects[index].majorId,
@@ -215,8 +211,6 @@ export class UserService {
             }
             return new ResponseData<string>(null, 200, 'Tạo tất cả tài khoản thành công')
         } catch (error) {
-            console.log(error);
-
             return new ResponseData<string>(null, 500, 'Lỗi dịch vụ, thử lại sau')
         }
     }
@@ -280,27 +274,6 @@ export class UserService {
             return new ResponseData<string>(null, 500, 'Lỗi dịch vụ, thử lại sau')
         }
     }
-
-    // async updateProfile(userId: number, updateProfileDto: UpdateProfileDto) {
-    //     try {
-    //         const user = await this.getUserById(userId)
-    //         if (!user) {
-    //             return new ResponseData<User>(null, 400, 'Tài khoản không tồn tại')
-    //         }
-    //         await this.prismaService.user.update({
-    //             where: {
-    //                 id: user.id
-    //             },
-    //             data: {
-    //                 name: updateProfileDto.name,
-    //                 majorId: updateProfileDto.majorId
-    //             }
-    //         })
-    //         return new ResponseData<any>(null, 200, 'Cập nhật thông tin thành công')
-    //     } catch (error) {
-    //         return new ResponseData<string>(null, 500, 'Lỗi dịch vụ, thử lại sau')
-    //     }
-    // }
 
     async updateAvatar(userId: number, image: Express.Multer.File) {
         try {
@@ -389,7 +362,7 @@ export class UserService {
         try {
             const verifyCode = await this.prismaService.verifyCode.findFirst({
                 where: {
-                    email: forgotPasswordDto.email,
+                    studentId: forgotPasswordDto.studentId,
                     code: forgotPasswordDto.code
                 }
             })
@@ -403,7 +376,7 @@ export class UserService {
             }
             const user = await this.prismaService.user.findFirst({
                 where: {
-                    email: forgotPasswordDto.email
+                    studentId: forgotPasswordDto.studentId
                 }
             })
             if (!user) {
@@ -423,7 +396,7 @@ export class UserService {
             }
             await this.prismaService.verifyCode.deleteMany({
                 where: {
-                    email: user.email
+                    studentId: user.studentId
                 }
             })
             return new ResponseData<string>(null, 200, 'Đổi mật khẩu thành công')
@@ -436,29 +409,27 @@ export class UserService {
         try {
             const user = await this.prismaService.user.findFirst({
                 where: {
-                    email: verifyCodeDto.email
+                    studentId: verifyCodeDto.studentId
                 }
             })
             if (!user) {
-                return new ResponseData<any>(null, 400, 'Email này chưa đăng ký')
+                return new ResponseData<any>(null, 400, 'Mã số sinh viên chưa đăng ký')
             }
             await this.prismaService.verifyCode.deleteMany({
                 where: {
-                    email: user.email
+                    studentId: user.studentId
                 }
             })
             const code = this.random6DigitNumber()
-            const verifyCode = await this.prismaService.verifyCode.create({
+            await this.prismaService.verifyCode.create({
                 data: {
-                    email: user.email,
+                    studentId: user.studentId,
                     code: parseInt(code)
                 }
             })
-            if (!verifyCode) {
-                return new ResponseData<string>(null, 500, 'Lỗi dịch vụ, thử lại sau')
-            }
+            const email = this.getEmail(user)
             await this.mailerService.sendMail({
-                to: user.email,
+                to: email,
                 subject: 'Mã OTP để xác nhận đổi mật khẩu tài khoản cho Ứng dụng hỗ trợ tìm kiếm đồ vật bị thất lạc',
                 template: './verifycode',
                 context: {
@@ -504,7 +475,7 @@ export class UserService {
                 },
                 select: {
                     id: true,
-                    email: true,
+                    studentId: true,
                     Major: {
                         select: {
                             trainingDuration: true
@@ -513,7 +484,7 @@ export class UserService {
                 }
             })
             const filter = data.map((e) => {
-                return { id: e.id, year: Number(e.email.match(/b(\d{2})/)[1]) + e.Major.trainingDuration }
+                return { id: e.id, year: Number(e.studentId.match(/b(\d{2})/)[1]) + e.Major.trainingDuration }
             })
             switch (currentMonth) {
                 case 8:
@@ -573,9 +544,11 @@ export class UserService {
         })
     }
 
-    validateEmail(email: string) {
-        const regex = /^[a-zA-Z0-9+_.-]+B\d{7}@student\.ctu\.edu\.vn$/i
-        return regex.test(email);
+    getEmail(user: User) {
+        const nameParts = user.name.split(' ')
+        const lastName = nameParts[nameParts.length - 1];
+        const normalizedLastName = lastName.normalize("NFD").replace(/[\u0300-\u036f]/g, "").toLowerCase();
+        return normalizedLastName + user.studentId + '@student.ctu.edu.vn'
     }
 
     random6DigitNumber() {

@@ -2,7 +2,7 @@ import { Body, Controller, Get, Param, ParseIntPipe, Patch, Post, Query, Uploade
 import { UserService } from './user.service';
 import { GetUser, Role } from '../auth/decorator';
 import { User } from '@prisma/client';
-import { ForgotPasswordDto, VerifyCodeDto, CreateUserDto, BanUserDto, UpdatePasswordDto, UpdateProfileDto, UpdateUserDto } from './dto';
+import { ForgotPasswordDto, VerifyCodeDto, CreateUserDto, BanUserDto, UpdatePasswordDto, UpdateUserDto } from './dto';
 import { FileInterceptor } from '@nestjs/platform-express';
 import { MyJWTGuard, RolesGuard } from '../auth/guard';
 import { USER_TYPES } from '../global';
@@ -40,8 +40,8 @@ export class UserController {
     }
 
     @Post('users')
-    // @UseGuards(MyJWTGuard, RolesGuard)
-    // @Role(USER_TYPES.ADMIN)
+    @UseGuards(MyJWTGuard, RolesGuard)
+    @Role(USER_TYPES.ADMIN)
     @UseInterceptors(FileInterceptor('file'))
     createUsers(@UploadedFile() file: Express.Multer.File) {
         return this.userService.createUsers(file)
@@ -60,13 +60,6 @@ export class UserController {
     unBanUser(@Param('id', ParseIntPipe) id: number) {
         return this.userService.unBanUser(id)
     }
-
-    // @Patch('update-profile')
-    // @UseGuards(MyJWTGuard, RolesGuard)
-    // @Role(USER_TYPES.USER)
-    // updateProfile(@GetUser() user: User, @Body() updateProfileDto: UpdateProfileDto) {
-    //     return this.userService.updateProfile(user.id, updateProfileDto)
-    // }
 
     @Patch('update-avatar')
     @UseGuards(MyJWTGuard, RolesGuard)

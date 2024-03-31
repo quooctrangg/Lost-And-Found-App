@@ -1,11 +1,11 @@
-import { IsEmail, IsNotEmpty, IsNumber, IsString, MaxLength, MinLength } from "class-validator"
+import { IsNotEmpty, IsNumber, IsString, MaxLength, MinLength } from "class-validator"
 import { CONSTANTS_MAX, CONSTANTS_MIN } from "../../global"
 
 export class ForgotPasswordDto {
-    @IsEmail()
+    @IsString()
     @IsNotEmpty()
-    @MaxLength(CONSTANTS_MAX.EMAIL_LEN)
-    email: string
+    @MaxLength(CONSTANTS_MAX.STUDENT_ID_LEN)
+    studentId: string
 
     @IsString()
     @IsNotEmpty()

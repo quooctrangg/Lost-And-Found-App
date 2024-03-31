@@ -175,7 +175,7 @@ export class DashboardService {
           User: {
             select: {
               id: true,
-              email: true,
+              studentId: true,
               Major: {
                 include: {
                   School: true
@@ -188,7 +188,7 @@ export class DashboardService {
               User: {
                 select: {
                   id: true,
-                  email: true,
+                  studentId: true,
                   Major: {
                     include: {
                       School: true
@@ -214,7 +214,7 @@ export class DashboardService {
           User: {
             select: {
               id: true,
-              email: true,
+              studentId: true,
               Major: {
                 include: {
                   School: true
@@ -227,13 +227,13 @@ export class DashboardService {
       })
       lostandfond.forEach(e => {
         if (e.Post.type == true) {
-          list.push({ found: e.Post.User.email, school: e.Post.User.Major.School.name, major: e.Post.User.Major.name, lost: e.User.email, item: e.Post.Item.name, day: e.updatedAt, marjoId: e.Post.User.Major.id, schoolId: e.Post.User.Major.schoolId })
+          list.push({ found: e.Post.User.studentId, school: e.Post.User.Major.School.name, major: e.Post.User.Major.name, lost: e.User.studentId, item: e.Post.Item.name, day: e.updatedAt, marjoId: e.Post.User.Major.id, schoolId: e.Post.User.Major.schoolId })
         } else {
-          list.push({ found: e.User.email, school: e.User.Major.School.name, major: e.User.Major.name, lost: e.Post.User.email, item: e.Post.Item.name, day: e.updatedAt, marjoId: e.User.Major.id, schoolId: e.User.Major.schoolId })
+          list.push({ found: e.User.studentId, school: e.User.Major.School.name, major: e.User.Major.name, lost: e.Post.User.studentId, item: e.Post.Item.name, day: e.updatedAt, marjoId: e.User.Major.id, schoolId: e.User.Major.schoolId })
         }
       })
       sendProtection.forEach(e => {
-        list.push({ found: e.User.email, school: e.User.Major.School.name, major: e.User.Major.name, lost: '', item: e.Item.name, day: e.updatedAt, marjoId: e.User.Major.id, schoolId: e.User.Major.schoolId })
+        list.push({ found: e.User.studentId, school: e.User.Major.School.name, major: e.User.Major.name, lost: '', item: e.Item.name, day: e.updatedAt, marjoId: e.User.Major.id, schoolId: e.User.Major.schoolId })
       })
       list = list.sort((a, b) => {
         if (a.schoolId < b.schoolId) return 1
@@ -281,7 +281,7 @@ export class DashboardService {
         User: {
           select: {
             id: true,
-            email: true,
+            studentId: true,
             Major: {
               include: {
                 School: true
@@ -294,7 +294,7 @@ export class DashboardService {
             User: {
               select: {
                 id: true,
-                email: true,
+                studentId: true,
                 Major: {
                   include: {
                     School: true
@@ -320,7 +320,7 @@ export class DashboardService {
         User: {
           select: {
             id: true,
-            email: true,
+            studentId: true,
             Major: {
               include: {
                 School: true
@@ -333,13 +333,13 @@ export class DashboardService {
     })
     lostandfond.forEach(e => {
       if (e.Post.type == true) {
-        list.push({ found: this.getMSSV(e.Post.User.email), school: e.Post.User.Major.School.name, major: e.Post.User.Major.name, lost: this.getMSSV(e.User.email), item: e.Post.Item.name, day: moment(e.updatedAt).format('DD-MM-YYYY'), marjoId: e.Post.User.Major.id, schoolId: e.Post.User.Major.schoolId })
+        list.push({ found: e.Post.User.studentId, school: e.Post.User.Major.School.name, major: e.Post.User.Major.name, lost: e.User.studentId, item: e.Post.Item.name, day: moment(e.updatedAt).format('DD-MM-YYYY'), marjoId: e.Post.User.Major.id, schoolId: e.Post.User.Major.schoolId })
       } else {
-        list.push({ found: this.getMSSV(e.User.email), school: e.User.Major.School.name, major: e.User.Major.name, lost: this.getMSSV(e.Post.User.email), item: e.Post.Item.name, day: moment(e.updatedAt).format('DD-MM-YYYY'), marjoId: e.User.Major.id, schoolId: e.User.Major.schoolId })
+        list.push({ found: e.User.studentId, school: e.User.Major.School.name, major: e.User.Major.name, lost: e.Post.User.studentId, item: e.Post.Item.name, day: moment(e.updatedAt).format('DD-MM-YYYY'), marjoId: e.User.Major.id, schoolId: e.User.Major.schoolId })
       }
     })
     sendProtection.forEach(e => {
-      list.push({ found: this.getMSSV(e.User.email), school: e.User.Major.School.name, major: e.User.Major.name, lost: '', item: e.Item.name, day: moment(e.updatedAt).format('DD-MM-YYYY'), marjoId: e.User.Major.id, schoolId: e.User.Major.schoolId })
+      list.push({ found: e.User.studentId, school: e.User.Major.School.name, major: e.User.Major.name, lost: '', item: e.Item.name, day: moment(e.updatedAt).format('DD-MM-YYYY'), marjoId: e.User.Major.id, schoolId: e.User.Major.schoolId })
     })
     list = list.sort((a, b) => {
       if (a.schoolId < b.schoolId) return 1
@@ -388,12 +388,6 @@ export class DashboardService {
       }
     }
     return { data: book, name: name }
-  }
-
-  getMSSV(email: string) {
-    const regex = /B\d{7}/i;
-    const match = email.match(regex);
-    return match ? match[0] : null;
   }
 
   setDate(option) {

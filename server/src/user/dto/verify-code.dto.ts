@@ -1,9 +1,9 @@
-import { IsEmail, IsNotEmpty, IsString, MaxLength, MinLength } from "class-validator"
-import { CONSTANTS_MAX, CONSTANTS_MIN, } from "../../global"
+import { IsNotEmpty, IsString, MaxLength } from "class-validator"
+import { CONSTANTS_MAX, } from "../../global"
 
 export class VerifyCodeDto {
-    @IsEmail()
+    @IsString()
     @IsNotEmpty()
-    @MaxLength(CONSTANTS_MAX.EMAIL_LEN)
-    email: string
+    @MaxLength(CONSTANTS_MAX.STUDENT_ID_LEN)
+    studentId: string
 }

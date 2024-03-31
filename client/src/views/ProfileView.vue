@@ -80,6 +80,9 @@ onMounted(async () => {
                     Chuyên ngành: {{ profile?.Major?.name }}
                 </h2>
                 <h2 class="text-base text-gray-600 indent-3">
+                    Email: {{ profile?.email }}
+                </h2>
+                <h2 class="text-base text-gray-600 indent-3">
                     Tham gia vào ngày {{ dayjs(profile?.createAt).format('DD, MMMM, YYYY') }}
                 </h2>
                 <h2 class="text-base">
