@@ -92,7 +92,7 @@ const routes = [
     meta: { title: 'Quản lý' },
     beforeEnter: (to, from, next) => {
       const userStore = useUserStore()
-      if (!userStore.user?.id && userStore.user?.type != 0) next('login')
+      if (!userStore.user?.id || userStore.user?.type != 0) next('home')
       else next()
     },
     children: [
