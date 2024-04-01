@@ -42,7 +42,7 @@ export class DashboardService {
         where: {
           verify: 1,
           isDelete: false,
-          createdAt: {
+          updatedAt: {
             gte: start,
             lte: end
           }
@@ -63,7 +63,7 @@ export class DashboardService {
           },
           isDelete: false,
           verify: 1,
-          createdAt: {
+          updatedAt: {
             gte: start,
             lte: end
           }
@@ -100,10 +100,11 @@ export class DashboardService {
         by: ['type'],
         _count: true,
         where: {
-          createdAt: {
+          updatedAt: {
             gte: start,
             lte: end
-          }
+          },
+          verify: 1
         }
       })
       const countItem = await this.prismaService.post.groupBy({
@@ -113,10 +114,11 @@ export class DashboardService {
           itemId: 'asc'
         },
         where: {
-          createdAt: {
+          updatedAt: {
             gte: start,
             lte: end
-          }
+          },
+          verify: 1
         }
       })
       const location = await this.prismaService.location.findMany({
@@ -126,7 +128,7 @@ export class DashboardService {
         where: {
           Post: {
             some: {
-              createdAt: {
+              updatedAt: {
                 gte: start,
                 lte: end
               }
@@ -203,7 +205,9 @@ export class DashboardService {
       })
       const sendProtection = await this.prismaService.post.findMany({
         where: {
-          done: -1,
+          done: {
+            in: [-1, -2]
+          },
           updatedAt: {
             gte: start,
             lte: end
@@ -309,7 +313,9 @@ export class DashboardService {
     })
     const sendProtection = await this.prismaService.post.findMany({
       where: {
-        done: -1,
+        done: {
+          in: [-1, -2]
+        },
         updatedAt: {
           gte: start,
           lte: end

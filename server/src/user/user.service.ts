@@ -190,7 +190,7 @@ export class UserService {
                 return obj;
             });
             const userErr = objects.filter((e: any) => {
-                if (String(e.password).length < 6 || ((typeof e.majorId) != 'number')) {
+                if (e.studentId.length > 10 || String(e.password).length < 6 || ((typeof e.majorId) != 'number')) {
                     return e
                 }
             })
