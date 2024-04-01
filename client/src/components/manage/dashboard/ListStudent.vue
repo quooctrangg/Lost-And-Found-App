@@ -32,12 +32,6 @@ const getListStudentRetureItemSuccessful = async (option) => {
     }
 }
 
-const getMSSV = (email) => {
-    const regex = /B\d{7}/i;
-    const match = email.match(regex);
-    return match ? match[0] : null;
-}
-
 const setDate = (option) => {
     let result = ''
     switch (option.type) {
@@ -110,7 +104,7 @@ onMounted(async () => {
                         {{ i + 1 }}
                     </td>
                     <td class="border border-slate-700 p-2">
-                        {{ getMSSV(student.found) }}
+                        {{ student.found }}
                     </td>
                     <td class="border border-slate-700 p-2">
                         {{ student.school }}
@@ -119,7 +113,7 @@ onMounted(async () => {
                         {{ student.major }}
                     </td>
                     <td class="border border-slate-700 p-2">
-                        {{ getMSSV(student.lost) }}
+                        {{ student.lost }}
                     </td>
                     <td class="border border-slate-700 p-2">
                         {{ student.item }}

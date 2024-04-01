@@ -18,12 +18,6 @@ const routes = [
     component: () => import('../views/LoginView.vue'),
     meta: { title: 'Đăng Nhập' }
   },
-  // {
-  //   path: '/register',
-  //   name: 'register',
-  //   component: () => import('../views/RegisterView.vue'),
-  //   meta: { title: 'Đăng Ký' }
-  // },
   {
     path: '/forgot-password',
     name: 'forgot-password',
@@ -139,16 +133,6 @@ const routes = [
       }
     ]
   },
-  // {
-  //   path: '/confirm',
-  //   component: () => import('../views/ConfirmUser.vue'),
-  //   meta: { title: 'Xác nhận tài khoản' },
-  //   beforeEnter: (to, from, next) => {
-  //     const userStore = useUserStore()
-  //     if (!userStore.user?.id) next('login')
-  //     else next()
-  //   },
-  // },
   {
     path: "/:pathMatch(.*)",
     name: "notfound",

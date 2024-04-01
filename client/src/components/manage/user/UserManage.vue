@@ -83,7 +83,7 @@ onMounted(async () => {
                 <div class="flex-1 flex gap-5 justify-between items-center">
                     <div>
                         <div class="border border-black rounded-xl">
-                            <Seach :title="'Nhập tên hoặc email'" @key="(e) => { userStore.key = e }" />
+                            <Seach :title="'Nhập tên hoặc mssv'" @key="(e) => { userStore.key = e }" />
                         </div>
                     </div>
                     <div class="flex gap-1 items-center">
@@ -164,7 +164,7 @@ onMounted(async () => {
                             {{ user.name }}
                         </td>
                         <td class="whitespace-nowrap p-2">
-                            {{ user.email.split('@')[0] }}
+                            {{ user.studentId }}
                         </td>
                         <td v-if="!user.isBan" class="whitespace-nowrap p-2 text-green-500 text-center">
                             Hoạt động

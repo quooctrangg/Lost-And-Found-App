@@ -72,15 +72,12 @@ onMounted(async () => {
             <div class="flex flex-col gap-2 flex-1">
                 <h1 class="font-bold text-xl">
                     {{ profile?.name }}
-                    <span class="text-gray-400 text-lg">
-                        {{ `#${route.params.id}` }}
-                    </span>
                 </h1>
                 <h2 class="text-base text-gray-600 indent-3">
-                    Chuyên ngành: {{ profile?.Major?.name }}
+                    MSSV: {{ profile?.studentId.toUpperCase() }}
                 </h2>
                 <h2 class="text-base text-gray-600 indent-3">
-                    Email: {{ profile?.email }}
+                    Chuyên ngành: {{ profile?.Major?.name }}
                 </h2>
                 <h2 class="text-base text-gray-600 indent-3">
                     Tham gia vào ngày {{ dayjs(profile?.createAt).format('DD, MMMM, YYYY') }}

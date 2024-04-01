@@ -34,11 +34,11 @@ const sumitFeedback = () => {
             <template #body>
                 <div class="w-full">
                     <div class="flex gap-2 items-center">
-                        <label for="email" class="label-custom">
-                            Email:
+                        <label for="studentId" class="label-custom">
+                            MSSV:
                         </label>
-                        <Field name="email" id="email" type="email" class="input-custom" v-model="props.user.email"
-                            disabled />
+                        <Field name="studentId" id="studentId" type="text" class="input-custom"
+                            v-model="props.user.studentId" disabled />
                     </div>
                     <div class="mt-3">
                         <label for="time" class="label-custom">Thời gian khóa:</label>

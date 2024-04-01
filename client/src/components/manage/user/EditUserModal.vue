@@ -104,11 +104,11 @@ watchEffect(async () => {
             <template #body>
                 <div class="w-full" v-if="!userStore.isLoadingUpdate">
                     <div>
-                        <label for="email" class="label-custom">
-                            Email:
+                        <label for="studentId" class="label-custom">
+                            MSSV:
                         </label>
-                        <Field name="email" id="email" type="email" class="input-custom" v-model="props.user.email"
-                            disabled />
+                        <Field name="studentId" id="studentId" type="text" class="input-custom"
+                            v-model="props.user.studentId" disabled />
                     </div>
                     <div class="flex flex-col items-center justify-center gap-2 mt-4">
                         <div class="h-36 w-36 border-dashed border-black border-2 rounded-full overflow-hidden">

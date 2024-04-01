@@ -13,12 +13,12 @@ const router = useRouter()
 const $toast = useToast()
 
 const user = reactive({
-    email: '',
+    studentId: '',
     password: ''
 })
 
 const formSchemaLogin = yup.object().shape({
-    email: yup.string().required("Email phải có giá trị.").email("E-mail không đúng.").matches(/^[a-zA-Z0-9+_.-]+b\d{7}@student\.ctu\.edu\.vn$/i, 'Email không đúng định dạng của trường Đại học Cần Thơ.').max(50, "E-mail tối đa 50 ký tự."),
+    studentId: yup.string().required("MSSV phải có giá trị.").max(10, "MSSV tối đa 10 ký tự."),
     password: yup.string().required('Mật khẩu phải có giá trị.').min(6, 'Tên phải ít nhất 6 ký tự.')
 })
 
@@ -29,7 +29,6 @@ const submitLogin = async () => {
             console.log(authStore.result);
             authStore.showFeedbackModal()
         }
-        console.log(1);
         $toast.error(authStore.err, { position: 'top-right' })
         return
     }
@@ -59,9 +58,9 @@ const submitLogin = async () => {
                         Đăng nhập tài khoản
                     </h1>
                     <div>
-                        <Field type="email" name="email" id="email" class="input-custom shadow-lg" v-model="user.email"
-                            placeholder="Nhập email" />
-                        <ErrorMessage name="email" class="error" />
+                        <Field type="text" name="studentId" id="studentId" class="input-custom shadow-lg"
+                            v-model="user.studentId" placeholder="Nhập MSSV" />
+                        <ErrorMessage name="studentId" class="error" />
                     </div>
                     <div>
                         <Field name="password" type="password" id="password" class="input-custom shadow-lg"
@@ -79,13 +78,6 @@ const submitLogin = async () => {
                         <button type="submit" class="btn-custom shadow-lg">
                             Đăng nhập
                         </button>
-                        <!-- <div class="text-sm font-light text-[#5B5764] py-2">
-                            Bạn chưa có tài khoản?
-                            <router-link class="font-medium text-[#5B5764] hover:underline hover:text-red-600"
-                                :to="{ name: 'register' }">
-                                Đăng ký.
-                            </router-link>
-                        </div> -->
                     </div>
                 </Form>
             </div>

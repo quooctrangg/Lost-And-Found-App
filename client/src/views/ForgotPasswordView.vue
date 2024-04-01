@@ -14,13 +14,13 @@ const router = useRouter()
 const seconds = ref(0)
 const timeout = ref(false)
 const user = reactive({
-    email: '',
+    studentId: '',
     newPassword: '',
     confirmPassword: '',
     code: ''
 })
 const formSchemaForgotPassword = yup.object().shape({
-    email: yup.string().required("Email phải có giá trị.").email("E-mail không đúng.").matches(/^[a-zA-Z0-9+_.-]+b\d{7}@student\.ctu\.edu\.vn$/i, 'Email không đúng định dạng của trường Đại học Cần Thơ.').max(50, "E-mail tối đa 50 ký tự."),
+    studentId: yup.string().required("MSSV phải có giá trị.").max(10, "MSSV tối đa 10 ký tự."),
     newPassword: yup.string().required('Mật khẩu phải có giá trị.').min(6, 'Tên phải ít nhất 6 ký tự.'),
     confirmPassword: yup.string().oneOf([yup.ref('newPassword'), null], 'Mật khẩu xác nhận không trùng khớp.'),
     code: yup.number().typeError('Mã xác nhận phải là số.').required('Mã xác nhận phải có giá trị.')
@@ -44,11 +44,11 @@ const countDown = () => {
 }
 
 const btnSendCode = async () => {
-    if (user.email == '') {
-        $toast.error('Vui lòng nhập email', { position: 'top-right' })
+    if (user.studentId == '') {
+        $toast.error('Vui lòng nhập MSSV', { position: 'top-right' })
         return
     }
-    await userStore.sendVerifyCode({ email: user.email })
+    await userStore.sendVerifyCode({ studentId: user.studentId })
     if (userStore.err) {
         $toast.error(userStore.err, { position: 'top-right' })
         return
@@ -70,11 +70,12 @@ const btnSendCode = async () => {
                 </h1>
                 <Form class="flex flex-col gap-3" @submit="submitForgot" :validation-schema="formSchemaForgotPassword">
                     <div>
-                        <label for="email" class="label-custom">
-                            Email:
+                        <label for="studentId" class="label-custom">
+                            Mã số sinh viên:
                         </label>
-                        <Field type="email" name="email" id="email" class="input-custom" v-model="user.email" />
-                        <ErrorMessage name="email" class="error" />
+                        <Field type="text" name="studentId" id="studentId" class="input-custom"
+                            v-model="user.studentId" />
+                        <ErrorMessage name="studentId" class="error" />
                     </div>
                     <div>
                         <label for="newPassword" class="label-custom">
@@ -118,13 +119,6 @@ const btnSendCode = async () => {
                         <button type="submit" class="btn-custom">
                             Đổi mật khẩu
                         </button>
-                        <!-- <p class="text-sm font-light text-gray-500 py-2">
-                            Bạn chưa có tài khoản?
-                            <router-link class="font-medium text-primary-600 hover:underline hover:text-red-600"
-                                :to="{ name: 'register' }">
-                                Đăng ký.
-                            </router-link>
-                        </p> -->
                     </div>
                 </Form>
             </div>

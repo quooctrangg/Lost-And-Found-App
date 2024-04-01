@@ -20,14 +20,14 @@ const isShow = ref(false)
 const selectedFile = ref(null)
 const user = reactive({
     name: '',
-    email: '',
+    studentId: '',
     password: '',
     schoolId: '',
     majorId: ''
 })
 const formSchemaUser = yup.object().shape({
     name: yup.string().required("Tên phải có giá trị.").min(1, 'Tên phải ít nhất 1 ký tự.').max(50, "Tên có nhiều nhất 50 ký tự."),
-    email: yup.string().required("Email phải có giá trị.").email("E-mail không đúng.").matches(/^[a-zA-Z0-9+_.-]+b\d{7}@student\.ctu\.edu\.vn$/i, 'Email không đúng định dạng của trường Đại học Cần Thơ.').max(50, "E-mail tối đa 50 ký tự."),
+    studentId: yup.string().required("MSSV phải có giá trị.").max(10, "MSSV tối đa 10 ký tự."),
     password: yup.string().required('Mật khẩu phải có giá trị.').min(6, 'Tên phải ít nhất 6 ký tự.'),
     schoolId: yup.string().required('Yêu cầu chọn trường / khoa.'),
     majorId: yup.string().required('Yêu cầu chọn chuyên ngành.')
@@ -43,7 +43,7 @@ const createUser = async () => {
     user.name = ''
     user.password = ''
     user.schoolId = ''
-    user.email = ''
+    user.studentId = ''
     user.majorId = ''
     await userStore.getAllUsers({ page: userStore.currentPage, key: userStore.key, isBan: userStore.isBan, schoolId: userStore.schoolId })
     manageStore.closeAddUserModal()
@@ -100,11 +100,12 @@ watch(() => user.schoolId, async newval => {
             <Form v-if="!isShow" @submit="createUser" :validation-schema="formSchemaUser">
                 <div class="w-full" v-if="!userStore.isLoading">
                     <div>
-                        <label for="email" class="label-custom">
-                            Email:
+                        <label for="studentId" class="label-custom">
+                            MSSV:
                         </label>
-                        <Field type="email" name="email" id="email" class="input-custom" v-model="user.email" />
-                        <ErrorMessage name="email" class="error" />
+                        <Field type="text" name="studentId" id="studentId" class="input-custom"
+                            v-model="user.studentId" />
+                        <ErrorMessage name="studentId" class="error" />
                     </div>
                     <div>
                         <label for="name" class="label-custom">

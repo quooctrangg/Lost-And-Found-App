@@ -4,7 +4,6 @@ import { useUserStore } from '../stores/user.store'
 import { FwbButton } from 'flowbite-vue'
 import Footer from '../components/common/Footer.vue';
 import UpdatePassword from '../components/profile/UpdatePassword.vue';
-// import UpdateProfileModal from '../components/profile/UpdateProfileModal.vue';
 import UpdateAvatarModal from '../components/profile/UpdateAvatarModal.vue';
 import ScrollToTop from '@/components/common/ScrollToTop.vue';
 import dayjs from 'dayjs'
@@ -41,15 +40,12 @@ onMounted(() => {
             <div class="flex flex-col gap-2 flex-1">
                 <h1 class="font-bold text-xl">
                     {{ userStore.user?.name }}
-                    <span class="text-gray-400 text-lg">
-                        {{ `#${userStore.user?.id}` }}
-                    </span>
                 </h1>
                 <h2 class="text-base text-gray-600 indent-3">
-                    Chuyên ngành: {{ userStore.user?.Major?.name }}
+                    MSSV: {{ userStore.user?.studentId.toUpperCase() }}
                 </h2>
                 <h2 class="text-base text-gray-600 indent-3">
-                    Email: {{ userStore.user?.email }}
+                    Chuyên ngành: {{ userStore.user?.Major?.name }}
                 </h2>
                 <h2 class="text-base text-gray-600 indent-3">
                     Tham gia vào ngày {{ dayjs(userStore.user?.createAt).format('DD, MMMM, YYYY') }}
@@ -59,10 +55,6 @@ onMounted(() => {
                 </h2>
             </div>
             <div class="flex flex-col gap-1 justify-end">
-                <!-- <fwb-button  @click="userStore.showUpdateProfileModal" color="alternative">
-                    <i class="fa-solid fa-pen"></i>
-                    Chỉnh sửa thông tin
-                </fwb-button> -->
                 <fwb-button @click="userStore.showUpdatePasswordModal" color="alternative">
                     <i class="fa-solid fa-key"></i>
                     Đổi mật khẩu

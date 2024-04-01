@@ -2,14 +2,6 @@
 import SideBar from '../components/chat/SideBar.vue'
 import Conversation from '../components/chat/Conversation.vue'
 import Footer from '../components/common/Footer.vue';
-// import { useConversationStore } from '../stores/conversation.store'
-// import { onMounted } from 'vue';
-
-// const conversationStore = useConversationStore()
-
-// onMounted(() => {
-//     conversationStore.activeIndex = null
-// })
 </script>
 
 <template>

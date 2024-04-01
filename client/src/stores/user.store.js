@@ -18,7 +18,6 @@ export const useUserStore = defineStore('user', () => {
     const schoolId = ref(null)
     const isShow = reactive({
         updatePassword: false,
-        // updateProfile: false,
         updateAvatar: false,
     })
     const isLoading = ref(false)
@@ -28,10 +27,6 @@ export const useUserStore = defineStore('user', () => {
     const closeUpdatePasswordModal = () => { isShow.updatePassword = false }
 
     const showUpdatePasswordModal = () => { isShow.updatePassword = true }
-
-    // const closeUpdateProfileModal = () => { isShow.updateProfile = false }
-
-    // const showUpdateProfileModal = () => { isShow.updateProfile = true }
 
     const closeUpdateAvatarModal = () => { isShow.updateAvatar = false }
 
@@ -82,21 +77,6 @@ export const useUserStore = defineStore('user', () => {
             isLoading.value = false
         }
     }
-
-    // const updateProfile = async (data) => {
-    //     err.value = null
-    //     result.value = null
-    //     isLoading.value = true
-    //     try {
-    //         let res = await userService.updateProfile(authStore.token, data)
-    //         if (res.statusCode !== 200) throw new Error(res.message)
-    //         result.value = res
-    //     } catch (error) {
-    //         err.value = error.message
-    //     } finally {
-    //         isLoading.value = false
-    //     }
-    // }
 
     const updatePassword = async (data) => {
         err.value = null

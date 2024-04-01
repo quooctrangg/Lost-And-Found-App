@@ -60,7 +60,7 @@ export class UserService {
                         mode: 'insensitive'
                     }
                 }, {
-                    email: {
+                    studentId: {
                         contains: key,
                         mode: 'insensitive'
                     }
