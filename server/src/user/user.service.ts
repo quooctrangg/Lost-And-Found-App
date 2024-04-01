@@ -132,8 +132,7 @@ export class UserService {
                     studentId: createUserDto.studentId.toLowerCase(),
                     password: hashedPassword,
                     name: createUserDto.name,
-                    majorId: createUserDto.majorId,
-                    type: 1
+                    majorId: createUserDto.majorId
                 }
             })
             return new ResponseData<User>(null, 200, 'Tạo tài khoản thành công')
@@ -204,8 +203,7 @@ export class UserService {
                         studentId: objects[index].studentId.toLowerCase(),
                         name: objects[index].name,
                         password: hashedPassword,
-                        majorId: objects[index].majorId,
-                        type: 1
+                        majorId: objects[index].majorId
                     }
                 })
             }

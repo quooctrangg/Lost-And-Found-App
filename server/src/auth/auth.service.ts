@@ -26,9 +26,6 @@ export class AuthService {
                 }
             })
             if (!user) return new ResponseData<string>(null, 400, 'Tài khoản không tồn tại')
-            if (user.type == -1) {
-                return new ResponseData<string>(null, 400, 'Tài khoản chưa được xác thực')
-            }
             const passwordMatched = await argon2.verify(user.password, loginDto.password)
             if (!passwordMatched) {
                 return new ResponseData<string>(null, 400, 'Mật khẩu không chính xác')

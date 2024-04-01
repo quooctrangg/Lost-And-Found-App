@@ -15,7 +15,7 @@ model User {
   studentId String
   name      String
   password  String
-  type      Int       @default(-1)
+  type      Int       @default(1)
   image     String    @default("https://res.cloudinary.com/dig0nsb6m/image/upload/v1704869331/hjv353yrt9hahuomkxey.png")
   isBan     Boolean   @default(false)
   banUntil  DateTime?

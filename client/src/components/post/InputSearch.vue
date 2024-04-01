@@ -15,9 +15,6 @@ const Recognition = window.SpeechRecognition || window.webkitSpeechRecognition
 const sr = new Recognition()
 
 const create = async () => {
-    if (key.value == '') {
-        return
-    }
     if (!authStore.token) {
         return
     }
@@ -94,7 +91,7 @@ watchEffect(async () => {
     <div class="flex-1 relative">
         <label class="w-full border-2 border-blue-600 pl-3 bg-white rounded-xl flex items-center gap-2 overflow-hidden">
             <i class="fa-solid fa-magnifying-glass"></i>
-            <input type="text" placeholder="Tìm kiếm bài viết" list="items" v-model="key"
+            <input type="text" placeholder="Tìm kiếm bài viết" list="items" v-model="key" @keyup.enter="submitSearch"
                 class="bg-white rounded-xl border-0 flex-1 text-sm border-transparent focus:border-transparent focus:ring-0">
             <datalist id="items" v-if="isSuggestions && authStore.token">
                 <option v-for="search in searchHistoryStore.searchs" :value="search.content">
