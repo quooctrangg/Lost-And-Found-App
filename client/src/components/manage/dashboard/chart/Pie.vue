@@ -62,7 +62,15 @@ const chartIncomes = computed(() => { return { ...dataPie } })
 
 <template>
     <div v-if="isLoading == false" class="p-1 bg-white rounded-lg shadow">
-        <Pie :data="chartIncomes" :options="options" class="w-full h-full" />
+        <Pie v-if="props.data.length" :data="chartIncomes" :options="options" class="w-full h-full" />
+        <div v-else class="p-2 flex flex-col h-full">
+            <div class="text-xs text-center font-bold text-gray-500">
+                Biểu đồ thống kê số lượt bài viết theo loại đồ
+            </div>
+            <div class="flex-1 text-red-500 italic flex items-center justify-center">
+                Không có dữ liệu...
+            </div>
+        </div>
     </div>
     <Loading v-else />
 </template>

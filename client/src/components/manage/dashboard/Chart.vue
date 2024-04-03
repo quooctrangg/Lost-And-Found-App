@@ -17,7 +17,6 @@ const getChart = async (option) => {
         $toast.error(dashboardStore.err, { position: 'top-right' })
         return
     }
-    console.log(dashboardStore.chart);
 }
 
 watch(() => props.option, async (newval) => {
