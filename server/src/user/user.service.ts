@@ -19,6 +19,7 @@ export class UserService {
         try {
             return new ResponseData<User>(user, 200, 'Tài khoản tồn tại')
         } catch (error) {
+            this.logger.error(error.message)
             return new ResponseData<string>(null, 500, 'Lỗi dịch vụ, thử lại sau')
         }
     }
@@ -42,6 +43,7 @@ export class UserService {
             delete user.updatedAt
             return new ResponseData<User>(user, 200, 'Tài khoản tồn tại')
         } catch (error) {
+            this.logger.error(error.message)
             return new ResponseData<string>(null, 500, 'Lỗi dịch vụ, thử lại sau')
         }
     }
@@ -112,6 +114,7 @@ export class UserService {
             })
             return new ResponseData<any>({ data, totalPages }, 200, 'Tìm thành công các tài khoản')
         } catch (error) {
+            this.logger.error(error.message)
             return new ResponseData<string>(null, 500, 'Lỗi dịch vụ, thử lại sau')
         }
     }
@@ -137,6 +140,7 @@ export class UserService {
             })
             return new ResponseData<User>(null, 200, 'Tạo tài khoản thành công')
         } catch (error) {
+            this.logger.error(error.message)
             return new ResponseData<string>(null, 500, 'Lỗi dịch vụ, thử lại sau')
         }
     }
@@ -209,6 +213,7 @@ export class UserService {
             }
             return new ResponseData<string>(null, 200, 'Tạo tất cả tài khoản thành công')
         } catch (error) {
+            this.logger.error(error.message)
             return new ResponseData<string>(null, 500, 'Lỗi dịch vụ, thử lại sau')
         }
     }
@@ -233,6 +238,7 @@ export class UserService {
             })
             return new ResponseData<any>(null, 200, 'Mở khóa người dùng thành công')
         } catch (error) {
+            this.logger.error(error.message)
             return new ResponseData<string>(null, 500, 'Lỗi dịch vụ, thử lại sau')
         }
     }
@@ -269,6 +275,7 @@ export class UserService {
             })
             return new ResponseData<string>(null, 200, 'Khóa tài khoản thành công')
         } catch (error) {
+            this.logger.error(error.message)
             return new ResponseData<string>(null, 500, 'Lỗi dịch vụ, thử lại sau')
         }
     }
@@ -290,6 +297,7 @@ export class UserService {
             })
             return new ResponseData<any>(null, 200, 'Cập nhật thành công')
         } catch (error) {
+            this.logger.error(error.message)
             return new ResponseData<string>(null, 500, 'Lỗi dịch vụ, thử lại sau')
         }
     }
@@ -323,6 +331,7 @@ export class UserService {
             })
             return new ResponseData<any>(null, 200, 'Cập nhật thông tin thành công')
         } catch (error) {
+            this.logger.error(error.message)
             return new ResponseData<string>(null, 500, 'Lỗi dịch vụ, thử lại sau')
         }
     }
@@ -351,6 +360,7 @@ export class UserService {
             })
             return new ResponseData<any>(null, 200, 'Cập nhật mật khẩu thành công')
         } catch (error) {
+            this.logger.error(error.message)
             return new ResponseData<string>(null, 500, 'Lỗi dịch vụ, thử lại sau')
         }
     }
@@ -399,6 +409,7 @@ export class UserService {
             })
             return new ResponseData<string>(null, 200, 'Đổi mật khẩu thành công')
         } catch (error) {
+            this.logger.error(error.message)
             return new ResponseData<string>(null, 500, 'Lỗi dịch vụ, thử lại sau')
         }
     }
@@ -437,6 +448,7 @@ export class UserService {
             })
             return new ResponseData<string>(null, 200, 'Gửi mã thành công')
         } catch (error) {
+            this.logger.error(error.message)
             return new ResponseData<string>(null, 500, 'Lỗi dịch vụ, thử lại sau')
         }
     }

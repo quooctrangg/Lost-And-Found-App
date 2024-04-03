@@ -8,15 +8,15 @@ import { MyJWTGuard } from 'src/auth/guard';
 @Controller('notification')
 @UseGuards(MyJWTGuard)
 export class NotificationController {
-  constructor(private readonly notificationService: NotificationService) { }
+    constructor(private readonly notificationService: NotificationService) { }
 
-  @Get()
-  getAllNotificationsByUserId(@GetUser() user: User) {
-    return this.notificationService.getAllNotificationByUserId(user.id)
-  }
+    @Get()
+    getAllNotificationsByUserId(@GetUser() user: User) {
+        return this.notificationService.getAllNotificationByUserId(user.id)
+    }
 
-  @Patch(':id')
-  readNotification(@GetUser() user: User, @Param('id', ParseIntPipe) id: number) {
-    return this.notificationService.readNotification(user.id, id)
-  }
+    @Patch(':id')
+    readNotification(@GetUser() user: User, @Param('id', ParseIntPipe) id: number) {
+        return this.notificationService.readNotification(user.id, id)
+    }
 }

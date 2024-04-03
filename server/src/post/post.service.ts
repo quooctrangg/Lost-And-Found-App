@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, Logger } from '@nestjs/common';
 import { PrismaService } from '../prisma/prisma.service';
 import { CreatPostDto, VerifyPostDto } from './dto';
 import { PAGE_SIZE, ResponseData, USER_TYPES } from '../global';
@@ -8,6 +8,8 @@ import { Post, User } from '@prisma/client';
 @Injectable()
 export class PostService {
     constructor(private readonly prismaService: PrismaService, private readonly cloudinaryService: CloudinaryService) { }
+
+    private readonly logger = new Logger(PostService.name);
 
     async uploadFiles(files: Express.Multer.File[]) {
         try {
@@ -23,7 +25,7 @@ export class PostService {
             }
             return uploadedImages
         } catch (error) {
-            console.log(error.message);
+            this.logger.error(error.message)
         }
     }
 
@@ -54,6 +56,7 @@ export class PostService {
             })
             return new ResponseData<string>(null, 200, 'Tạo thành công')
         } catch (error) {
+            this.logger.error(error.message)
             return new ResponseData<string>(null, 500, 'Lỗi dịch vụ, thử lại sau')
         }
     }
@@ -112,6 +115,7 @@ export class PostService {
             })
             return new ResponseData<any>({ data, totalPages }, 200, 'Tìm thành công các bài viết')
         } catch (error) {
+            this.logger.error(error.message)
             return new ResponseData<string>(null, 500, 'Lỗi dịch vụ, thử lại sau')
         }
     }
@@ -183,6 +187,7 @@ export class PostService {
             })
             return new ResponseData<any>({ data, totalPages }, 200, 'Tìm thành công các bài viết')
         } catch (error) {
+            this.logger.error(error.message)
             return new ResponseData<string>(null, 500, 'Lỗi dịch vụ, thử lại sau')
         }
     }
@@ -218,6 +223,7 @@ export class PostService {
             })
             return new ResponseData<string>(null, 200, 'Cập nhật thành công')
         } catch (error) {
+            this.logger.error(error.message)
             return new ResponseData<string>(null, 500, 'Lỗi dịch vụ, thử lại sau')
         }
     }
@@ -245,6 +251,7 @@ export class PostService {
             })
             return new ResponseData<string>(null, 200, 'Xóa thành công')
         } catch (error) {
+            this.logger.error(error.message)
             return new ResponseData<string>(null, 500, 'Lỗi dịch vụ, thử lại sau')
         }
     }
@@ -274,6 +281,7 @@ export class PostService {
             }
             return new ResponseData<Post>(data, 200, 'Tìm thấy bài viết')
         } catch (error) {
+            this.logger.error(error.message)
             return new ResponseData<string>(null, 500, 'Lỗi dịch vụ, thử lại sau')
         }
     }
@@ -307,6 +315,7 @@ export class PostService {
             })
             return new ResponseData<Post[]>(data, 200, 'Tìm thấy các bài viết')
         } catch (error) {
+            this.logger.error(error.message)
             return new ResponseData<string>(null, 500, 'Lỗi dịch vụ, thử lại sau')
         }
     }

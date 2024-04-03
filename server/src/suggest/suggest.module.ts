@@ -3,7 +3,7 @@ import { SuggestService } from './suggest.service';
 import { SuggestController } from './suggest.controller';
 
 @Module({
-  controllers: [SuggestController],
-  providers: [SuggestService],
+    controllers: [SuggestController],
+    providers: [SuggestService],
 })
-export class SuggestModule {}
+export class SuggestModule { }

@@ -9,23 +9,23 @@ import { USER_TYPES } from '../global';
 @Controller('search-history')
 @UseGuards(MyJWTGuard, RolesGuard)
 export class SearchHistoryController {
-  constructor(private readonly searchHistoryService: SearchHistoryService) { }
+    constructor(private readonly searchHistoryService: SearchHistoryService) { }
 
-  @Post()
-  @Role(USER_TYPES.USER)
-  create(@GetUser() user: User, @Body() createSearchHistoryDto: CreateSearchHistoryDto) {
-    return this.searchHistoryService.create(user.id, createSearchHistoryDto)
-  }
+    @Post()
+    @Role(USER_TYPES.USER)
+    create(@GetUser() user: User, @Body() createSearchHistoryDto: CreateSearchHistoryDto) {
+        return this.searchHistoryService.create(user.id, createSearchHistoryDto)
+    }
 
-  @Get()
-  @Role(USER_TYPES.USER)
-  getAllsByUser(@GetUser() user: User) {
-    return this.searchHistoryService.getAllsByUserId(user.id)
-  }
+    @Get()
+    @Role(USER_TYPES.USER)
+    getAllsByUser(@GetUser() user: User) {
+        return this.searchHistoryService.getAllsByUserId(user.id)
+    }
 
-  @Delete(':id')
-  @Role(USER_TYPES.USER)
-  delete(@GetUser() user: User, @Param('id', ParseIntPipe) id: number) {
-    return this.searchHistoryService.delete(user.id, id)
-  }
+    @Delete(':id')
+    @Role(USER_TYPES.USER)
+    delete(@GetUser() user: User, @Param('id', ParseIntPipe) id: number) {
+        return this.searchHistoryService.delete(user.id, id)
+    }
 }

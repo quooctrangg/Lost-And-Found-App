@@ -23,19 +23,19 @@ import { MajorModule } from './major/major.module';
 import * as Joi from 'joi';
 
 @Module({
-  imports: [
-    ConfigModule.forRoot({
-      isGlobal: true,
-      validationSchema: Joi.object({
-        PORT: Joi.number().required(),
-      }),
-    }),
-    ScheduleModule.forRoot(),
-    PrismaModule, AuthModule, MailingModule, UserModule,
-    CloudinaryModule, ItemModule, LocationModule, PostModule,
-    SchoolModule, SocketModule, ConversationModule, MessageModule,
-    RequestModule, CommentModule, DashboardModule, NotificationModule,
-    SearchHistoryModule, SuggestModule, MajorModule
-  ]
+    imports: [
+        ConfigModule.forRoot({
+            isGlobal: true,
+            validationSchema: Joi.object({
+                PORT: Joi.number().required(),
+            }),
+        }),
+        ScheduleModule.forRoot(),
+        PrismaModule, AuthModule, MailingModule, UserModule,
+        CloudinaryModule, ItemModule, LocationModule, PostModule,
+        SchoolModule, SocketModule, ConversationModule, MessageModule,
+        RequestModule, CommentModule, DashboardModule, NotificationModule,
+        SearchHistoryModule, SuggestModule, MajorModule
+    ]
 })
 export class AppModule { }

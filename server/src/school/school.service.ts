@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, Logger } from '@nestjs/common';
 import { PAGE_SIZE, ResponseData } from '../global';
 import { PrismaService } from '../prisma/prisma.service';
 import { CreateSchoolDto, UpdateSchoolDto } from './dto';
@@ -6,6 +6,8 @@ import { CreateSchoolDto, UpdateSchoolDto } from './dto';
 @Injectable()
 export class SchoolService {
     constructor(private readonly prismaService: PrismaService) { }
+
+    private readonly logger = new Logger(SchoolService.name);
 
     async get(option: { page: number, key: string }) {
         try {
@@ -43,6 +45,7 @@ export class SchoolService {
             })
             return new ResponseData<any>({ data, totalPages }, 200, 'Tìm thành công')
         } catch (error) {
+            this.logger.error(error.message)
             return new ResponseData<string>(null, 500, 'Lỗi dịch vụ, thử lại sau')
         }
     }
@@ -56,6 +59,7 @@ export class SchoolService {
             })
             return new ResponseData<any>(null, 200, 'Tạo thành công')
         } catch (error) {
+            this.logger.error(error.message)
             return new ResponseData<string>(null, 500, 'Lỗi dịch vụ, thử lại sau')
         }
     }
@@ -78,6 +82,7 @@ export class SchoolService {
             })
             return new ResponseData<any>(null, 200, 'Cập nhật thành công')
         } catch (error) {
+            this.logger.error(error.message)
             return new ResponseData<string>(null, 500, 'Lỗi dịch vụ, thử lại sau')
         }
     }
@@ -97,6 +102,7 @@ export class SchoolService {
             })
             return new ResponseData<any>(null, 200, 'Xóa thành công')
         } catch (error) {
+            this.logger.error(error.message)
             return new ResponseData<string>(null, 500, 'Lỗi dịch vụ, thử lại sau')
         }
     }

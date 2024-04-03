@@ -10,17 +10,17 @@ import { USER_TYPES } from '../global';
 @Controller('comment')
 @UseGuards(MyJWTGuard, RolesGuard)
 export class CommentController {
-  constructor(private readonly commentService: CommentService) { }
+    constructor(private readonly commentService: CommentService) { }
 
-  @Post()
-  @Role(USER_TYPES.USER)
-  createComment(@GetUser() user: User, @Body() createCommentDto: CreateCommentDto) {
-    return this.commentService.createComment(user.id, createCommentDto);
-  }
+    @Post()
+    @Role(USER_TYPES.USER)
+    createComment(@GetUser() user: User, @Body() createCommentDto: CreateCommentDto) {
+        return this.commentService.createComment(user.id, createCommentDto);
+    }
 
-  @Get(':postId')
-  @Role(USER_TYPES.USER)
-  getAllCommentsByPostId(@Param('postId', ParseIntPipe) postId: number) {
-    return this.commentService.getAllsCommetByPostId(postId)
-  }
+    @Get(':postId')
+    @Role(USER_TYPES.USER)
+    getAllCommentsByPostId(@Param('postId', ParseIntPipe) postId: number) {
+        return this.commentService.getAllsCommetByPostId(postId)
+    }
 }

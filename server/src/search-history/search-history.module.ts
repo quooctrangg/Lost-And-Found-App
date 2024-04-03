@@ -3,7 +3,7 @@ import { SearchHistoryService } from './search-history.service';
 import { SearchHistoryController } from './search-history.controller';
 
 @Module({
-  controllers: [SearchHistoryController],
-  providers: [SearchHistoryService],
+	controllers: [SearchHistoryController],
+	providers: [SearchHistoryService],
 })
-export class SearchHistoryModule {}
+export class SearchHistoryModule { }

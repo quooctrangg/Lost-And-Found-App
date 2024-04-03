@@ -9,35 +9,35 @@ import { AcceptRequestDto, CreateRequestDto, RejectRequestDto } from './dto';
 @Controller('request')
 @UseGuards(MyJWTGuard, RolesGuard)
 export class RequestController {
-  constructor(private readonly requestService: RequestService) { }
+    constructor(private readonly requestService: RequestService) { }
 
-  @Post()
-  @Role(USER_TYPES.USER)
-  createRequest(@GetUser() user: User, @Body() createRequestDto: CreateRequestDto) {
-    return this.requestService.createRequest(user.id, createRequestDto)
-  }
+    @Post()
+    @Role(USER_TYPES.USER)
+    createRequest(@GetUser() user: User, @Body() createRequestDto: CreateRequestDto) {
+        return this.requestService.createRequest(user.id, createRequestDto)
+    }
 
-  @Patch('accept')
-  @Role(USER_TYPES.USER)
-  acceptRequest(@GetUser() user: User, @Body() acceptRequestDto: AcceptRequestDto) {
-    return this.requestService.acceptRequest(user, acceptRequestDto)
-  }
+    @Patch('accept')
+    @Role(USER_TYPES.USER)
+    acceptRequest(@GetUser() user: User, @Body() acceptRequestDto: AcceptRequestDto) {
+        return this.requestService.acceptRequest(user, acceptRequestDto)
+    }
 
-  @Patch('reject')
-  @Role(USER_TYPES.USER)
-  rejectRequest(@GetUser() user: User, @Body() rejectRequestDto: RejectRequestDto) {
-    return this.requestService.rejectRequest(user, rejectRequestDto)
-  }
+    @Patch('reject')
+    @Role(USER_TYPES.USER)
+    rejectRequest(@GetUser() user: User, @Body() rejectRequestDto: RejectRequestDto) {
+        return this.requestService.rejectRequest(user, rejectRequestDto)
+    }
 
-  @Get()
-  @Role(USER_TYPES.USER)
-  getAllRequestsByUserId(@GetUser() user: User) {
-    return this.requestService.getAllRequestByUserId(user.id)
-  }
+    @Get()
+    @Role(USER_TYPES.USER)
+    getAllRequestsByUserId(@GetUser() user: User) {
+        return this.requestService.getAllRequestByUserId(user.id)
+    }
 
-  @Get('request-success')
-  @Role(USER_TYPES.USER)
-  getRequestsSuccessByUserId(@GetUser() user: User) {
-    return this.requestService.getRequestsSuccessByUserId(user.id)
-  }
+    @Get('request-success')
+    @Role(USER_TYPES.USER)
+    getRequestsSuccessByUserId(@GetUser() user: User) {
+        return this.requestService.getRequestsSuccessByUserId(user.id)
+    }
 }

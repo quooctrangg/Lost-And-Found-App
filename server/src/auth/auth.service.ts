@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, Logger } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
 import { ConfigService } from '@nestjs/config';
 import { MailerService } from '@nestjs-modules/mailer';
@@ -10,6 +10,8 @@ import { ResponseData } from '../global';
 @Injectable()
 export class AuthService {
     constructor(private readonly prismaService: PrismaService, private readonly jwtService: JwtService, private readonly configService: ConfigService, private readonly mailerService: MailerService) { }
+
+    private readonly logger = new Logger(AuthService.name);
 
     async login(loginDto: LoginDto) {
         try {
@@ -36,6 +38,7 @@ export class AuthService {
             const data = await this.signJwtToken(user.id, user.studentId)
             return new ResponseData<any>(data, 200, 'Đăng nhập thành công')
         } catch (error) {
+            this.logger.error(error.message)
             return new ResponseData<string>(null, 500, 'Lỗi dịch vụ, thử lại sau')
         }
     }

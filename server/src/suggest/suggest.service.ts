@@ -10,118 +10,117 @@ import { Post } from '@prisma/client';
 
 @Injectable()
 export class SuggestService {
-  constructor(private readonly prismaService: PrismaService) { }
+    constructor(private readonly prismaService: PrismaService) { }
 
-  private readonly logger = new Logger(SuggestService.name);
+    private readonly logger = new Logger(SuggestService.name);
 
-  async suggestItemsBasedOnDescription(userId: number) {
-    try {
-      const historySearch = await this.prismaService.searchHistory.findMany({
-        where: {
-          userId: userId
-        },
-        select: {
-          content: true
+    async suggestItemsBasedOnDescription(userId: number) {
+        try {
+            const historySearch = await this.prismaService.searchHistory.findMany({
+                where: {
+                    userId: userId
+                },
+                select: {
+                    content: true
+                }
+            })
+            if (!historySearch.length) {
+                const count = await this.prismaService.post.count()
+                const randomIndex = Math.floor(Math.random() * count)
+                const randomPost = await this.prismaService.post.findMany({
+                    where: {
+                        isDelete: false,
+                        verify: 1,
+                        done: {
+                            not: 1
+                        },
+                        userId: {
+                            not: userId
+                        }
+                    },
+                    include: {
+                        Image: true,
+                        Item: true,
+                        User: {
+                            select: {
+                                id: true,
+                                image: true,
+                                name: true
+                            }
+                        }
+                    },
+                    skip: randomIndex,
+                    take: 5,
+                });
+                return new ResponseData<Post[]>(randomPost, 200, 'Gợi ý thành công')
+            }
+            const listHistory = historySearch.map(e => Object.values(e)).flat()
+            let options = {
+                args: [...listHistory]
+            }
+            const result = await PythonShell.run(join(__dirname, 'scripts/main.py'), options);
+            let listItem = [...new Set(JSON.parse(result[0]).flat())] as number[]
+            const suggest = await this.prismaService.post.findMany({
+                where: {
+                    isDelete: false,
+                    verify: 1,
+                    itemId: {
+                        in: listItem
+                    },
+                    done: {
+                        not: 1
+                    },
+                    userId: {
+                        not: userId
+                    }
+                },
+                include: {
+                    Image: true,
+                    Item: true,
+                    User: {
+                        select: {
+                            id: true,
+                            image: true,
+                            name: true
+                        }
+                    }
+                },
+                take: 5,
+                orderBy: {
+                    createdAt: 'desc'
+                }
+            })
+            return new ResponseData<Post[]>(suggest, 200, 'Gợi ý thành công')
+        } catch (error) {
+            this.logger.error(error.message)
+            return new ResponseData<string>(null, 500, 'Lỗi dịch vụ, thử lại sau')
         }
-      })
-      if (!historySearch.length) {
-        const count = await this.prismaService.post.count()
-        const randomIndex = Math.floor(Math.random() * count)
-        const randomPost = await this.prismaService.post.findMany({
-          where: {
-            isDelete: false,
-            verify: 1,
-            done: {
-              not: 1
-            },
-            userId: {
-              not: userId
-            }
-          },
-          include: {
-            Image: true,
-            Item: true,
-            User: {
-              select: {
-                id: true,
-                image: true,
-                name: true
-              }
-            }
-          },
-          skip: randomIndex,
-          take: 5,
-        });
-        return new ResponseData<Post[]>(randomPost, 200, 'Gợi ý thành công')
-      }
-      const listHistory = historySearch.map(e => Object.values(e)).flat()
-      let options = {
-        args: [...listHistory]
-      }
-      const result = await PythonShell.run(join(__dirname, 'scripts/main.py'), options);
-      let listItem = [...new Set(JSON.parse(result[0]).flat())] as number[]
-      const suggest = await this.prismaService.post.findMany({
-        where: {
-          isDelete: false,
-          verify: 1,
-          itemId: {
-            in: listItem
-          },
-          done: {
-            not: 1
-          },
-          userId: {
-            not: userId
-          }
-        },
-        include: {
-          Image: true,
-          Item: true,
-          User: {
-            select: {
-              id: true,
-              image: true,
-              name: true
-            }
-          }
-        },
-        take: 5,
-        orderBy: {
-          createdAt: 'desc'
-        }
-      })
-      return new ResponseData<Post[]>(suggest, 200, 'Gợi ý thành công')
-    } catch (error) {
-      console.log(error);
-
-      return new ResponseData<string>(null, 500, 'Lỗi dịch vụ, thử lại sau')
     }
-  }
 
-  @Cron(CronExpression.EVERY_DAY_AT_MIDNIGHT)
-  async writeData() {
-    try {
-      const data = await this.prismaService.post.findMany({
-        where: {
-          isDelete: false,
-          verify: 1
-        },
-        select: {
-          description: true,
-          itemId: true
+    @Cron(CronExpression.EVERY_DAY_AT_MIDNIGHT)
+    async writeData() {
+        try {
+            const data = await this.prismaService.post.findMany({
+                where: {
+                    isDelete: false,
+                    verify: 1
+                },
+                select: {
+                    description: true,
+                    itemId: true
+                }
+            })
+            const columns = Object.keys(data[0])
+            const convertData = data.map(e => Object.values(e))
+            const writableStream = createWriteStream(join(__dirname, '/scripts/data.csv'))
+            const stringifier = stringify({ header: true, columns: columns })
+            convertData.forEach(e => {
+                stringifier.write(e)
+            })
+            stringifier.pipe(writableStream)
+            this.logger.log('Đã ghi thông tin vào file csv.')
+        } catch (error) {
+            this.logger.error(error.message)
         }
-      })
-      const columns = Object.keys(data[0])
-      const convertData = data.map(e => Object.values(e))
-      const writableStream = createWriteStream(join(__dirname, '/scripts/data.csv'))
-      const stringifier = stringify({ header: true, columns: columns })
-      convertData.forEach(e => {
-        stringifier.write(e)
-      })
-      stringifier.pipe(writableStream)
-      this.logger.log('Đã ghi thông tin vào file csv.')
-    } catch (error) {
-      this.logger.error('Lỗi dịch vụ, thử lại sau')
     }
-  }
 }

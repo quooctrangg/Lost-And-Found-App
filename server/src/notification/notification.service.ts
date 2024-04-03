@@ -1,11 +1,12 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, Logger } from '@nestjs/common';
 import { PrismaService } from '../prisma/prisma.service';
 import { ResponseData } from '../global';
-import { Notification } from '@prisma/client';
 
 @Injectable()
 export class NotificationService {
   constructor(private readonly prismaService: PrismaService) { }
+
+  private readonly logger = new Logger(NotificationService.name);
 
   async getAllNotificationByUserId(userId: number) {
     const currentDate = new Date()
@@ -81,6 +82,7 @@ export class NotificationService {
       })
       return new ResponseData<any>({ notifications, totalRead }, 200, 'Tìm thành công')
     } catch (error) {
+      this.logger.error(error.message)
       return new ResponseData<string>(null, 500, 'Lỗi dịch vụ, thử lại sau')
     }
   }
@@ -127,8 +129,7 @@ export class NotificationService {
       })
       return new ResponseData<string>(null, 200, 'Xem thông báo thành công')
     } catch (error) {
-      console.log(error);
-
+      this.logger.error(error.message)
       return new ResponseData<string>(null, 500, 'Lỗi dịch vụ, thử lại sau')
     }
   }

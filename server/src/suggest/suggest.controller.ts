@@ -8,17 +8,17 @@ import { User } from '@prisma/client';
 @Controller('suggest')
 @UseGuards(MyJWTGuard, RolesGuard)
 export class SuggestController {
-  constructor(private readonly suggestService: SuggestService) { }
+    constructor(private readonly suggestService: SuggestService) { }
 
-  @Get()
-  @Role(USER_TYPES.USER)
-  suggestItemsBasedOnDescription(@GetUser() user: User) {
-    return this.suggestService.suggestItemsBasedOnDescription(user.id)
-  }
+    @Get()
+    @Role(USER_TYPES.USER)
+    suggestItemsBasedOnDescription(@GetUser() user: User) {
+        return this.suggestService.suggestItemsBasedOnDescription(user.id)
+    }
 
-  @Post()
-  @Role(USER_TYPES.ADMIN)
-  updateData() {
-    return this.suggestService.writeData()
-  }
+    @Post()
+    @Role(USER_TYPES.ADMIN)
+    updateData() {
+        return this.suggestService.writeData()
+    }
 }

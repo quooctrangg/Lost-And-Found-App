@@ -103,10 +103,11 @@ onMounted(async () => {
                             </span>
                         </div>
                     </h3>
-                    <h3 v-if="post.verify == 0" class="flex gap-3 items-center">
+                    <h3 class="flex gap-3 items-center">
                         Tùy chọn:
-                        <i @click="async () => { await btnDeletePost(post.id) }"
-                            class="fa-solid fa-trash text-red-500 cursor-pointer text-2xl"></i>
+                        <button @click="async () => { await btnDeletePost(post.id) }">
+                            <i class="fa-solid fa-trash text-red-500 cursor-pointer text-xl"></i>
+                        </button>
                     </h3>
                 </div>
             </div>
