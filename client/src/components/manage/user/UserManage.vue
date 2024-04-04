@@ -150,10 +150,7 @@ onMounted(async () => {
                     <tr v-if="userStore.users?.length" v-for="(user, i) in userStore.users" :key="user.id"
                         class="border-b transition duration-300 ease-in-out hover:bg-gray-300">
                         <td class="whitespace-nowrap p-2 font-medium text-center">
-                            <router-link :to="{ name: 'profile', params: { id: `${user.id}` } }"
-                                class="text-lg text-blue-500 underline p-2 hover:text-blue-600">
-                                {{ (userStore.currentPage - 1) * 10 + i + 1 }}
-                            </router-link>
+                            {{ (userStore.currentPage - 1) * 10 + i + 1 }}
                         </td>
                         <td class="whitespace-nowrap p-2">
                             <div class="w-20 h-20 overflow-hidden flex items-center justify-center rounded-full">
@@ -161,7 +158,10 @@ onMounted(async () => {
                             </div>
                         </td>
                         <td class="whitespace-nowrap p-2 truncate">
-                            {{ user.name }}
+                            <router-link :to="{ name: 'profile', params: { id: `${user.id}` } }"
+                                class="text-lg text-blue-500 p-2 hover:text-blue-600">
+                                {{ user.name }}
+                            </router-link>
                         </td>
                         <td class="whitespace-nowrap p-2">
                             {{ user.studentId }}

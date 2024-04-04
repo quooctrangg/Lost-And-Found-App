@@ -102,7 +102,8 @@ onMounted(async () => {
             </div>
         </div>
         <div class="mx-auto">
-            <div v-for="(post, i) in posts" :key="post.id" class="border-2 w-full border-blue-600 p-2 rounded-lg mt-2">
+            <div v-if="posts.length" v-for="post in posts" :key="post.id"
+                class="border-2 w-full border-blue-600 p-2 rounded-lg mt-2">
                 <router-link :to="{ name: 'post-detail', params: { id: post.id } }">
                     <div class="flex gap-2">
                         <div v-if="post.Image.length" class="w-20%">
@@ -151,6 +152,9 @@ onMounted(async () => {
                         </div>
                     </div>
                 </router-link>
+            </div>
+            <div v-else class="italic text-red-500">
+                Không có bài viết.
             </div>
         </div>
     </div>
