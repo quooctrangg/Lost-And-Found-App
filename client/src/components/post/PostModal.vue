@@ -3,12 +3,12 @@ import { FwbModal, FwbButton } from 'flowbite-vue'
 import { usePostStore } from '../../stores/post.store'
 import { useItemStore } from '../../stores/item.store'
 import { useLocationStore } from '../../stores/location.store'
-import { onMounted, reactive, ref } from 'vue';
+import { onMounted, reactive, ref, watch, watchEffect } from 'vue';
 import { Form, Field, ErrorMessage } from "vee-validate";
 import { useToast } from 'vue-toast-notification'
 import * as yup from "yup";
 import Loading from '../common/Loading.vue';
-import Editor from 'primevue/editor';
+// import Editor from 'primevue/editor';
 
 const postStore = usePostStore()
 const itemStore = useItemStore()
@@ -86,6 +86,13 @@ const submitPost = async () => {
     postStore.closePostModal()
 }
 
+const getSuggest = async () => {
+    await postStore.suggestPost({ key: data.description, type: data.type, itemId: data.itemId, locations: data.locations })
+    if (postStore.err) {
+        return
+    }
+}
+
 const reset = () => {
     data.description = ''
     data.type = ''
@@ -101,6 +108,12 @@ const unCheckRadio = (e) => {
         data.done = 0
     }
 }
+
+watchEffect(async () => {
+    if (data.type !== '' && data.itemId !== '' && data.locations.length > 0) {
+        await getSuggest()
+    }
+})
 
 onMounted(async () => {
     await itemStore.getItem({})
@@ -122,10 +135,11 @@ onMounted(async () => {
                     <div class="grid grid-cols-2 gap-5">
                         <div class=" flex flex-col">
                             <label class="mt-2 mb-1" for="description">Mô tả</label>
-                            <Field type="text" name="description" id="description" as="textarea" hidden
+                            <Field type="text" name="description" id="description" as="textarea"
                                 class="w-full rounded-md" placeholder="Nhập mô tả ..." v-model="data.description"
                                 rows="4" />
-                            <Editor v-model="data.description" editorStyle="height: 200px">
+                            <!-- <Editor v-model="data.description" editorStyle="height: 200px" name="description"
+                                id="description">
                                 <template v-slot:toolbar>
                                     <span class="ql-formats">
                                         <button v-tooltip.bottom="'Bold'" class="ql-bold"></button>
@@ -134,7 +148,7 @@ onMounted(async () => {
                                         <select v-tooltip.bottom="'Color'" class="ql-color"></select>
                                     </span>
                                 </template>
-                            </Editor>
+</Editor> -->
                             <ErrorMessage name="description" class="error" />
                             <label class="mt-2 mb-1" for="type">Loại bài viết</label>
                             <Field as="select" name="type" id="type" class="input-custom" v-model="data.type">
@@ -176,7 +190,7 @@ onMounted(async () => {
                             </Field>
                             <ErrorMessage name="itemId" class="error" />
                             <label class="mt-2 mb-1">Vị trí</label>
-                            <div class="text-sm flex flex-wrap-reverse gap-4 mb-2">
+                            <div class="text-sm grid grid-cols-4 gap-2">
                                 <label v-for="location in locationStore.locations" :key="location.id" :for="location.id"
                                     class="flex items-center gap-1">
                                     <Field name="locations" :id="location.id" type="checkbox" :value="location.id"
@@ -205,6 +219,22 @@ onMounted(async () => {
                         </div>
                         <input type="file" multiple hidden id="images" accept="image/png, image/jpeg"
                             @change="onFileSelected">
+                    </div>
+                    <div v-if="postStore.suggest" class="w-full flex flex-col justify-center items-center mt-3">
+                        <div class="w-[70%] text-sm italic text-blue-500">
+                            Gợi ý:
+                        </div>
+                        <router-link :to="{ name: 'post-detail', params: { id: postStore.suggest?.id } }"
+                            class="w-[70%] border-2 bg-white mt-2 rounded-md flex gap-2 cursor-pointer items-center overflow-hidden p-2 shadow">
+                            <div v-if="postStore.suggest?.Image.length"
+                                class="w-[20%] max-h-20 rounded-sm overflow-hidden flex items-center justify-center">
+                                <img :src="postStore.suggest?.Image[0]?.url" alt="">
+                            </div>
+                            <div class="w-[50%] overflow-hidden flex-1">
+                                <h2 class="line-clamp-2 text-black text-justify"
+                                    v-html="postStore.suggest?.description"></h2>
+                            </div>
+                        </router-link>
                     </div>
                 </div>
                 <Loading v-else />

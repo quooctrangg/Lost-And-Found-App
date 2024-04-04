@@ -1,6 +1,7 @@
 import { WebSocketGateway, SubscribeMessage, MessageBody, WebSocketServer, OnGatewayInit, OnGatewayConnection, OnGatewayDisconnect, ConnectedSocket } from '@nestjs/websockets';
 import { Server, Socket } from 'socket.io';
 import { PrismaService } from '../prisma/prisma.service';
+import { Logger } from '@nestjs/common';
 
 @WebSocketGateway({
     cors: true
@@ -8,22 +9,25 @@ import { PrismaService } from '../prisma/prisma.service';
 export class SocketGateway implements OnGatewayInit, OnGatewayConnection, OnGatewayDisconnect {
     constructor(private readonly prismaService: PrismaService) { }
 
+    private readonly logger = new Logger(SocketGateway.name);
+
+
     @WebSocketServer() server: Server
 
     afterInit(socket: Socket) { }
 
     handleConnection(socket: Socket) {
-        console.log('connect', socket.id);
+        this.logger.log('connect ' + socket.id)
     }
 
     handleDisconnect(socket: Socket) {
-        console.log('disconnect', socket.id);
+        this.logger.log('disconnect ' + socket.id)
     }
 
     @SubscribeMessage('setup')
     hanleSetup(@ConnectedSocket() socket: Socket, @MessageBody() data: { userId: string }): void {
         this.server.in(socket.id).socketsJoin(data.userId)
-        console.log('join room: ', data.userId);
+        this.logger.log('join room: ' + data.userId)
     }
 
     @SubscribeMessage('new message')
@@ -32,7 +36,7 @@ export class SocketGateway implements OnGatewayInit, OnGatewayConnection, OnGate
             const { userRecievedId, data } = dataBody
             this.server.to(userRecievedId).emit('message recieved', data);
         } catch (error) {
-            console.log(error);
+            this.logger.error(error.message)
         }
     }
 
@@ -42,7 +46,7 @@ export class SocketGateway implements OnGatewayInit, OnGatewayConnection, OnGate
             const { userRecievedId, data } = dataBody
             this.server.to(userRecievedId).emit('image recieved', data);
         } catch (error) {
-            console.log(error);
+            this.logger.error(error.message)
         }
     }
 
@@ -68,7 +72,7 @@ export class SocketGateway implements OnGatewayInit, OnGatewayConnection, OnGate
             }
             this.server.to(room).emit('notification recieved');
         } catch (error) {
-            console.log(error);
+            this.logger.error(error.message)
         }
     }
 }

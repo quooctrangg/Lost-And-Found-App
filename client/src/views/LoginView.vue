@@ -26,7 +26,6 @@ const submitLogin = async () => {
     await authStore.login(user)
     if (authStore.err) {
         if (authStore.result.statusCode == 403) {
-            console.log(authStore.result);
             authStore.showFeedbackModal()
         }
         $toast.error(authStore.err, { position: 'top-right' })

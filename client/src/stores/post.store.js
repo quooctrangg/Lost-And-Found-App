@@ -13,6 +13,7 @@ export const usePostStore = defineStore('post', () => {
     const currentPage = ref(1)
     const key = ref('')
     const posts = ref([])
+    const suggest = ref(null)
     const isShow = reactive({
         filter: false,
         post: false,
@@ -131,6 +132,20 @@ export const usePostStore = defineStore('post', () => {
         }
     }
 
+    const suggestPost = async (option) => {
+        err.value = null
+        result.value = null
+        suggest.value = null
+        try {
+            let res = await postService.suggestPost(authStore.token, option)
+            if (res.statusCode !== 200) throw new Error(res.message)
+            result.value = res
+            suggest.value = res.data
+        } catch (error) {
+            err.value = error.message
+        }
+    }
+
     const getPostById = async (id) => {
         err.value = null
         result.value = null
@@ -147,8 +162,8 @@ export const usePostStore = defineStore('post', () => {
     }
 
     return {
-        isShow, err, result, isLoading, totalPages, currentPage, key, posts,
-        createPost, getAllPostsForAdmin, verifyPost, deletePost,
+        isShow, err, result, isLoading, totalPages, currentPage, key, posts, suggest,
+        createPost, getAllPostsForAdmin, verifyPost, deletePost, suggestPost,
         getAllPostsByUserId, getAllPostsForUser, getPostById,
         closeFilterModal, showFilterModal,
         closePostModal, showPostModal,

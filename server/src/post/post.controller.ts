@@ -56,4 +56,11 @@ export class PostController {
     getAllPostsByUserId(@GetUser() user: User, @Param('userId', ParseIntPipe) userId: number) {
         return this.postService.getAllPostsByUserId(user.id, userId)
     }
+
+    @Get('suggest')
+    @UseGuards(MyJWTGuard, RolesGuard)
+    @Role(USER_TYPES.USER)
+    suggestPost(@Query() option: { key: string, type: boolean, itemId: number, locations: number[] }) {
+        return this.postService.suggestPost(option)
+    }
 }

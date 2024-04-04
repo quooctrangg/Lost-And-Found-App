@@ -319,4 +319,51 @@ export class PostService {
             return new ResponseData<string>(null, 500, 'Lỗi dịch vụ, thử lại sau')
         }
     }
+
+    async suggestPost(option: { key: string, type: any, itemId: number, locations: number[] }) {
+        try {
+            let { key, type, itemId, locations } = option
+            const where: any = {
+                verify: 1,
+                done: {
+                    not: 1
+                },
+                isDelete: false,
+                User: {
+                    isBan: false
+                }
+            }
+            if (itemId) {
+                where.itemId = Number(itemId)
+            }
+            if (locations && locations.length) {
+                where.Location = {
+                    some: {
+                        id: {
+                            in: locations.map(id => Number(id))
+                        }
+                    }
+                }
+            }
+            if (key) {
+                where.description = {
+                    contains: key,
+                    mode: 'insensitive'
+                }
+            }
+            if (type != undefined || type != null) {
+                where.type = type == 1 ? false : true
+            }
+            const data = await this.prismaService.post.findFirst({
+                where: where,
+                include: {
+                    Image: true,
+                }
+            })
+            return new ResponseData<any>(data, 200, 'Tìm thành công bài viết')
+        } catch (error) {
+            this.logger.error(error.message)
+            return new ResponseData<string>(null, 500, 'Lỗi dịch vụ, thử lại sau')
+        }
+    }
 }

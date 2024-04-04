@@ -10,7 +10,7 @@ const userStore = useUserStore()
 
 <template>
     <div class="flex-1 mt-2 overflow-y-scroll no-scrollbar border-2 rounded-md p-2">
-        <div v-for="(conversation, index) in  conversationStore.conversations " :key="conversation.id"
+        <div v-for="(conversation, index) in  conversationStore.searchResult " :key="conversation.id"
             class="p-1 flex text-black mb-1 cursor-pointer gap-2 bg-white rounded items-center" @click="() => {
             conversationStore.activeIndex = index
             if (conversationStore.conversations[conversationStore.activeIndex].Message[0].read == false && conversationStore.conversations[conversationStore.activeIndex].Message[0].userId !== userStore.user.id) {

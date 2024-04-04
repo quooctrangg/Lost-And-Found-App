@@ -12,6 +12,7 @@ export const useConversationStore = defineStore('conversation', () => {
     const isLoading = ref(false)
     const conversations = ref([])
     const totalReadMessage = ref(0)
+    const searchResult = ref([])
 
     const fetchConversations = async () => {
         isLoading.value = true
@@ -20,6 +21,7 @@ export const useConversationStore = defineStore('conversation', () => {
             const res = await conversationService.fetchConversations(authStore.token)
             if (res.statusCode !== 200) throw new Error(res.message)
             conversations.value = res.data.result
+            searchResult.value = res.data.result
             if (res.data.totalReadMessage < 100) {
                 totalReadMessage.value = res.data.totalReadMessage
             } else {
@@ -53,5 +55,5 @@ export const useConversationStore = defineStore('conversation', () => {
         }
     }
 
-    return { activeIndex, err, result, isLoading, conversations, totalReadMessage, fetchConversations, accessConversation }
+    return { activeIndex, err, result, isLoading, conversations, totalReadMessage, searchResult, fetchConversations, accessConversation }
 })

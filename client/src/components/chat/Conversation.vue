@@ -29,8 +29,10 @@ const sendImage = async files => {
 }
 
 onUpdated(async () => {
-    await messageStore.readMessages(conversationStore.conversations[conversationStore.activeIndex].id)
-    if (conversationStore.conversations[conversationStore.activeIndex].Message[0].read == false && conversationStore.conversations[conversationStore.activeIndex].Message[0].userId !== userStore.user.id) {
+    if (conversationStore.activeIndex !== null) {
+        await messageStore.readMessages(conversationStore.conversations[conversationStore.activeIndex]?.id)
+    }
+    if (conversationStore.conversations[conversationStore.activeIndex]?.Message[0].read == false && conversationStore.conversations[conversationStore.activeIndex]?.Message[0].userId !== userStore.user.id) {
         conversationStore.conversations[conversationStore.activeIndex].Message[0].read = true
         conversationStore.totalReadMessage = conversationStore.totalReadMessage - 1
     }
@@ -38,12 +40,12 @@ onUpdated(async () => {
 
 watchEffect(async () => {
     if (conversationStore.activeIndex !== null) {
-        await messageStore.getAllMessages(conversationStore.conversations[conversationStore.activeIndex].id)
+        await messageStore.getAllMessages(conversationStore.conversations[conversationStore.activeIndex]?.id)
     }
 })
 </script>
 
-<template >
+<template>
     <div class="w-[75%] flex-1 flex flex-col bg-slate-200 rounded-lg overflow-hidden border-2 border-blue-600">
         <div v-if="conversationStore.activeIndex !== null" class="h-full flex flex-col justify-between">
             <div class="bg-white py-2 px-4 flex justify-between items-center shadow-lg">
@@ -52,8 +54,8 @@ watchEffect(async () => {
                     class="hover:underline hover:text-blue-400">
                     <h2 class="font-medium">
                         {{
-                            getSender(userStore.user, conversationStore.conversations[conversationStore.activeIndex].User)?.name
-                        }}
+            getSender(userStore.user,
+                conversationStore.conversations[conversationStore.activeIndex].User)?.name }}
                     </h2>
                 </router-link>
                 <button @click="conversationStore.activeIndex = null">
