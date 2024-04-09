@@ -1,5 +1,6 @@
 import { Injectable, Logger } from '@nestjs/common';
 import { PrismaService } from '../prisma/prisma.service';
+import { MajorService } from '../major/major.service';
 import { ForgotPasswordDto, VerifyCodeDto, CreateUserDto, BanUserDto, UpdatePasswordDto, UpdateUserDto } from './dto';
 import { PAGE_SIZE, ResponseData, USER_TYPES } from '../global';
 import { User } from '@prisma/client';
@@ -11,7 +12,7 @@ import * as argon2 from 'argon2';
 
 @Injectable()
 export class UserService {
-    constructor(private readonly prismaService: PrismaService, private readonly cloudinaryService: CloudinaryService, private readonly mailerService: MailerService) { }
+    constructor(private readonly prismaService: PrismaService, private readonly cloudinaryService: CloudinaryService, private readonly mailerService: MailerService, private readonly majorService: MajorService) { }
 
     private readonly logger = new Logger(UserService.name);
 
@@ -147,6 +148,9 @@ export class UserService {
 
     async createUsers(file: Express.Multer.File) {
         const keys = ['studentId', 'name', 'password', 'majorId']
+        const data = [];
+        const studentErr = []
+        let objects: any[]
         try {
             const workbook = new Workbook();
             await workbook.xlsx.load(file.buffer);
@@ -156,62 +160,36 @@ export class UserService {
             if (!isEqual) {
                 return new ResponseData<string>(null, 400, 'Không đúng định dạng dữ liệu')
             }
-            const data = [];
             worksheet.eachRow((row, i) => {
                 if (i !== 1) {
                     data.push(row.values);
                 }
             });
-            const filterMajorId = data.map(e => e[4])
-            const listMajorId = [...new Set(filterMajorId)] as number[]
-            const major = await this.prismaService.major.findMany({
-                where: {
-                    id: {
-                        in: data.map(e => e[4])
-                    }
-                }
-            })
-
-            if (major.length !== listMajorId.length) {
-                return new ResponseData<string>(null, 200, 'Có những id ngành không tồn tại')
-            }
-            const user = await this.prismaService.user.findMany({
-                where: {
-                    studentId: {
-                        in: data.map(e => e[1].toLowerCase())
-                    }
-                }
-            })
-            if (user.length) {
-                return new ResponseData<string>(null, 400, 'Tồn tại MSSV đã được đăng ký')
-            }
-            let objects: any[] = data.map(row => {
+            objects = data.map(row => {
                 const obj = {};
                 for (let i = 1; i < row.length; i++) {
                     obj[keys[i - 1]] = row[i];
                 }
                 return obj;
             });
-            const userErr = objects.filter((e: any) => {
-                if (e.studentId.length > 10 || String(e.password).length < 6 || ((typeof e.majorId) != 'number')) {
-                    return e
-                }
-            })
-            if (userErr.length) {
-                return new ResponseData<any>(null, 400, 'Dữ liệu người dùng không hợp lệ')
-            }
             for (let index = 0; index < objects.length; index++) {
-                const hashedPassword = await argon2.hash(String(objects[index].password))
-                await this.prismaService.user.create({
-                    data: {
-                        studentId: objects[index].studentId.toLowerCase(),
-                        name: objects[index].name,
-                        password: hashedPassword,
-                        majorId: objects[index].majorId
-                    }
-                })
+                const isStudentId = await this.isStudentId(String(objects[index].studentId).toLowerCase())
+                const isMajor = await this.majorService.isMajor(Number(objects[index].majorId))
+                if (isStudentId || !isMajor || String(objects[index].password).length < 6) {
+                    studentErr.push(objects[index])
+                } else {
+                    const hashedPassword = await argon2.hash(String(objects[index].password))
+                    await this.prismaService.user.create({
+                        data: {
+                            studentId: String(objects[index].studentId).toLowerCase(),
+                            name: String(objects[index].name),
+                            password: hashedPassword,
+                            majorId: Number(objects[index].majorId)
+                        }
+                    })
+                }
             }
-            return new ResponseData<string>(null, 200, 'Tạo tất cả tài khoản thành công')
+            return new ResponseData<any>({ studentErr }, 200, 'Tạo tài khoản thành công')
         } catch (error) {
             this.logger.error(error.message)
             return new ResponseData<string>(null, 500, 'Lỗi dịch vụ, thử lại sau')
@@ -552,6 +530,15 @@ export class UserService {
                 id: id
             }
         })
+    }
+
+    async isStudentId(studentId: string) {
+        const user = await this.prismaService.user.findFirst({
+            where: {
+                studentId: studentId
+            }
+        })
+        return user ? true : false
     }
 
     getEmail(user: User) {

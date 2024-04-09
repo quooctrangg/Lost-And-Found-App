@@ -46,7 +46,6 @@ const createUser = async () => {
     user.studentId = ''
     user.majorId = ''
     await userStore.getAllUsers({ page: userStore.currentPage, key: userStore.key, isBan: userStore.isBan, schoolId: userStore.schoolId })
-    manageStore.closeAddUserModal()
 }
 
 const onFileSelected = (e) => {
@@ -65,7 +64,6 @@ const createUsers = async () => {
     $toast.success(userStore.result.message, { position: 'top-right' })
     selectedFile.value = null
     await userStore.getAllUsers({ page: userStore.currentPage, key: userStore.key, isBan: userStore.isBan, schoolId: userStore.schoolId })
-    manageStore.closeAddUserModal()
 }
 
 watch(() => user.schoolId, async newval => {
@@ -169,7 +167,38 @@ watch(() => user.schoolId, async newval => {
             </Form>
             <div v-else>
                 <div v-if="!userStore.isLoading">
-                    <input type="file" accept=".xls, .xlsx" @change="onFileSelected">
+                    <div>
+                        <input type="file" accept=".xls, .xlsx" @change="onFileSelected">
+                    </div>
+                    <div class="mt-5" v-if="userStore.userErr.length">
+                        <div class="text-center italic text-red-500 font-semibold">
+                            Danh sách tài khoản không tạo thành công
+                        </div>
+                        <div class="max-h-[300px] overflow-y-scroll">
+                            <table class="table-auto border-collapse border border-slate-500 w-full mt-2">
+                                <thead>
+                                    <tr>
+                                        <th class="border border-slate-600 bg-blue-300 p-2">STT</th>
+                                        <th class="border border-slate-600 bg-blue-300 p-2">MSSV</th>
+                                        <th class="border border-slate-600 bg-blue-300 p-2">Họ và tên</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr v-for="(user, i) in userStore.userErr" class="even:bg-blue-100">
+                                        <td class="border border-slate-700 p-2 text-center">
+                                            {{ i + 1 }}
+                                        </td>
+                                        <td class="border border-slate-700 p-2">
+                                            {{ user.studentId }}
+                                        </td>
+                                        <td class="border border-slate-700 p-2">
+                                            {{ user.name }}
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
                 </div>
                 <div v-else>
                     <Loading />

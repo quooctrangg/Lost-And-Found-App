@@ -159,4 +159,13 @@ export class MajorService {
             return new ResponseData<string>(null, 500, 'Lỗi dịch vụ, thử lại sau')
         }
     }
+
+    async isMajor(id: number) {
+        const data = await this.prismaService.major.findUnique({
+            where: {
+                id: id
+            }
+        })
+        return data ? true : false
+    }
 }

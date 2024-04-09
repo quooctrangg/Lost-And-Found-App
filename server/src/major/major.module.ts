@@ -5,5 +5,6 @@ import { MajorController } from './major.controller';
 @Module({
     controllers: [MajorController],
     providers: [MajorService],
+    exports: [MajorService]
 })
 export class MajorModule { }
