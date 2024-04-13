@@ -190,7 +190,7 @@ onMounted(async () => {
                             </Field>
                             <ErrorMessage name="itemId" class="error" />
                             <label class="mt-2 mb-1">Vị trí</label>
-                            <div class="text-sm grid grid-cols-4 gap-2">
+                            <div class="text-sm grid grid-cols-3 md:grid-cols-4 gap-2">
                                 <label v-for="location in locationStore.locations" :key="location.id" :for="location.id"
                                     class="flex items-center gap-1">
                                     <Field name="locations" :id="location.id" type="checkbox" :value="location.id"
@@ -204,10 +204,10 @@ onMounted(async () => {
                     </div>
                     <div class="flex flex-col gap-2">
                         <label>Hình ảnh</label>
-                        <div class="grid grid-cols-5 gap-2 h-[100px]">
+                        <div class="grid grid-cols-5 gap-2 md:h-[100px]">
                             <label for="images" v-if="urls.length < 5"
-                                class="mt-2 mb-1 border-dashed border-black border-2 rounded-lg p-5 flex items-center flex-col gap-1 cursor-pointer">
-                                <i class="fa-solid fa-cloud-arrow-up text-2xl"></i>
+                                class="mt-2 mb-1 border-dashed border-black border-2 rounded-lg p-5 flex items-center flex-col gap-1 cursor-pointer text-xs md:text-base">
+                                <i class="fa-solid fa-cloud-arrow-up md:text-2xl"></i>
                                 Chọn hình ảnh
                             </label>
                             <div v-if="urls.length" v-for="(url, i) of urls"

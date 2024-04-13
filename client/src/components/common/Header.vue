@@ -1,6 +1,6 @@
 <script setup>
-import { onMounted, onUnmounted, ref, watchEffect } from 'vue';
-import { useRouter } from 'vue-router'
+import { onMounted, onUnmounted, ref, watch, watchEffect } from 'vue';
+import { useRouter, useRoute } from 'vue-router'
 import { useAuthStore } from '../../stores/auth.store'
 import { useUserStore } from '../../stores/user.store'
 import { useMessageStore } from '../../stores/message.store'
@@ -15,9 +15,11 @@ const conversationStore = useConversationStore()
 const messageStore = useMessageStore()
 const notificationStore = useNotificationStore()
 const router = useRouter()
+const route = useRoute()
 const $toast = useToast()
 
 const showNotifications = ref(false)
+const isLoginPage = ref(false)
 
 const handleClickOutside = (event) => {
     const notificationContainer = document.querySelector('.notification-container');
@@ -52,34 +54,37 @@ watchEffect(async () => {
         await conversationStore.fetchConversations()
     }
 })
+
+watch(() => route.path, (newval) => {
+    if (newval == '/login') {
+        isLoginPage.value = true
+    } else {
+        isLoginPage.value = false
+    }
+})
 </script>
 <template>
     <header class="bg-[#045D86] sticky top-0 z-50 p-1">
-        <div class="w-[80%] mx-auto flex justify-between items-center">
+        <div class="w-full lg:w-[80%] mx-auto flex justify-between items-center">
             <div class="">
                 <router-link :to="{ name: 'home' }">
                     <div class="flex items-center gap-2">
                         <img class="h-12 w-auto" src="/logo.png" alt="Logo">
-                        <p class="text-2xl break-words italic font-medium text-[#FCD360]">
+                        <p class="hidden md:block text-xl md:text-2xl break-words italic font-medium text-[#FCD360]">
                             Nơi chia sẽ đồ vật thất lạc
                         </p>
                     </div>
                 </router-link>
             </div>
-            <div class="">
+            <div v-if="!isLoginPage">
                 <div v-if="authStore.token == null" class="text-base font-medium flex gap-2 justify-end">
                     <div class="hover:bg-[#07A6F0] text-white bg-[#0798DB] p-2 rounded-md">
                         <router-link :to="{ name: 'login' }">
                             <p>Đăng nhập</p>
                         </router-link>
                     </div>
-                    <!-- <div class="hover:bg-[#07A6F0] text-white bg-[#0798DB] p-2 rounded-md">
-                        <router-link :to="{ name: 'register' }">
-                            <p>Đăng ký</p>
-                        </router-link>
-                    </div> -->
                 </div>
-                <div v-else class="flex gap-5 items-center">
+                <div v-else class="flex gap-2 lg:gap-5 items-center">
                     <router-link :to="{ name: 'home' }" class="text-2xl">
                         <div class="p-2 text-gray-100 hover:text-gray-300">
                             <i class="fa-solid fa-house"></i>
@@ -117,7 +122,7 @@ watchEffect(async () => {
                                 class="h-10 w-10 overflow-hidden rounded-full flex items-center justify-center bg-white">
                                 <img class="h-full w-full object-cover" :src="userStore.user?.image" alt="logo user">
                             </div>
-                            <p class="text-md truncate font-semibold text-[#ffffff] min-w-[150px]">
+                            <p class="text-md truncate font-semibold text-[#ffffff] min-w-[100px] md:min-w-[150px]">
                                 {{ userStore.user?.name }}
                             </p>
                         </div>
@@ -141,6 +146,15 @@ watchEffect(async () => {
                                 Đăng xuất
                             </button>
                         </div>
+                    </div>
+                </div>
+            </div>
+            <div v-else>
+                <div class="text-base font-medium flex gap-2 justify-end">
+                    <div class="hover:bg-[#07A6F0] text-white bg-[#0798DB] p-2 rounded-md">
+                        <router-link :to="{ name: 'home' }">
+                            <p>Trang chủ</p>
+                        </router-link>
                     </div>
                 </div>
             </div>

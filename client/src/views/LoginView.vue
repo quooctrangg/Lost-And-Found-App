@@ -37,11 +37,11 @@ const submitLogin = async () => {
 </script>
 
 <template>
-    <section class="bg-[#FFFFFF] h-screen w-full py-14">
-        <div class="flex items-center justify-center m-auto w-4/5 gap-3">
-            <div class="w-2/4 p-6 flex flex-col items-center justify-center gap-4">
+    <section class="bg-[#FFFFFF] w-full h-screen">
+        <div class="flex flex-col lg:flex-row items-center justify-center m-auto xl:w-4/5 gap-3">
+            <div class="w-full lg:w-2/4 p-6 flex flex-col items-center justify-center gap-4">
                 <div class="text-center">
-                    <h1 class="text-2xl font-semibold italic text-[#0068A3]">
+                    <h1 class="text-xl md:text-2xl font-semibold italic text-[#0068A3]">
                         Hệ thống hỗ trợ tìm kiếm đồ thất lạc
                     </h1>
                     <h1 class="text-lg text-[#0068A3]">cho sinh viên</h1>
@@ -49,9 +49,9 @@ const submitLogin = async () => {
                         Trường Đại học Cần Thơ
                     </h1>
                 </div>
-                <img class="w-72" src="/logo.png" alt="">
+                <img class="w-24 md:w-40 lg:w-72" src="/logo.png" alt="">
             </div>
-            <div class="w-2/4 p-6">
+            <div class="w-full lg:w-2/4 p-6">
                 <Form class="flex flex-col gap-10" @submit="submitLogin" :validation-schema="formSchemaLogin">
                     <h1 class="h1-custom italic">
                         Đăng nhập tài khoản
@@ -83,5 +83,5 @@ const submitLogin = async () => {
         </div>
     </section>
     <FeedbackModal :feedback="authStore.result?.data?.feedback" />
-    <Footer />
+    <Footer class="md:sticky md:bottom-0 lg:relative" />
 </template>

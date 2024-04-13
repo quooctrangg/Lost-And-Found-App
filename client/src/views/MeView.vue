@@ -27,13 +27,13 @@ onMounted(() => {
 </script>
 
 <template>
-    <div class="w-[80%] mx-auto min-h-[100vh]">
+    <div class="w-full p-1 lg:w-[80%] mx-auto min-h-[100vh]">
         <div class="bg-gray-50 rounded p-4 flex gap-5 shadow">
             <div class="relative" @click="userStore.showUpdateAvatarModal">
                 <img class="w-32 h-32 border-2 rounded-full object-cover hover:border-sky-300 cursor-pointer"
                     :src="userStore.user?.image" alt="logo">
                 <div
-                    class="absolute bottom-4 right-4 mb-2 mr-2 bg-gray-300 rounded-full h-6 w-6 flex justify-center items-center text-lg hover:bg-gray-50 cursor-pointer">
+                    class="hidden md:flex absolute bottom-4 right-4 mb-2 mr-2 bg-gray-300 rounded-full h-6 w-6  justify-center items-center text-lg hover:bg-gray-50 cursor-pointer">
                     <i class="fa-solid fa-camera"></i>
                 </div>
             </div>
@@ -41,23 +41,25 @@ onMounted(() => {
                 <h1 class="font-bold text-xl">
                     {{ userStore.user?.name }}
                 </h1>
-                <h2 class="text-base text-gray-600 indent-3">
+                <h2 class="text-sm md:text-base text-gray-600 indent-3">
                     MSSV: {{ userStore.user?.studentId.toUpperCase() }}
                 </h2>
-                <h2 class="text-base text-gray-600 indent-3">
+                <h2 class="text-sm md:text-base text-gray-600 indent-3">
                     Chuyên ngành: {{ userStore.user?.Major?.name }}
                 </h2>
-                <h2 class="text-base text-gray-600 indent-3">
+                <h2 class="text-sm md:text-base text-gray-600 indent-3 hidden md:block">
                     Tham gia vào ngày {{ dayjs(userStore.user?.createAt).format('DD, MMMM, YYYY') }}
                 </h2>
-                <h2 class="text-base">
+                <h2 class="text-sm md:text-base">
                     Số lượng bài viết: {{ total }}
                 </h2>
             </div>
             <div class="flex flex-col gap-1 justify-end">
                 <fwb-button @click="userStore.showUpdatePasswordModal" color="alternative">
                     <i class="fa-solid fa-key"></i>
-                    Đổi mật khẩu
+                    <span class="hidden md:block">
+                        Đổi mật khẩu
+                    </span>
                 </fwb-button>
             </div>
         </div>

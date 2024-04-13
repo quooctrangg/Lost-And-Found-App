@@ -26,7 +26,7 @@ const handleSearch = (key) => {
 </script>
 
 <template>
-    <div class="w-[25%] flex flex-col">
+    <div class="w-[25%] flex flex-col overflow-hidden">
         <Search class="border-sky-300 border" :title="`Tìm kiếm cuộc trò chuyện`" @key="(e) => handleSearch(e)" />
         <Conversations />
     </div>

@@ -17,9 +17,9 @@ const gotoPost = async (index) => {
 
 <template>
     <div
-        class="shadow-xl border overflow-hidden rounded-lg absolute w-[300px] mt-1 flex flex-col notification-container">
+        class="shadow-xl border overflow-hidden rounded-lg absolute w-[200px] lg:w-[300px] mt-1 flex flex-col notification-container">
         <div class="flex justify-between items-center bg-blue-600 p-2 px-3">
-            <h1 class=" text-white">Thông báo</h1>
+            <h1 class=" text-white text-base lg:text-lg">Thông báo</h1>
             <button @click="emit('showNotifications', false)" class="hover:text-red-500 text-white">
                 <i class="fa-solid fa-xmark"></i>
             </button>
@@ -42,7 +42,7 @@ const gotoPost = async (index) => {
                             <span v-else class="text-wrap"> đã bình luận bài viết </span>
                             <span class="font-medium text-wrap">
                                 {{ notification?.Comment?.parentId ? notification?.Comment?.parent?.content :
-                notification?.Comment?.Post?.title }}
+                                    notification?.Comment?.Post?.title }}
                             </span>.
                         </span>
                     </div>

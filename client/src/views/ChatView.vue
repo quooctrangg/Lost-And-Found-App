@@ -5,7 +5,7 @@ import Footer from '../components/common/Footer.vue';
 </script>
 
 <template>
-    <div class="w-[90%] mx-auto pt-2 flex overflow-hidden gap-2 h-[80vh]">
+    <div class="w-full p-1 lg:w-[90%] mx-auto pt-2 flex overflow-hidden gap-2 h-[80vh]">
         <SideBar />
         <Conversation />
     </div>

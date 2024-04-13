@@ -40,7 +40,7 @@ class dashboardService {
         })).data
     }
 
-    async downloadExcel(token, option) {
+    async downloadExcel(token, option, name) {
         let parameter = createQueryString(option)
         const response = (await this.api.get(`/download-excel${parameter}`, {
             headers: {
@@ -49,7 +49,7 @@ class dashboardService {
             responseType: 'blob'
         })).data
         const file = new Blob([response], { type: 'application/vnd.ms-excel' })
-        FileSaver.saveAs(file, 'Danh sach.xlsx');
+        FileSaver.saveAs(file, `Danh sách ${name}.xlsx`);
     }
 }
 

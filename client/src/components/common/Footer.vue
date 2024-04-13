@@ -2,13 +2,14 @@
 
 </script>
 <template>
-    <footer class="rounded-lg shadow border-2 bg-[#045D86] mt-5">
+    <footer class="rounded-lg shadow border-2 bg-[#045D86]">
         <div class="w-full max-w-screen-xl mx-auto p-2">
-            <div class="grid grid-cols-3">
+            <div class="grid grid-cols-2 md:grid-cols-3">
                 <a href="https://www.ctu.edu.vn/" class="flex items-center gap-2 p-2">
-                    <img src="/Asset_45logomobile.png" class="w-[80%]" alt="logo" />
+                    <img src="/Asset_45logomobile.png" class="md:w-[80%]" alt="logo" />
                 </a>
-                <ul class="col-span-2 flex items-center text-3xl font-medium text-[#f5ffff] justify-end gap-5">
+                <ul
+                    class="md:col-span-2 flex items-center text-xl md:text-3xl font-medium text-[#f5ffff] justify-end gap-5">
                     <li>
                         <a target="_blank" href="https://www.facebook.com/CTUDHCT/" class="hover:underline">
                             <i class="fa-brands fa-facebook"></i>
@@ -38,10 +39,11 @@
             </div>
             <hr class="border-gray-200 mx-auto py-4" />
             <span class="text-[#f5ffff] flex flex-col text-center">
-                <a target="_blank" href="https://yu.ctu.edu.vn/dtn.html" class="hover:underline text-lg font-semibold">
+                <a target="_blank" href="https://yu.ctu.edu.vn/dtn.html"
+                    class="hover:underline md:text-lg font-semibold">
                     © 2024 ĐOÀN THANH NIÊN - HỘI SINH VIÊN TRƯỜNG ĐẠI HỌC CẦN THƠ
                 </a>
-                <div class="text-sm flex flex-col gap-1 items-center">
+                <div class="text-xs md:text-sm flex flex-col gap-1 items-center">
                     <div>
                         <i class="fa-solid fa-location-dot"></i>
                         Khu II, đường 3/2, P. Xuân Khánh, Q. Ninh Kiều, TP. Cần Thơ.

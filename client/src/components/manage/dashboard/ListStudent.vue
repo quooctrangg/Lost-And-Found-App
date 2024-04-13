@@ -12,9 +12,10 @@ const $toast = useToast()
 const props = defineProps(['option'])
 
 const currentPage = ref(1)
-const pageSize = 20
+const pageSize = 10
 const totalPages = ref(1)
 const data = ref([])
+const sortType = ref(false)
 
 const nextPage = (page) => {
     if (page < 1) page = 1
@@ -30,6 +31,8 @@ const getListStudentRetureItemSuccessful = async (option) => {
         $toast.error(dashboardStore.err, { position: 'top-right' })
         return
     }
+    sortType.value = false
+    sortBy('day')
 }
 
 const setDate = (option) => {
@@ -49,12 +52,36 @@ const setDate = (option) => {
 }
 
 const exportExcel = async () => {
-    await dashboardStore.downloadExcel(props.option)
+    await dashboardStore.downloadExcel(props.option, setDate(props.option))
+}
+
+const sortBy = (name) => {
+    switch (name) {
+        case 'school':
+            if (sortType.value) dashboardStore.studentsList = dashboardStore.studentsList.sort((a, b) => (a.school).localeCompare(b.school))
+            else dashboardStore.studentsList = dashboardStore.studentsList.sort((a, b) => (b.school).localeCompare(a.school))
+            nextPage(currentPage.value)
+            break;
+
+        case 'major':
+            if (sortType.value) dashboardStore.studentsList = dashboardStore.studentsList.sort((a, b) => (a.major).localeCompare(b.major))
+            else dashboardStore.studentsList = dashboardStore.studentsList.sort((a, b) => (b.major).localeCompare(a.major))
+            nextPage(currentPage.value)
+            break;
+
+        case 'day':
+            if (sortType.value) dashboardStore.studentsList = dashboardStore.studentsList.sort((a, b) => (a.day).localeCompare(b.day))
+            else dashboardStore.studentsList = dashboardStore.studentsList.sort((a, b) => (b.day).localeCompare(a.day))
+            nextPage(currentPage.value)
+            break;
+    }
+    sortType.value = !sortType.value
 }
 
 watch(() => props.option, async (newval) => {
     await getListStudentRetureItemSuccessful(newval)
     currentPage.value = 1
+    totalPages.value = Math.ceil(dashboardStore.studentsList.length / pageSize)
     nextPage(currentPage.value)
 })
 
@@ -64,7 +91,7 @@ watch(() => currentPage.value, (newval) => {
 
 onMounted(async () => {
     await getListStudentRetureItemSuccessful(props.option)
-    totalPages.value = Math.ceil(dashboardStore.studentsList.length / 20)
+    totalPages.value = Math.ceil(dashboardStore.studentsList.length / pageSize)
     currentPage.value = 1
     nextPage(currentPage.value)
 })
@@ -73,7 +100,9 @@ onMounted(async () => {
 <template>
     <div class="p-2 bg-white rounded-lg shadow border-2">
         <div>
-            <h1 class="text-center font-semibold text-2xl">Danh sách các sinh viên nhặt và trả lại thành công</h1>
+            <h1 class="text-center font-semibold text-2xl">
+                Danh sách các sinh viên nhặt và trả lại thành công
+            </h1>
             <h1 class="text-center italic">
                 {{
                     setDate(props.option)
@@ -89,19 +118,36 @@ onMounted(async () => {
         <table class="table-auto border-collapse border border-slate-500 w-full mt-2">
             <thead>
                 <tr>
-                    <th class="border border-slate-600 bg-blue-300 p-2">STT</th>
-                    <th class="border border-slate-600 bg-blue-300 p-2">Người tìm thấy</th>
-                    <th class="border border-slate-600 bg-blue-300 p-2">Trường / khoa</th>
-                    <th class="border border-slate-600 bg-blue-300 p-2">Chuyên ngành</th>
-                    <th class="border border-slate-600 bg-blue-300 p-2">Người thất lạc</th>
-                    <th class="border border-slate-600 bg-blue-300 p-2">Loại đồ</th>
-                    <th class="border border-slate-600 bg-blue-300 p-2">Ngày</th>
+                    <th class="border border-slate-600 bg-blue-300 p-2">
+                        STT
+                    </th>
+                    <th class="border border-slate-600 bg-blue-300 p-2">
+                        Người tìm thấy
+                    </th>
+                    <th class="border border-slate-600 bg-blue-300 p-2 cursor-pointer" @click="sortBy('school')">
+                        Trường / khoa
+                        <i class="fa-solid fa-sort"></i>
+                    </th>
+                    <th class="border border-slate-600 bg-blue-300 p-2 cursor-pointer" @click="sortBy('major')">
+                        Chuyên ngành
+                        <i class="fa-solid fa-sort"></i>
+                    </th>
+                    <th class="border border-slate-600 bg-blue-300 p-2">
+                        Người thất lạc
+                    </th>
+                    <th class="border border-slate-600 bg-blue-300 p-2">
+                        Loại đồ
+                    </th>
+                    <th class="border border-slate-600 bg-blue-300 p-2 cursor-pointer" @click="sortBy('day')">
+                        Ngày
+                        <i class="fa-solid fa-sort"></i>
+                    </th>
                 </tr>
             </thead>
             <tbody>
                 <tr v-if="data.length" v-for="(student, i) in data" class="even:bg-blue-100">
                     <td class="border border-slate-700 p-2 text-center">
-                        {{ i + 1 }}
+                        {{ (currentPage - 1) * 10 + i + 1 }}
                     </td>
                     <td class="border border-slate-700 p-2">
                         {{ student.found }}
@@ -135,7 +181,7 @@ onMounted(async () => {
                 {{ dashboardStore.studentsList.length }}
             </h1>
         </div>
-        <div class="text-center" v-if="totalPages > 1">
+        <div class="text-center" v-if="totalPages >= 2">
             <FwbPagination v-model="currentPage" :total-pages="totalPages" :show-icons="true" :show-labels="false" />
         </div>
     </div>

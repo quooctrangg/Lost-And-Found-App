@@ -168,7 +168,7 @@ export class DashboardService {
                     end = new Date(endDate.clone().utc().format())
                     break;
             }
-            let list: { lost: string, found: string, item: string, major: string, marjoId?: number, day: Date, school: string, schoolId?: number }[] = []
+            let list: { lost: string, found: string, item: string, major: string, day: Date, school: string }[] = []
             const lostandfond = await this.prismaService.request.findMany({
                 where: {
                     status: 1,
@@ -235,20 +235,14 @@ export class DashboardService {
             })
             lostandfond.forEach(e => {
                 if (e.Post.type == true) {
-                    list.push({ found: e.Post.User.studentId, school: e.Post.User.Major.School.name, major: e.Post.User.Major.name, lost: e.User.studentId, item: e.Post.Item.name, day: e.updatedAt, marjoId: e.Post.User.Major.id, schoolId: e.Post.User.Major.schoolId })
+                    list.push({ found: e.Post.User.studentId, school: e.Post.User.Major.School.name, major: e.Post.User.Major.name, lost: e.User.studentId, item: e.Post.Item.name, day: e.updatedAt })
                 } else {
-                    list.push({ found: e.User.studentId, school: e.User.Major.School.name, major: e.User.Major.name, lost: e.Post.User.studentId, item: e.Post.Item.name, day: e.updatedAt, marjoId: e.User.Major.id, schoolId: e.User.Major.schoolId })
+                    list.push({ found: e.User.studentId, school: e.User.Major.School.name, major: e.User.Major.name, lost: e.Post.User.studentId, item: e.Post.Item.name, day: e.updatedAt })
                 }
             })
             sendProtection.forEach(e => {
-                list.push({ found: e.User.studentId, school: e.User.Major.School.name, major: e.User.Major.name, lost: '', item: e.Item.name, day: e.updatedAt, marjoId: e.User.Major.id, schoolId: e.User.Major.schoolId })
+                list.push({ found: e.User.studentId, school: e.User.Major.School.name, major: e.User.Major.name, lost: '', item: e.Item.name, day: e.updatedAt })
             })
-            list = list.sort((a, b) => {
-                if (a.schoolId < b.schoolId) return 1
-                if (a.schoolId > b.schoolId) return -1
-                return a.marjoId - b.marjoId
-            })
-            list = list.map(({ schoolId, marjoId, ...rest }) => rest)
             return new ResponseData<any>(list, 200, 'Thống kê')
         } catch (error) {
             this.logger.error(error.message)
@@ -260,7 +254,7 @@ export class DashboardService {
         let start: any
         let end: any
         try {
-            let list: { lost: string, found: string, item: string, major: string, marjoId?: number, day: string, school: string, schoolId?: number }[] = []
+            let list: { lost: string, found: string, item: string, major: string, day: string, school: string }[] = []
             let rows: any[] = []
             const { type, month, year, to, from } = option
             switch (type) {
@@ -345,20 +339,14 @@ export class DashboardService {
             })
             lostandfond.forEach(e => {
                 if (e.Post.type == true) {
-                    list.push({ found: e.Post.User.studentId, school: e.Post.User.Major.School.name, major: e.Post.User.Major.name, lost: e.User.studentId, item: e.Post.Item.name, day: moment(e.updatedAt).format('DD-MM-YYYY'), marjoId: e.Post.User.Major.id, schoolId: e.Post.User.Major.schoolId })
+                    list.push({ found: e.Post.User.studentId, school: e.Post.User.Major.School.name, major: e.Post.User.Major.name, lost: e.User.studentId, item: e.Post.Item.name, day: moment(e.updatedAt).format('DD-MM-YYYY') })
                 } else {
-                    list.push({ found: e.User.studentId, school: e.User.Major.School.name, major: e.User.Major.name, lost: e.Post.User.studentId, item: e.Post.Item.name, day: moment(e.updatedAt).format('DD-MM-YYYY'), marjoId: e.User.Major.id, schoolId: e.User.Major.schoolId })
+                    list.push({ found: e.User.studentId, school: e.User.Major.School.name, major: e.User.Major.name, lost: e.Post.User.studentId, item: e.Post.Item.name, day: moment(e.updatedAt).format('DD-MM-YYYY') })
                 }
             })
             sendProtection.forEach(e => {
-                list.push({ found: e.User.studentId, school: e.User.Major.School.name, major: e.User.Major.name, lost: '', item: e.Item.name, day: moment(e.updatedAt).format('DD-MM-YYYY'), marjoId: e.User.Major.id, schoolId: e.User.Major.schoolId })
+                list.push({ found: e.User.studentId, school: e.User.Major.School.name, major: e.User.Major.name, lost: '', item: e.Item.name, day: moment(e.updatedAt).format('DD-MM-YYYY') })
             })
-            list = list.sort((a, b) => {
-                if (a.schoolId < b.schoolId) return 1
-                if (a.schoolId > b.schoolId) return -1
-                return a.marjoId - b.marjoId
-            })
-            list = list.map(({ schoolId, marjoId, ...rest }) => rest)
             list.forEach(doc => {
                 rows.push(Object.values(doc))
             })

@@ -105,7 +105,7 @@ watchEffect(async () => {
                 <i v-if="!isSpeaking" class="fa-solid fa-microphone"></i>
                 <i v-else class="fa-solid fa-stop"></i>
             </button>
-            <button class="bg-blue-600 hover:bg-blue-700 p-2 text-white font-medium" @click="submitSearch">
+            <button class="bg-blue-600 hover:bg-blue-700 p-2 text-white font-medium text-sm" @click="submitSearch">
                 Tìm kiếm
             </button>
         </label>

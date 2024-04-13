@@ -10,14 +10,14 @@ const userStore = useUserStore()
 
 <template>
     <div class="flex-1 mt-2 overflow-y-scroll no-scrollbar border-2 rounded-md p-2">
-        <div v-for="(conversation, index) in  conversationStore.searchResult " :key="conversation.id"
-            class="p-1 flex text-black mb-1 cursor-pointer gap-2 bg-white rounded items-center" @click="() => {
-            conversationStore.activeIndex = index
-            if (conversationStore.conversations[conversationStore.activeIndex].Message[0].read == false && conversationStore.conversations[conversationStore.activeIndex].Message[0].userId !== userStore.user.id) {
-                conversationStore.conversations[conversationStore.activeIndex].Message[0].read = true
-                conversationStore.totalReadMessage = conversationStore.totalReadMessage - 1
-            }
-        }" :class="conversationStore.activeIndex == index ? ' border-2 border-blue-600 ' : ' border-b-[1px]'">
+        <div v-for="(conversation, index) in conversationStore.searchResult " :key="conversation.id"
+            class="p-1 flex text-black mb-1 cursor-pointer gap-2 bg-white rounded items-center overflow-hidden" @click="() => {
+                conversationStore.activeIndex = index
+                if (conversationStore.conversations[conversationStore.activeIndex].Message[0].read == false && conversationStore.conversations[conversationStore.activeIndex].Message[0].userId !== userStore.user.id) {
+                    conversationStore.conversations[conversationStore.activeIndex].Message[0].read = true
+                    conversationStore.totalReadMessage = conversationStore.totalReadMessage - 1
+                }
+            }" :class="conversationStore.activeIndex == index ? ' border-2 border-blue-600 ' : ' border-b-[1px]'">
             <div class="h-[45px] w-[45px] rounded-full overflow-hidden border shrink-0">
                 <img alt="avatar" class="h-full w-full" :src="getSender(userStore.user, conversation.User)?.image">
             </div>
@@ -36,10 +36,10 @@ const userStore = useUserStore()
                         {{ userStore.user.id === conversation.Message[0].userId ? 'Bạn: ' : '' }}
                         {{ conversation.Message[0].isImage ? '[Hình ảnh]' : conversation.Message[0].content }}
                     </div>
-                    <div class="text-xs">
+                    <div class="text-xs hidden lg:block">
                         {{ dayjs().diff(dayjs(conversation.Message[0].createdAt), 'day') > 0 ?
-            dayjs(conversation.Message[0].createdAt).format('L') :
-            dayjs(conversation.Message[0].createdAt).fromNow() }}
+                            dayjs(conversation.Message[0].createdAt).format('L') :
+                            dayjs(conversation.Message[0].createdAt).fromNow() }}
                     </div>
                 </div>
             </div>

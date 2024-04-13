@@ -69,8 +69,8 @@ export const useDashboardtore = defineStore('dashboard', () => {
         }
     }
 
-    const downloadExcel = async option => {
-        return await dashboardService.downloadExcel(authStore.token, option)
+    const downloadExcel = async (option, name) => {
+        return await dashboardService.downloadExcel(authStore.token, option, name)
     }
 
     return { err, result, isLoading, studentsList, statistical, chart, getStatistical, getChart, getListStudentRetureItemSuccessful, downloadExcel }

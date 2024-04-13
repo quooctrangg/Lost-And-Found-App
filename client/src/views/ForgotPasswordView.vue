@@ -6,6 +6,7 @@ import { useToast } from 'vue-toast-notification'
 import { useUserStore } from '../stores/user.store'
 import { useRouter } from 'vue-router'
 import { ref } from "vue";
+import Footer from "../components/common/Footer.vue";
 
 const $toast = useToast()
 const userStore = useUserStore()
@@ -62,8 +63,8 @@ const btnSendCode = async () => {
 </script>
 
 <template>
-    <section class="bg-slate-100 h-screen w-screen flex items-center">
-        <div class="flex items-center justify-center m-auto w-[30%]">
+    <section class="bg-slate-100 h-screen w-full flex items-center">
+        <div class="flex items-center justify-center m-auto md:w-[60%] lg:w-[30%]">
             <div class="w-full shadow p-6 bg-white rounded-lg">
                 <h1 class="h1-custom italic">
                     Quên mật khẩu
@@ -101,15 +102,16 @@ const btnSendCode = async () => {
                             <Field type="number" name="code" id="code" class="input-custom col-span-2"
                                 placeholder="XXXXXX" v-model="user.code" />
                             <button type="button" @click="async () => { await btnSendCode() }"
-                                v-if="!userStore.isLoading && timeout == false" class="grow shrink-0 btn-submit">
+                                v-if="!userStore.isLoading && timeout == false"
+                                class="grow shrink-0 bg-blue-600 rounded-lg text-white font-bold hover:bg-blue-700">
                                 Lấy mã
                             </button>
                             <button v-else-if="!userStore.isLoading && timeout == true" type="button"
-                                class="w-full flex justify-center items-center cursor-not-allowed btn-submit">
+                                class="w-full flex justify-center items-center cursor-not-allowed bg-blue-600 rounded-lg text-white font-bold hover:bg-blue-700">
                                 {{ seconds }}s
                             </button>
                             <button v-else type="button"
-                                class="w-full flex justify-center items-center cursor-not-allowed btn-submit">
+                                class="w-full flex justify-center items-center cursor-not-allowed bg-blue-600 rounded-lg text-white font-bold hover:bg-blue-700">
                                 <div class="custom-loader"></div>
                             </button>
                         </div>
@@ -124,6 +126,7 @@ const btnSendCode = async () => {
             </div>
         </div>
     </section>
+    <Footer />
 </template>
 
 <style scoped>

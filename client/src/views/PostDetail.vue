@@ -64,8 +64,8 @@ onMounted(async () => {
 </script>
 
 <template>
-    <div class="w-[80%] mx-auto flex mt-2 justify-center gap-2">
-        <div class="w-[70%]">
+    <div class="w-full p-1 lg:p-0 lg:w-[80%] mx-auto flex mt-2 justify-center gap-2 h-screen">
+        <div class="w-full md:w-[70%]">
             <div v-if="!postStore.isLoading" class="bg-white rounded-md p-4 shadow border-2">
                 <div class="mb-3 grid grid-cols-3">
                     <div class="cursor-pointer hover:text-red-500 p-1" @click="goBack">
@@ -124,7 +124,7 @@ onMounted(async () => {
                                 <span class="text-xs italic">
                                     <i class=" fa-regular fa-clock"></i>
                                     {{ dayjs().diff(dayjs(post?.updatedAt), 'day') > 0
-                ? dayjs(post?.updatedAt).format('LT L') : dayjs(post?.updatedAt).fromNow() }}
+                                        ? dayjs(post?.updatedAt).format('LT L') : dayjs(post?.updatedAt).fromNow() }}
                                 </span>
                             </div>
                             <div v-if="userStore?.user.id !== post?.User?.id"
@@ -158,7 +158,9 @@ onMounted(async () => {
                                 class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded"
                                 @click="postStore.showRequestModal">
                                 <i class="fa-regular fa-paper-plane mr-1"></i>
-                                {{ post?.type == true ? `Nhận lại đồ vật` : 'Trả lại đồ vật' }}
+                                <span class="hidden md:block">
+                                    {{ post?.type == true ? `Nhận lại đồ vật` : 'Trả lại đồ vật' }}
+                                </span>
                             </button>
                         </div>
                     </div>
@@ -182,11 +184,11 @@ onMounted(async () => {
             <div v-else class="h-screen">
                 <Loading />
             </div>
-            <div class="mt-2" v-if="post?.verify === 1">
+            <div class="my-2" v-if="post?.verify === 1">
                 <Comments :postId="route.params.id" />
             </div>
         </div>
-        <div class="w-[30%]" v-if="userStore?.user.id !== post?.User?.id">
+        <div class="w-[30%] hidden md:block" v-if="userStore?.user.id !== post?.User?.id">
             <div class="bg-white rounded-md p-2 shadow">
                 <SuggestCard />
             </div>

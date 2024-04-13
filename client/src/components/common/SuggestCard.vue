@@ -15,7 +15,7 @@ const getSuggest = async () => {
 }
 
 watchEffect(async () => {
-    if (authStore.token != '') {
+    if (authStore.token != null) {
         await getSuggest()
     }
 })
