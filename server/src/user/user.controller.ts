@@ -21,7 +21,7 @@ export class UserController {
     @Get()
     @UseGuards(MyJWTGuard, RolesGuard)
     @Roles(USER_TYPES.ADMIN)
-    getAllUser(@Query() option: { page: number, key: string, isBan: string, schoolId: number, majorId: number }) {
+    getAllUser(@Query() option: { page: number, key: string, isBan: string, schoolId: number, majorId: number, type: number }) {
         return this.userService.getAllUser(option)
     }
 

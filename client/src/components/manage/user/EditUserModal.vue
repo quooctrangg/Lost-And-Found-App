@@ -22,7 +22,8 @@ const user = reactive({
     name: '',
     password: '',
     schoolId: '',
-    majorId: ''
+    majorId: '',
+    type: ''
 })
 const formSchemaUser = yup.object().shape({
     name: yup.string().required("Tên phải có giá trị.").min(1, 'Tên phải ít nhất 1 ký tự.').max(50, "Tên có nhiều nhất 50 ký tự."),
@@ -45,7 +46,7 @@ const removeImage = () => {
 
 const editUser = async () => {
     const data = new FormData()
-    if (!selectedFile.value && user.password == '' && user.schoolId === props.user.schoolId && user.name == props.user.name) return
+    if (!selectedFile.value && user.password == '' && user.schoolId === props.user.schoolId && user.name == props.user.name && user.type == props.user.type) return
     if (selectedFile.value) {
         data.append('image', selectedFile.value)
     }
@@ -58,6 +59,9 @@ const editUser = async () => {
     if (user.majorId !== props.user.majorId) {
         data.append('majorId', user.majorId)
     }
+    if (user.type !== props.user.type) {
+        data.append('type', user.type)
+    }
     await userStore.updateUser(data, props.user.id)
     if (userStore.err) {
         $toast.error(userStore.err, { position: 'top-right' })
@@ -68,6 +72,7 @@ const editUser = async () => {
     user.password = ''
     user.schoolId = ''
     user.majorId = ''
+    user.type = ''
     selectedFile.value = null
     url.value = null
     await userStore.getAllUsers({ page: userStore.currentPage, key: userStore.key, isBan: userStore.isBan, majorId: userStore.majorId })
@@ -88,6 +93,7 @@ watchEffect(async () => {
         user.name = props.user.name
         user.schoolId = props.user?.Major?.schoolId
         user.majorId = props.user?.Major?.id
+        user.type = props.user?.type
     }
 })
 </script>
@@ -145,7 +151,7 @@ watchEffect(async () => {
                         </Field>
                         <ErrorMessage name="schoolId" class="error" />
                     </div>
-                    <div>
+                    <div class="mt-4">
                         <label for="majorId" class="label-custom">
                             Chuyên ngành:
                         </label>
@@ -157,6 +163,16 @@ watchEffect(async () => {
                             </option>
                         </Field>
                         <ErrorMessage name="majorId" class="error" />
+                    </div>
+                    <div class="mt-4">
+                        <label for="type" class="label-custom">
+                            Quyền:
+                        </label>
+                        <Field as="select" name="type" id="type" class="input-custom" v-model="user.type">
+                            <option :value="2">Người dùng</option>
+                            <option :value="1">Quản lý bài viết</option>
+                        </Field>
+                        <ErrorMessage name="type" class="error" />
                     </div>
                     <div class="mt-4">
                         <label for="password" class="label-custom">

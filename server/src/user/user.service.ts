@@ -49,12 +49,14 @@ export class UserService {
         }
     }
 
-    async getAllUser(option: { page: number, key: string, isBan: string, schoolId: number, majorId: number }) {
+    async getAllUser(option: { page: number, key: string, isBan: string, schoolId: number, majorId: number, type: number }) {
         const pageSize = PAGE_SIZE.PAGE_USER
         try {
-            let { key, page, isBan, schoolId, majorId } = option
+            let { key, page, isBan, schoolId, majorId, type } = option
             let whereCondition: any = {
-                type: USER_TYPES.USER
+                type: {
+                    not: USER_TYPES.ADMIN
+                }
             }
             if (key) {
                 whereCondition.OR = [{
@@ -84,6 +86,9 @@ export class UserService {
             if (isBan !== undefined && isBan !== null) {
                 whereCondition.isBan = isBan == 'true' ? true : false
             }
+            if (type && Number(type) !== 0) {
+                whereCondition.type = Number(type)
+            }
             const totalCount = await this.prismaService.user.count({
                 where: whereCondition,
             })
@@ -105,7 +110,8 @@ export class UserService {
                         include: {
                             School: true
                         }
-                    }
+                    },
+                    type: true
                 },
                 orderBy: {
                     id: 'asc'
@@ -113,7 +119,7 @@ export class UserService {
                 skip: next,
                 take: pageSize
             })
-            return new ResponseData<any>({ data, totalPages }, 200, 'Tìm thành công các tài khoản')
+            return new ResponseData<any>({ data, totalPages, totalCount }, 200, 'Tìm thành công các tài khoản')
         } catch (error) {
             this.logger.error(error.message)
             return new ResponseData<string>(null, 500, 'Lỗi dịch vụ, thử lại sau')

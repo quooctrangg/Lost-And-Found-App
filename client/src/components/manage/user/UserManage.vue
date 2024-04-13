@@ -33,7 +33,7 @@ const banUser = async (user, feedback, time) => {
             return
         }
         $toast.success(userStore.result.message, { position: 'top-right' })
-        await userStore.getAllUsers({ page: userStore.currentPage, key: userStore.key, isBan: userStore.isBan, schoolId: userStore.schoolId })
+        await userStore.getAllUsers({ page: userStore.currentPage, key: userStore.key, isBan: userStore.isBan, schoolId: userStore.schoolId, type: userStore.type })
         manageStore.closeFeedbackModal()
     }
 }
@@ -47,12 +47,12 @@ const unBanUser = async (id) => {
             return
         }
         $toast.success(userStore.result.message, { position: 'top-right' })
-        await userStore.getAllUsers({ page: userStore.currentPage, key: userStore.key, isBan: userStore.isBan, schoolId: userStore.schoolId })
+        await userStore.getAllUsers({ page: userStore.currentPage, key: userStore.key, isBan: userStore.isBan, schoolId: userStore.schoolId, type: userStore.type })
     }
 }
 
 watchEffect(async () => {
-    await userStore.getAllUsers({ page: userStore.currentPage, key: userStore.key, isBan: userStore.isBan, schoolId: userStore.schoolId, majorId: userStore.majorId })
+    await userStore.getAllUsers({ page: userStore.currentPage, key: userStore.key, isBan: userStore.isBan, schoolId: userStore.schoolId, majorId: userStore.majorId, type: userStore.type })
 })
 
 watch(() => userStore.schoolId, async newval => {
@@ -81,18 +81,31 @@ onMounted(async () => {
         <div class="w-full">
             <div class="flex items-center justify-between w-full gap-3">
                 <div class="flex-1 flex gap-5 justify-between items-center">
-                    <div>
+                    <div class="flex flex-col gap-2">
                         <div class="border border-black rounded-xl">
                             <Seach :title="'Nhập tên hoặc mssv'" @key="(e) => { userStore.key = e }" />
                         </div>
+                        <div class="text-red-600">
+                            Tổng cộng: {{ userStore.totalCount }} tài khoản
+                        </div>
                     </div>
-                    <div class="flex gap-1 items-center">
-                        <label for="isban">Trạng thái: </label>
-                        <select name="" id="isban" class="rounded-xl p-1" v-model="userStore.isBan">
-                            <option value="null">Tất cả</option>
-                            <option value="false">Hoạt động</option>
-                            <option value="true">Khóa</option>
-                        </select>
+                    <div class="flex flex-col gap-2">
+                        <div class="flex gap-1 items-center">
+                            <label for="isban">Trạng thái: </label>
+                            <select name="" id="isban" class="rounded-xl p-1" v-model="userStore.isBan">
+                                <option value="null">Tất cả</option>
+                                <option value="false">Hoạt động</option>
+                                <option value="true">Khóa</option>
+                            </select>
+                        </div>
+                        <div class="flex gap-1 items-center">
+                            <label for="isban">Quyền: </label>
+                            <select name="" id="isban" class="rounded-xl p-1" v-model="userStore.type">
+                                <option value="null">Tất cả</option>
+                                <option :value="2">Người dùng</option>
+                                <option :value="1">Quản lý bài viết</option>
+                            </select>
+                        </div>
                     </div>
                     <div class="flex flex-col gap-2">
                         <div class="flex items-center gap-1">

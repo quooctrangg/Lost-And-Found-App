@@ -13,10 +13,12 @@ export const useUserStore = defineStore('user', () => {
     const result = ref(null)
     const totalPages = ref(1)
     const currentPage = ref(1)
+    const totalCount = ref(0)
     const key = ref('')
     const isBan = ref(null)
     const majorId = ref(null)
     const schoolId = ref(null)
+    const type = ref(null)
     const isShow = reactive({
         updatePassword: false,
         updateAvatar: false,
@@ -104,6 +106,7 @@ export const useUserStore = defineStore('user', () => {
             result.value = res
             users.value = res.data.data
             totalPages.value = res.data.totalPages
+            totalCount.value = res.data.totalCount
             if (currentPage.value > totalPages.value) currentPage.value = totalPages.value
         } catch (error) {
             err.value = error.message
@@ -220,7 +223,7 @@ export const useUserStore = defineStore('user', () => {
     }
 
     return {
-        isShow, user, err, result, isLoading, users, totalPages, isLoadingUpdate, isLoadingFeedback, userErr,
+        isShow, user, err, result, isLoading, users, totalPages, isLoadingUpdate, isLoadingFeedback, userErr, type, totalCount,
         currentPage, key, isBan, majorId, schoolId, getMe, updateAvatar, getProfileUser,
         updatePassword, getAllUsers, createUser, createUsers,
         banUser, unBanUser, updateUser, forgotPassword, sendVerifyCode,
