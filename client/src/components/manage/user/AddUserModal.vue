@@ -170,8 +170,17 @@ watch(() => user.schoolId, async newval => {
                     <div>
                         <input type="file" accept=".xls, .xlsx" @change="onFileSelected">
                     </div>
-                    <div class="mt-5" v-if="userStore.userErr.length">
-                        <div class="text-center italic text-red-500 font-semibold">
+                    <div class="mt-5"
+                        v-if="userStore.statusCreateUsers.totalSuccess + userStore.statusCreateUsers.totalError > 0">
+                        <div>
+                            <div class="text-green-600">
+                                Thành công: {{ userStore.statusCreateUsers.totalSuccess }} tài khoản.
+                            </div>
+                            <div class="text-red-600">
+                                Thất bại: {{ userStore.statusCreateUsers.totalError }} tài khoản.
+                            </div>
+                        </div>
+                        <div class="text-center italic text-red-500 font-semibold mt-3">
                             Danh sách tài khoản không tạo thành công
                         </div>
                         <div class="max-h-[300px] overflow-y-scroll">
@@ -184,7 +193,8 @@ watch(() => user.schoolId, async newval => {
                                     </tr>
                                 </thead>
                                 <tbody>
-                                    <tr v-for="(user, i) in userStore.userErr" class="even:bg-blue-100">
+                                    <tr v-for="(user, i) in userStore.statusCreateUsers.userError"
+                                        class="even:bg-blue-100">
                                         <td class="border border-slate-700 p-2 text-center">
                                             {{ i + 1 }}
                                         </td>

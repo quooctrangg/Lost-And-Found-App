@@ -11,6 +11,7 @@ export const usePostStore = defineStore('post', () => {
     const isLoading = ref(false)
     const totalPages = ref(1)
     const currentPage = ref(1)
+    const totalCount = ref(0)
     const key = ref('')
     const posts = ref([])
     const suggest = ref(null)
@@ -59,6 +60,7 @@ export const usePostStore = defineStore('post', () => {
             result.value = res
             totalPages.value = res.data.totalPages
             posts.value = res.data.data
+            totalCount.value = res.data.totalCount
             if (currentPage.value > totalPages.value) currentPage.value = totalPages.value
         } catch (error) {
             err.value = error.message
@@ -162,7 +164,7 @@ export const usePostStore = defineStore('post', () => {
     }
 
     return {
-        isShow, err, result, isLoading, totalPages, currentPage, key, posts, suggest,
+        isShow, err, result, isLoading, totalPages, currentPage, key, posts, suggest, totalCount,
         createPost, getAllPostsForAdmin, verifyPost, deletePost, suggestPost,
         getAllPostsByUserId, getAllPostsForUser, getPostById,
         closeFilterModal, showFilterModal,

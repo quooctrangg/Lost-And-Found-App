@@ -12,6 +12,7 @@ export const useMajorStore = defineStore('major', () => {
     const majors = ref([])
     const totalPages = ref(1)
     const currentPage = ref(1)
+    const totalCount = ref(0)
     const key = ref('')
     const schoolId = ref(null)
 
@@ -25,6 +26,7 @@ export const useMajorStore = defineStore('major', () => {
             result.value = res
             majors.value = res.data.data
             totalPages.value = res.data.totalPages
+            totalCount.value = res.data.totalCount
             if (currentPage.value > totalPages.value) currentPage.value = totalPages.value
         } catch (error) {
             err.value = error.message
@@ -94,5 +96,5 @@ export const useMajorStore = defineStore('major', () => {
         }
     }
 
-    return { err, result, isLoading, majors, totalPages, currentPage, key, schoolId, getAlls, getAllsBySchoolId, create, updateMajor, deleteMajor }
+    return { err, result, isLoading, majors, totalPages, currentPage, key, schoolId, totalCount, getAlls, getAllsBySchoolId, create, updateMajor, deleteMajor }
 })

@@ -12,6 +12,7 @@ export const useLocationStore = defineStore('location', () => {
     const locations = ref(null)
     const totalPages = ref(1)
     const currentPage = ref(1)
+    const totalCount = ref(0)
     const key = ref('')
 
     const getLocation = async (option) => {
@@ -24,6 +25,7 @@ export const useLocationStore = defineStore('location', () => {
             result.value = res
             locations.value = res.data.data
             totalPages.value = res.data.totalPages
+            totalCount.value = res.data.totalCount
             if (currentPage.value > totalPages.value) currentPage.value = totalPages.value
         } catch (error) {
             err.value = error.message
@@ -77,5 +79,5 @@ export const useLocationStore = defineStore('location', () => {
         }
     }
 
-    return { err, result, isLoading, locations, totalPages, currentPage, key, getLocation, createLocation, updateLocation, deleteLocation }
+    return { err, result, isLoading, locations, totalPages, currentPage, key, totalCount, getLocation, createLocation, updateLocation, deleteLocation }
 })

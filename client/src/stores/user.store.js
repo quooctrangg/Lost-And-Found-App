@@ -8,7 +8,6 @@ export const useUserStore = defineStore('user', () => {
 
     const user = ref(null)
     const users = ref(null)
-    const userErr = ref([])
     const err = ref(null)
     const result = ref(null)
     const totalPages = ref(1)
@@ -26,6 +25,11 @@ export const useUserStore = defineStore('user', () => {
     const isLoading = ref(false)
     const isLoadingUpdate = ref(false)
     const isLoadingFeedback = ref(false)
+    const statusCreateUsers = reactive({
+        userError: [],
+        totalSuccess: 0,
+        totalError: 0
+    })
 
     const closeUpdatePasswordModal = () => { isShow.updatePassword = false }
 
@@ -134,12 +138,13 @@ export const useUserStore = defineStore('user', () => {
         err.value = null
         result.value = null
         isLoading.value = true
-        userErr.value = []
         try {
             let res = await userService.createUsers(authStore.token, data)
             if (res.statusCode !== 200) throw new Error(res.message)
             result.value = res
-            userErr.value = res.data.studentErr
+            statusCreateUsers.userError = res.data.userError
+            statusCreateUsers.totalSuccess = res.data.totalSuccess
+            statusCreateUsers.totalError = res.data.totalError
         } catch (error) {
             err.value = error.message
         } finally {
@@ -223,7 +228,7 @@ export const useUserStore = defineStore('user', () => {
     }
 
     return {
-        isShow, user, err, result, isLoading, users, totalPages, isLoadingUpdate, isLoadingFeedback, userErr, type, totalCount,
+        isShow, user, err, result, isLoading, users, totalPages, isLoadingUpdate, isLoadingFeedback, statusCreateUsers, type, totalCount,
         currentPage, key, isBan, majorId, schoolId, getMe, updateAvatar, getProfileUser,
         updatePassword, getAllUsers, createUser, createUsers,
         banUser, unBanUser, updateUser, forgotPassword, sendVerifyCode,

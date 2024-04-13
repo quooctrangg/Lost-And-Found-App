@@ -46,12 +46,12 @@ onMounted(async () => {
     <div class="flex flex-col gap-5">
         <div class="w-full">
             <div class="flex items-center justify-between w-full">
-                <div class="flex gap-5">
+                <div class="flex gap-5 items-center">
                     <div class="border border-black rounded-xl">
                         <Seach :title="'Tìm kiếm địa điểm'" @key="(e) => { locationStore.key = e }" />
                     </div>
-                    <div class="flex gap-1 items-center">
-
+                    <div class="text-red-600">
+                        Tổng cộng: {{ locationStore.totalCount }} vị trí.
                     </div>
                 </div>
                 <button class="p-2 text-blue-500 rounded font-medium hover:text-blue-400 text-2xl"
@@ -91,9 +91,9 @@ onMounted(async () => {
                         <td class="w-[20%]">
                             <div class="flex gap-2 items-center justify-center">
                                 <button class="p-2 text-yellow-300 hover:text-yellow-200 text-2xl" @click="() => {
-                            manageStore.showEditLocationModal()
-                            currentLocation = location
-                        }">
+                                    manageStore.showEditLocationModal()
+                                    currentLocation = location
+                                }">
                                     <i class="fa-solid fa-pen"></i>
                                 </button>
                                 <button class="p-2 text-red-500 hover:text-red-400 text-2xl"

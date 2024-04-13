@@ -155,7 +155,7 @@ export class UserService {
     async createUsers(file: Express.Multer.File) {
         const keys = ['studentId', 'name', 'password', 'majorId']
         const data = [];
-        const studentErr = []
+        const userError = []
         let objects: any[]
         try {
             const workbook = new Workbook();
@@ -182,7 +182,7 @@ export class UserService {
                 const isStudentId = await this.isStudentId(String(objects[index].studentId).toLowerCase())
                 const isMajor = await this.majorService.isMajor(Number(objects[index].majorId))
                 if (isStudentId || !isMajor || String(objects[index].password).length < 6) {
-                    studentErr.push(objects[index])
+                    userError.push(objects[index])
                 } else {
                     const hashedPassword = await argon2.hash(String(objects[index].password))
                     await this.prismaService.user.create({
@@ -195,7 +195,7 @@ export class UserService {
                     })
                 }
             }
-            return new ResponseData<any>({ studentErr }, 200, 'Tạo tài khoản thành công')
+            return new ResponseData<any>({ userError, totalSuccess: objects.length - userError.length, totalError: userError.length }, 200, 'Tạo tài khoản thành công')
         } catch (error) {
             this.logger.error(error.message)
             return new ResponseData<string>(null, 500, 'Lỗi dịch vụ, thử lại sau')

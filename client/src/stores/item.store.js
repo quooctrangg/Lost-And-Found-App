@@ -12,6 +12,7 @@ export const useItemStore = defineStore('item', () => {
     const items = ref(null)
     const totalPages = ref(1)
     const currentPage = ref(1)
+    const totalCount = ref(0)
     const key = ref('')
 
     const getItem = async (option) => {
@@ -24,6 +25,7 @@ export const useItemStore = defineStore('item', () => {
             result.value = res
             items.value = res.data.data
             totalPages.value = res.data.totalPages
+            totalCount.value = res.data.totalCount
             if (currentPage.value > totalPages.value) currentPage.value = totalPages.value
         } catch (error) {
             err.value = error.message
@@ -77,5 +79,5 @@ export const useItemStore = defineStore('item', () => {
         }
     }
 
-    return { err, result, isLoading, items, totalPages, currentPage, key, getItem, createItem, updateItem, deleteItem }
+    return { err, result, isLoading, items, totalPages, currentPage, key, totalCount, getItem, createItem, updateItem, deleteItem }
 })

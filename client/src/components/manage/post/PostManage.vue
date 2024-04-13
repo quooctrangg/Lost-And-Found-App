@@ -74,7 +74,7 @@ onMounted(async () => {
     <div class="flex flex-col gap-5">
         <div class="w-full">
             <div class="flex items-center justify-between w-full">
-                <div class="flex gap-5">
+                <div class="flex gap-5 items-center justify-between w-full">
                     <div class="border border-black rounded-xl">
                         <Seach :title="'Tìm kiếm bài viết'" @key="(e) => { key = e }" />
                     </div>
@@ -86,6 +86,9 @@ onMounted(async () => {
                             <option :value="-1">Từ chối</option>
                             <option :value="0">Chờ duyệt</option>
                         </select>
+                    </div>
+                    <div class="text-red-600">
+                        Tổng cộng: {{ postStore.totalCount }} bài viết.
                     </div>
                 </div>
             </div>
@@ -144,18 +147,18 @@ onMounted(async () => {
                         <td v-if="post.verify !== -1">
                             <div class="" v-if="post.verify == 0">
                                 <button class="p-2 text-red-500 hover:text-red-300 text-2xl" @click="() => {
-                            manageStore.showRefuseModal()
-                            currentPostId = post.id
-                        }">
+                                    manageStore.showRefuseModal()
+                                    currentPostId = post.id
+                                }">
                                     <i class="fa-solid fa-ban"></i>
                                 </button>
                             </div>
                         </td>
                         <td colspan="2" v-if="post.verify == -1" class="">
                             <div class="text-center text-2xl text-orange-500 cursor-pointer" @click="() => {
-                            currentFeedback = post.feedback
-                            showHistory()
-                        }">
+                                currentFeedback = post.feedback
+                                showHistory()
+                            }">
                                 <i class="fa-regular fa-eye"></i>
                             </div>
                         </td>
@@ -188,9 +191,9 @@ onMounted(async () => {
                 :show-labels="false" />
         </div>
         <RefuseModal @submitFeedback="async (e) => {
-                            await verifyPost(currentPostId, { verify: -1, feedback: e })
-                            manageStore.closeRefuseModal()
-                        }" />
+            await verifyPost(currentPostId, { verify: -1, feedback: e })
+            manageStore.closeRefuseModal()
+        }" />
         <HistoryModal :isShow="isShow" :currentFeedback="currentFeedback" @closeHistory="closeHistory" />
     </div>
 </template>
