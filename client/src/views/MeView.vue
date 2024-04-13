@@ -57,7 +57,7 @@ onMounted(() => {
             <div class="flex flex-col gap-1 justify-end">
                 <fwb-button @click="userStore.showUpdatePasswordModal" color="alternative">
                     <i class="fa-solid fa-key"></i>
-                    <span class="hidden md:block">
+                    <span class="hidden md:inline">
                         Đổi mật khẩu
                     </span>
                 </fwb-button>
@@ -86,7 +86,6 @@ onMounted(() => {
     </div>
     <Footer class="mt-5" />
     <UpdatePassword />
-    <!-- <UpdateProfileModal /> -->
     <UpdateAvatarModal />
     <ScrollToTop />
 </template>

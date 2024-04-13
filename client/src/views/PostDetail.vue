@@ -64,7 +64,7 @@ onMounted(async () => {
 </script>
 
 <template>
-    <div class="w-full p-1 lg:p-0 lg:w-[80%] mx-auto flex mt-2 justify-center gap-2 h-screen">
+    <div class="w-full p-1 lg:p-0 lg:w-[80%] mx-auto flex mt-2 justify-center gap-2">
         <div class="w-full md:w-[70%]">
             <div v-if="!postStore.isLoading" class="bg-white rounded-md p-4 shadow border-2">
                 <div class="mb-3 grid grid-cols-3">
@@ -158,7 +158,7 @@ onMounted(async () => {
                                 class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded"
                                 @click="postStore.showRequestModal">
                                 <i class="fa-regular fa-paper-plane mr-1"></i>
-                                <span class="hidden md:block">
+                                <span class="hidden md:inline">
                                     {{ post?.type == true ? `Nhận lại đồ vật` : 'Trả lại đồ vật' }}
                                 </span>
                             </button>

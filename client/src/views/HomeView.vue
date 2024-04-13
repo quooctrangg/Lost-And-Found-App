@@ -77,7 +77,7 @@ onUnmounted(() => {
                 class="px-3 py-2 bg-blue-500 rounded-xl hover:bg-blue-700 text-white font-semibold"
                 @click="postStore.showPostModal">
                 <i class="fa-solid fa-plus"></i>
-                <span class="hidden md:block">
+                <span class="hidden md:inline">
                     Đăng bài
                 </span>
             </button>

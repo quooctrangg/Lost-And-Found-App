@@ -141,6 +141,11 @@ watch(() => route.path, (newval) => {
                                 <i class="fa-solid fa-user-tie"></i>
                                 Quản trị viên
                             </router-link>
+                            <router-link v-if="userStore.user?.type == 1" :to="{ name: 'post-manage' }"
+                                class="block border-b p-2 text-sm hover:text-gray-400">
+                                <i class="fa-solid fa-user-tie"></i>
+                                Quản trị viên
+                            </router-link>
                             <button @click="logout" class="block border-b p-2 text-sm hover:text-gray-400">
                                 <i class="fa-solid fa-arrow-right-from-bracket"></i>
                                 Đăng xuất

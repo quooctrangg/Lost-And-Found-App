@@ -90,46 +90,76 @@ const routes = [
         name: 'manage',
         component: () => import('../views/ManageView.vue'),
         meta: { title: 'Quản lý' },
-        beforeEnter: (to, from, next) => {
-            const userStore = useUserStore()
-            if (!userStore.user?.id || userStore.user?.type != 0) next('home')
-            else next()
-        },
         children: [
             {
                 path: 'dashboard',
                 name: 'dashboard',
-                component: () => import('../components/manage/dashboard/DashboardManage.vue')
+                component: () => import('../components/manage/dashboard/DashboardManage.vue'),
+                beforeEnter: (to, from, next) => {
+                    const userStore = useUserStore()
+                    if (!userStore.user?.id || userStore.user?.type != 0) next('home')
+                    else next()
+                }
             },
             {
                 path: 'users',
                 name: 'user-manage',
-                component: () => import('../components/manage/user/UserManage.vue')
+                component: () => import('../components/manage/user/UserManage.vue'),
+                beforeEnter: (to, from, next) => {
+                    const userStore = useUserStore()
+                    if (!userStore.user?.id || userStore.user?.type != 0) next('home')
+                    else next()
+                }
             },
             {
                 path: 'post',
                 name: 'post-manage',
-                component: () => import('../components/manage/post/PostManage.vue')
+                component: () => import('../components/manage/post/PostManage.vue'),
+                beforeEnter: (to, from, next) => {
+                    const userStore = useUserStore()
+                    if (!userStore.user?.id || userStore.user?.type != 0 && userStore.user?.type != 1) next('home')
+                    else next()
+                }
             },
             {
                 path: 'item',
                 name: 'item-manage',
-                component: () => import('../components/manage/item/ItemManage.vue')
+                component: () => import('../components/manage/item/ItemManage.vue'),
+                beforeEnter: (to, from, next) => {
+                    const userStore = useUserStore()
+                    if (!userStore.user?.id || userStore.user?.type != 0) next('home')
+                    else next()
+                }
             },
             {
                 path: 'location',
                 name: 'location-manage',
-                component: () => import('../components/manage/location/LocationManage.vue')
+                component: () => import('../components/manage/location/LocationManage.vue'),
+                beforeEnter: (to, from, next) => {
+                    const userStore = useUserStore()
+                    if (!userStore.user?.id || userStore.user?.type != 0) next('home')
+                    else next()
+                }
             },
             {
                 path: 'school',
                 name: 'school-manage',
-                component: () => import('../components/manage/school/SchoolManage.vue')
+                component: () => import('../components/manage/school/SchoolManage.vue'),
+                beforeEnter: (to, from, next) => {
+                    const userStore = useUserStore()
+                    if (!userStore.user?.id || userStore.user?.type != 0) next('home')
+                    else next()
+                }
             },
             {
                 path: 'major',
                 name: 'major-manage',
-                component: () => import('../components/manage/major/MajorManage.vue')
+                component: () => import('../components/manage/major/MajorManage.vue'),
+                beforeEnter: (to, from, next) => {
+                    const userStore = useUserStore()
+                    if (!userStore.user?.id || userStore.user?.type != 0) next('home')
+                    else next()
+                }
             }
         ]
     },
