@@ -2,7 +2,7 @@ import { Body, Controller, Delete, Get, Param, ParseIntPipe, Patch, Post, Query,
 import { ItemService } from './item.service';
 import { CreateItemDto, UpdateItemDto } from './dto';
 import { MyJWTGuard, RolesGuard } from '../auth/guard';
-import { Role } from '../auth/decorator';
+import { Roles } from '../auth/decorator';
 import { USER_TYPES } from '../global';
 
 @Controller('item')
@@ -16,21 +16,21 @@ export class ItemController {
 
     @Post()
     @UseGuards(MyJWTGuard, RolesGuard)
-    @Role(USER_TYPES.ADMIN)
+    @Roles(USER_TYPES.ADMIN)
     create(@Body() createItemDto: CreateItemDto) {
         return this.itemService.create(createItemDto)
     }
 
     @Patch(':id')
     @UseGuards(MyJWTGuard, RolesGuard)
-    @Role(USER_TYPES.ADMIN)
+    @Roles(USER_TYPES.ADMIN)
     update(@Param('id', ParseIntPipe) id: number, @Body() updateItemDto: UpdateItemDto) {
         return this.itemService.update(id, updateItemDto)
     }
 
     @Delete(':id')
     @UseGuards(MyJWTGuard, RolesGuard)
-    @Role(USER_TYPES.ADMIN)
+    @Roles(USER_TYPES.ADMIN)
     delete(@Param('id', ParseIntPipe) id: number) {
         return this.itemService.delete(id)
     }

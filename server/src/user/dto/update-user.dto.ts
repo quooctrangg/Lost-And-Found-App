@@ -16,4 +16,8 @@ export class UpdateUserDto {
     @IsNumber()
     @IsOptional()
     majorId: number
+
+    @IsNumber()
+    @IsOptional()
+    type: number
 }

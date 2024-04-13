@@ -282,7 +282,7 @@ export class UserService {
 
     async updateUser(userId: number, updateUserDto: UpdateUserDto, image: Express.Multer.File) {
         try {
-            const data: { name?: string, image?: string, password?: string, majorId?: number } = {}
+            const data: { name?: string, image?: string, password?: string, majorId?: number, type?: number } = {}
             const user = await this.getUserById(userId)
             if (!user) {
                 return new ResponseData<User>(null, 400, 'Tài khoản không tồn tại')
@@ -300,6 +300,9 @@ export class UserService {
             }
             if (updateUserDto.majorId) {
                 data.majorId = updateUserDto.majorId
+            }
+            if (updateUserDto.type == 2 || updateUserDto.type == 1) {
+                data.type = updateUserDto.type
             }
             await this.prismaService.user.update({
                 where: {

@@ -1,5 +1,6 @@
 export enum USER_TYPES {
-    USER = 1,
+    USER = 2,
+    POST_MANAGE = 1,
     ADMIN = 0
 };
 
