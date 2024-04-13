@@ -113,7 +113,7 @@ export class PostService {
                 skip: next,
                 take: pageSize
             })
-            return new ResponseData<any>({ data, totalPages }, 200, 'Tìm thành công các bài viết')
+            return new ResponseData<any>({ data, totalPages, totalCount }, 200, 'Tìm thành công các bài viết')
         } catch (error) {
             this.logger.error(error.message)
             return new ResponseData<string>(null, 500, 'Lỗi dịch vụ, thử lại sau')

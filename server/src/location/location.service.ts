@@ -32,9 +32,10 @@ export class LocationService {
                     }
                 ]
             }
+            let totalCount = 0
             if (page) {
                 pageSize = PAGE_SIZE.PAGE_LOCATION
-                const totalCount = await this.prismaService.location.count({
+                totalCount = await this.prismaService.location.count({
                     where: where,
                     orderBy: {
                         id: 'asc'
@@ -53,7 +54,7 @@ export class LocationService {
                 take: pageSize,
                 where: where
             })
-            return new ResponseData<any>({ data, totalPages }, 200, 'Tìm thành công')
+            return new ResponseData<any>({ data, totalPages, totalCount }, 200, 'Tìm thành công')
         } catch (error) {
             this.logger.error(error.message)
             return new ResponseData<string>(null, 500, 'Lỗi dịch vụ, thử lại sau')

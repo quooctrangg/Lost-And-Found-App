@@ -22,9 +22,10 @@ export class SchoolService {
                     mode: 'insensitive'
                 }
             }
+            let totalCount = 0
             if (page) {
                 pageSize = PAGE_SIZE.PAGE_SCHOOL
-                const totalCount = await this.prismaService.school.count({
+                totalCount = await this.prismaService.school.count({
                     where: where,
                     orderBy: {
                         id: 'asc'
@@ -43,7 +44,7 @@ export class SchoolService {
                 take: pageSize,
                 where: where
             })
-            return new ResponseData<any>({ data, totalPages }, 200, 'Tìm thành công')
+            return new ResponseData<any>({ data, totalPages, totalCount }, 200, 'Tìm thành công')
         } catch (error) {
             this.logger.error(error.message)
             return new ResponseData<string>(null, 500, 'Lỗi dịch vụ, thử lại sau')

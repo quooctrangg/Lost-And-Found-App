@@ -21,9 +21,10 @@ export class ItemService {
                     contains: key
                 }
             }
+            let totalCount = 0
             if (page) {
                 pageSize = PAGE_SIZE.PAGE_SCHOOL
-                const totalCount = await this.prismaService.item.count({
+                totalCount = await this.prismaService.item.count({
                     where: where,
                     orderBy: {
                         id: 'asc'
@@ -42,7 +43,7 @@ export class ItemService {
                 take: pageSize,
                 where: where
             })
-            return new ResponseData<any>({ totalPages, data }, 200, 'Tìm thành công')
+            return new ResponseData<any>({ totalPages, data, totalCount }, 200, 'Tìm thành công')
         } catch (error) {
             this.logger.error(error.message)
             return new ResponseData<string>(null, 500, 'Lỗi dịch vụ, thử lại sau')

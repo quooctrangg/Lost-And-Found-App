@@ -48,9 +48,10 @@ export class MajorService {
             if (schoolId) {
                 where.schoolId = Number(schoolId)
             }
+            let totalCount = 0
             if (page) {
                 pageSize = PAGE_SIZE.PAGE_MAJOR
-                const totalCount = await this.prismaService.major.count({
+                totalCount = await this.prismaService.major.count({
                     where: where,
                     orderBy: {
                         schoolId: 'asc'
@@ -72,7 +73,7 @@ export class MajorService {
                     School: true
                 }
             })
-            return new ResponseData<any>({ data, totalPages }, 200, 'Tìm thành công')
+            return new ResponseData<any>({ data, totalPages, totalCount }, 200, 'Tìm thành công')
         } catch (error) {
             this.logger.error(error.message)
             return new ResponseData<string>(null, 500, 'Lỗi dịch vụ, thử lại sau')
