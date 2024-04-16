@@ -1,4 +1,4 @@
-import { Injectable, BadRequestException, NotFoundException, Logger } from '@nestjs/common';
+import { Injectable, Logger } from '@nestjs/common';
 import { PrismaService } from '../prisma/prisma.service';
 import { ResponseData } from '../global';
 import { Workbook } from 'exceljs'
@@ -33,7 +33,9 @@ export class DashboardService {
             }
             const user = await this.prismaService.user.count({
                 where: {
-                    type: 1,
+                    type: {
+                        not: 0
+                    },
                     createdAt: {
                         gte: start,
                         lte: end
