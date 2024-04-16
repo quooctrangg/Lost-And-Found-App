@@ -7,12 +7,45 @@ import { stringify } from 'csv-stringify'
 import { createWriteStream } from 'fs'
 import { Cron, CronExpression } from '@nestjs/schedule';
 import { Post } from '@prisma/client';
+import { ConfigService } from '@nestjs/config';
+import weaviate, { WeaviateClient } from 'weaviate-ts-client';
+import axios from 'axios';
 
 @Injectable()
 export class SuggestService {
-    constructor(private readonly prismaService: PrismaService) { }
-
+    private readonly client: WeaviateClient;
     private readonly logger = new Logger(SuggestService.name);
+    // private readonly schemaConfig = {
+    //     'class': 'Nestdb',
+    //     'vectorizer': 'img2vec-neural',
+    //     'vectorIndexType': 'hnsw',
+    //     'moduleConfig': {
+    //         'img2vec-neural': {
+    //             'imageFields': [
+    //                 'image'
+    //             ]
+    //         }
+    //     },
+    //     'properties': [
+    //         {
+    //             'name': 'image',
+    //             'dataType': ['blob']
+    //         },
+    //         {
+    //             'name': 'text',
+    //             'dataType': ['string']
+    //         }
+    //     ]
+    // }
+
+    constructor(private readonly prismaService: PrismaService, private readonly configService: ConfigService) {
+        this.client = weaviate.client({
+            scheme: configService.get('WEAVIATE_SCHEME'),
+            host: configService.get('WEAVIATE_HOST'),
+        })
+
+        //this.client.schema.classCreator().withClass(this.schemaConfig).do()
+    }
 
     async suggestItemsBasedOnDescription(userId: number) {
         try {
@@ -91,6 +124,68 @@ export class SuggestService {
                 }
             })
             return new ResponseData<Post[]>(suggest, 200, 'Gợi ý thành công')
+        } catch (error) {
+            this.logger.error(error.message)
+            return new ResponseData<string>(null, 500, 'Lỗi dịch vụ, thử lại sau')
+        }
+    }
+
+    async addToDatabase(fileName: string) {
+        try {
+            const image = await axios.get(fileName, { responseType: 'arraybuffer' })
+            const imgBase64 = Buffer.from(image.data, 'binary').toString('base64');
+            await this.client.data.creator().withClassName('Nestdb').withProperties({
+                image: imgBase64,
+                text: fileName,
+            }).do();
+            this.logger.log('Đã gửi thành công hình lên Weaviate.')
+        } catch (error) {
+            this.logger.error(error.message)
+        }
+    }
+
+    async getNearImage(image: string) {
+        try {
+            const resImage = await this.client.graphql
+                .get()
+                .withClassName('Nestdb')
+                .withFields('text')
+                .withNearImage({ image, certainty: 0.8 })
+                .withLimit(2)
+                .do();
+            const urls = resImage.data.Get.Nestdb;
+            const post = await this.prismaService.post.findMany({
+                where: {
+                    Image: {
+                        some: {
+                            url: {
+                                in: urls.map(url => url.text)
+                            }
+                        }
+                    },
+                    isDelete: false,
+                    done: {
+                        not: 1
+                    },
+                    verify: 1,
+                    User: {
+                        isBan: false
+                    }
+                },
+                include: {
+                    User: {
+                        select: {
+                            id: true,
+                            name: true,
+                            image: true
+                        }
+                    },
+                    Image: true,
+                    Item: true,
+                    Location: true
+                }
+            })
+            return new ResponseData<any>(post, 200, 'Gợi ý thành công')
         } catch (error) {
             this.logger.error(error.message)
             return new ResponseData<string>(null, 500, 'Lỗi dịch vụ, thử lại sau')

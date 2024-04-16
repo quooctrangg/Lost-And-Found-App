@@ -1,9 +1,10 @@
-import { Controller, Get, Post, UseGuards } from '@nestjs/common';
+import { Controller, Get, Post, UploadedFile, UseGuards, UseInterceptors } from '@nestjs/common';
 import { SuggestService } from './suggest.service';
 import { MyJWTGuard, RolesGuard } from '../auth/guard';
 import { GetUser, Roles } from '../auth/decorator';
 import { USER_TYPES } from '../global';
 import { User } from '@prisma/client';
+import { FileInterceptor } from '@nestjs/platform-express';
 
 @Controller('suggest')
 @UseGuards(MyJWTGuard, RolesGuard)
@@ -20,5 +21,11 @@ export class SuggestController {
     @Roles(USER_TYPES.ADMIN)
     updateData() {
         return this.suggestService.writeData()
+    }
+
+    @Get('near-image')
+    @UseInterceptors(FileInterceptor('image'))
+    getNearImage(@UploadedFile() image: Express.Multer.File) {
+        return this.suggestService.getNearImage(image.buffer.toString('base64'))
     }
 }

@@ -4,10 +4,11 @@ import { CreatPostDto, VerifyPostDto } from './dto';
 import { PAGE_SIZE, ResponseData, USER_TYPES } from '../global';
 import { CloudinaryService } from '../cloudinary/cloudinary.service';
 import { Post, User } from '@prisma/client';
+import { SuggestService } from '../suggest/suggest.service';
 
 @Injectable()
 export class PostService {
-    constructor(private readonly prismaService: PrismaService, private readonly cloudinaryService: CloudinaryService) { }
+    constructor(private readonly prismaService: PrismaService, private readonly cloudinaryService: CloudinaryService, private readonly suggestService: SuggestService) { }
 
     private readonly logger = new Logger(PostService.name);
 
@@ -16,6 +17,7 @@ export class PostService {
             let uploadedImages: number[] = []
             for (const file of files) {
                 const result = await this.cloudinaryService.uploadFile(file)
+                await this.suggestService.addToDatabase(result.url)
                 const data = await this.prismaService.image.create({
                     data: {
                         url: result.url
