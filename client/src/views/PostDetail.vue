@@ -13,6 +13,7 @@ import SuggestCard from '../components/common/SuggestCard.vue';
 import RequestModal from '../components/post/RequestModal.vue';
 import Loading from '../components/common/Loading.vue'
 import Comments from '../components/comment/Comments.vue'
+import Image from 'primevue/image';
 import dayjs from 'dayjs';
 import 'swiper/css';
 import 'swiper/css/navigation';
@@ -99,7 +100,8 @@ onMounted(async () => {
                         :navigation="true" :modules="[Navigation, Pagination]" class="mySwiper">
                         <swiper-slide v-for="image in post?.Image">
                             <div class="bg-slate-400 rounded overflow-hidden flex justify-center items-center">
-                                <img class="max-h-[500px]" :src="image.url" :alt="image.id">
+                                <Image :src="image.url" :alt="image.id" width="300" preview
+                                    :pt="{ icon: 'p-image-action' }" />
                             </div>
                         </swiper-slide>
                     </swiper>
@@ -197,3 +199,9 @@ onMounted(async () => {
     <RequestModal :request="post?.type" :postId="post?.id" />
     <Footer />
 </template>
+
+<style>
+.p-image-action {
+    color: white;
+}
+</style>
