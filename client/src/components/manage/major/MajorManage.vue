@@ -63,14 +63,14 @@ onMounted(async () => {
                             </option>
                         </select>
                     </div>
-                    <div class="text-red-600">
-                        Tổng cộng: {{ majorStore.totalCount }} chuyên ngành.
-                    </div>
                 </div>
                 <button class="p-2 text-blue-500 rounded font-medium hover:text-blue-400 text-2xl"
                     @click="manageStore.showAddMajorModal">
                     <i class="fa-solid fa-plus"></i>
                 </button>
+            </div>
+            <div class="text-red-600 mt-2">
+                Tổng cộng: {{ majorStore.totalCount }} chuyên ngành.
             </div>
             <table class="table-auto w-full mt-5">
                 <thead class="font-medium w-full">

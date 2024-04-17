@@ -85,9 +85,6 @@ onMounted(async () => {
                         <div class="border border-black rounded-xl">
                             <Seach :title="'Nhập tên hoặc mssv'" @key="(e) => { userStore.key = e }" />
                         </div>
-                        <div class="text-red-600">
-                            Tổng cộng: {{ userStore.totalCount }} tài khoản
-                        </div>
                     </div>
                     <div class="flex flex-col gap-2">
                         <div class="flex gap-1 items-center">
@@ -132,6 +129,9 @@ onMounted(async () => {
                     @click="manageStore.showAddUserModal">
                     <i class="fa-solid fa-user-plus"></i>
                 </button>
+            </div>
+            <div class="text-red-600 mt-2">
+                Tổng cộng: {{ userStore.totalCount }} tài khoản.
             </div>
             <table class="table-auto w-full">
                 <thead class="border-b border-black font-medium">

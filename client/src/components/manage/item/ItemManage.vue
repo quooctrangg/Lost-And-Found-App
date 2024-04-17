@@ -51,14 +51,14 @@ onMounted(async () => {
                     <div class="border border-black rounded-xl">
                         <Seach :title="'Tìm kiếm danh mục'" @key="(e) => { itemStore.key = e }" />
                     </div>
-                    <div class="text-red-600">
-                        Tổng cộng: {{ itemStore.totalCount }} danh mục.
-                    </div>
                 </div>
                 <button class="p-2 text-blue-500 rounded font-medium hover:text-blue-400 text-2xl"
                     @click="manageStore.showAddItemModal">
                     <i class="fa-solid fa-plus"></i>
                 </button>
+            </div>
+            <div class="text-red-600 mt-2">
+                Tổng cộng: {{ itemStore.totalCount }} danh mục.
             </div>
             <table class="table-auto w-full mt-5">
                 <thead class="font-medium">

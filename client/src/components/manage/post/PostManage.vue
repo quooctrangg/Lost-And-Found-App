@@ -87,10 +87,11 @@ onMounted(async () => {
                             <option :value="0">Chờ duyệt</option>
                         </select>
                     </div>
-                    <div class="text-red-600">
-                        Tổng cộng: {{ postStore.totalCount }} bài viết.
-                    </div>
+
                 </div>
+            </div>
+            <div class="text-red-600 mt-2">
+                Tổng cộng: {{ postStore.totalCount }} bài viết.
             </div>
             <table class="table-fixed w-full mt-5">
                 <thead class="font-medium">
