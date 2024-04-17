@@ -66,7 +66,7 @@ onMounted(async () => {
 
 <template>
     <div class="w-full p-1 lg:p-0 lg:w-[80%] mx-auto flex mt-2 justify-center gap-2">
-        <div class="w-full md:w-[70%]">
+        <div class="w-full md:w-[80%]">
             <div v-if="!postStore.isLoading" class="bg-white rounded-md p-4 shadow border-2">
                 <div class="mb-3 grid grid-cols-3">
                     <div class="cursor-pointer hover:text-red-500 p-1" @click="goBack">
@@ -166,10 +166,8 @@ onMounted(async () => {
                             </button>
                         </div>
                     </div>
-                    <div class="">
-                        <div>
-                            <p class="text-base indent-2 text-justify" v-html="post?.description"></p>
-                        </div>
+                    <div>
+                        <p class="text-base indent-2 text-justify" v-html="post?.description"></p>
                         <hr class="border-t m-2">
                         <h2 class="text-gray-500 flex gap-1 items-center text-sm">
                             <i class="fa-solid fa-location-dot"></i>
@@ -188,11 +186,6 @@ onMounted(async () => {
             </div>
             <div class="my-2" v-if="post?.verify === 1">
                 <Comments :postId="route.params.id" />
-            </div>
-        </div>
-        <div class="w-[30%] hidden md:block" v-if="userStore?.user.id !== post?.User?.id">
-            <div class="bg-white rounded-md p-2 shadow">
-                <SuggestCard />
             </div>
         </div>
     </div>

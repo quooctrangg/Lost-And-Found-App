@@ -17,13 +17,7 @@ export class SuggestController {
         return this.suggestService.suggestItemsBasedOnDescription(user.id)
     }
 
-    @Post()
-    @Roles(USER_TYPES.ADMIN)
-    updateData() {
-        return this.suggestService.writeData()
-    }
-
-    @Get('near-image')
+    @Post('near-image')
     @UseInterceptors(FileInterceptor('image'))
     getNearImage(@UploadedFile() image: Express.Multer.File) {
         return this.suggestService.getNearImage(image.buffer.toString('base64'))

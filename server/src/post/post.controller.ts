@@ -1,9 +1,9 @@
-import { Body, Controller, Delete, Get, Param, ParseIntPipe, Patch, Post, Query, UploadedFiles, UseGuards, UseInterceptors } from '@nestjs/common';
+import { Body, Controller, Delete, Get, Param, ParseIntPipe, Patch, Post, Query, UploadedFile, UploadedFiles, UseGuards, UseInterceptors } from '@nestjs/common';
 import { PostService } from './post.service';
 import { GetUser, Roles } from 'src/auth/decorator';
 import { User } from '@prisma/client';
 import { CreatPostDto, VerifyPostDto } from './dto';
-import { FilesInterceptor } from '@nestjs/platform-express';
+import { FileInterceptor, FilesInterceptor } from '@nestjs/platform-express';
 import { MyJWTGuard, RolesGuard } from '../auth/guard';
 import { USER_TYPES } from '../global';
 
@@ -57,10 +57,9 @@ export class PostController {
         return this.postService.getAllPostsByUserId(user.id, userId)
     }
 
-    @Get('suggest')
-    @UseGuards(MyJWTGuard, RolesGuard)
-    @Roles(USER_TYPES.USER, USER_TYPES.POST_MANAGE, USER_TYPES.ADMIN)
-    suggestPost(@Query() option: { key: string, type: boolean, itemId: number, locations: number[] }) {
-        return this.postService.suggestPost(option)
+    @Post('search-post-by-image')
+    @UseInterceptors(FileInterceptor('image'))
+    searchPostByImage(@UploadedFile() image: Express.Multer.File) {
+        return this.postService.searchPostByImage(image.buffer.toString('base64'))
     }
 }

@@ -10,6 +10,7 @@ export const useSuggestStore = defineStore('suggest', () => {
     const result = ref(null)
     const isLoading = ref(false)
     const suggests = ref([])
+    const suggestsByImage = ref([])
 
     const getSuggest = async () => {
         err.value = null
@@ -28,5 +29,22 @@ export const useSuggestStore = defineStore('suggest', () => {
         }
     }
 
-    return { err, result, isLoading, suggests, getSuggest }
+    const getNearImage = async (data) => {
+        err.value = null
+        result.value = null
+        isLoading.value = true
+        suggestsByImage.value = []
+        try {
+            let res = await suggestService.getNearImage(authStore.token, data)
+            if (res.statusCode !== 200) throw new Error(res.message)
+            result.value = res
+            suggestsByImage.value = res.data
+        } catch (error) {
+            err.value = error.message
+        } finally {
+            isLoading.value = false
+        }
+    }
+
+    return { err, result, isLoading, suggests, suggestsByImage, getSuggest, getNearImage }
 })

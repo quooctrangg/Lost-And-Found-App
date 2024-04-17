@@ -24,6 +24,7 @@ const option = reactive({
 })
 const scrollComponent = ref(null)
 const totalPage = ref(1)
+const image = ref(null)
 
 const setOption = (value) => {
     option.locations = value.locations
@@ -39,6 +40,7 @@ const getAllPostsForUser = async () => {
 }
 
 const loadMore = async () => {
+    if (image.value != null) return
     let element = scrollComponent.value
     let triggerBottom = element.getBoundingClientRect().bottom;
     let viewportHeight = window.innerHeight;
@@ -50,6 +52,13 @@ const loadMore = async () => {
     }
 }
 
+const searchPostsByImage = async image => {
+    const dataForm = new FormData()
+    dataForm.append('image', image)
+    await postStore.searchPostsByImage(dataForm)
+    posts.value = postStore.posts
+}
+
 const getFilter = async () => {
     posts.value = []
     await getAllPostsForUser()
@@ -57,6 +66,14 @@ const getFilter = async () => {
 
 watch(() => option.key, async newval => {
     await getFilter()
+})
+
+watch(() => image.value, async newval => {
+    if (image.value != null) {
+        await searchPostsByImage(image.value)
+    } else {
+        await getFilter()
+    }
 })
 
 onMounted(async () => {
@@ -72,7 +89,7 @@ onUnmounted(() => {
 <template>
     <div class="p-2 md:p-0 lg:w-[80%] mx-auto">
         <div class="flex gap-2 justify-center mt-3">
-            <InputSearch @key="e => { option.key = e }" />
+            <InputSearch @key="e => option.key = e" @image="e => image = e" />
             <button v-if="userStore.user?.id"
                 class="px-3 py-2 bg-blue-500 rounded-xl hover:bg-blue-700 text-white font-semibold"
                 @click="postStore.showPostModal">
@@ -88,7 +105,7 @@ onUnmounted(() => {
         </button>
         <div class="w-full flex gap-2 justify-center">
             <div class="w-full md:w-[70%]" ref="scrollComponent">
-                <PostCard v-if="posts.length" v-for=" post in posts " :post="post" />
+                <PostCard v-if="posts.length" v-for="post in posts " :post="post" />
             </div>
             <div v-if="userStore.user?.id"
                 class="hidden md:block w-[30%] bg-white rounded-md shadow border-2 border-blue-500 h-fit p-2 sticky top-16">

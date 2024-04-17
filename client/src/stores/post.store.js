@@ -1,7 +1,7 @@
 import { reactive, ref } from 'vue'
 import { defineStore } from 'pinia'
-import postService from '../services/post.service'
 import { useAuthStore } from './auth.store'
+import postService from '../services/post.service'
 
 export const usePostStore = defineStore('post', () => {
     const authStore = useAuthStore()
@@ -14,7 +14,6 @@ export const usePostStore = defineStore('post', () => {
     const totalCount = ref(0)
     const key = ref('')
     const posts = ref([])
-    const suggest = ref(null)
     const isShow = reactive({
         filter: false,
         post: false,
@@ -33,7 +32,7 @@ export const usePostStore = defineStore('post', () => {
 
     const showRequestModal = () => { isShow.request = true }
 
-    const createPost = async (data) => {
+    const createPost = async data => {
         err.value = null
         result.value = null
         isLoading.value = true
@@ -48,7 +47,7 @@ export const usePostStore = defineStore('post', () => {
         }
     }
 
-    const getAllPostsForAdmin = async (option) => {
+    const getAllPostsForAdmin = async option => {
         err.value = null
         result.value = null
         isLoading.value = true
@@ -84,7 +83,7 @@ export const usePostStore = defineStore('post', () => {
         }
     }
 
-    const deletePost = async (id) => {
+    const deletePost = async id => {
         err.value = null
         result.value = null
         isLoading.value = true
@@ -99,7 +98,7 @@ export const usePostStore = defineStore('post', () => {
         }
     }
 
-    const getAllPostsByUserId = async (userId) => {
+    const getAllPostsByUserId = async userId => {
         err.value = null
         result.value = null
         isLoading.value = true
@@ -114,7 +113,7 @@ export const usePostStore = defineStore('post', () => {
         }
     }
 
-    const getAllPostsForUser = async (option) => {
+    const getAllPostsForUser = async option => {
         err.value = null
         result.value = null
         isLoading.value = true
@@ -134,21 +133,7 @@ export const usePostStore = defineStore('post', () => {
         }
     }
 
-    const suggestPost = async (option) => {
-        err.value = null
-        result.value = null
-        suggest.value = null
-        try {
-            let res = await postService.suggestPost(authStore.token, option)
-            if (res.statusCode !== 200) throw new Error(res.message)
-            result.value = res
-            suggest.value = res.data
-        } catch (error) {
-            err.value = error.message
-        }
-    }
-
-    const getPostById = async (id) => {
+    const getPostById = async id => {
         err.value = null
         result.value = null
         isLoading.value = true
@@ -163,9 +148,26 @@ export const usePostStore = defineStore('post', () => {
         }
     }
 
+    const searchPostsByImage = async data => {
+        err.value = null
+        result.value = null
+        isLoading.value = true
+        posts.value = []
+        try {
+            let res = await postService.searchPostsByImage(data)
+            if (res.statusCode !== 200) throw new Error(res.message)
+            result.value = res
+            posts.value = res.data
+        } catch (error) {
+            err.value = error.message
+        } finally {
+            isLoading.value = false
+        }
+    }
+
     return {
-        isShow, err, result, isLoading, totalPages, currentPage, key, posts, suggest, totalCount,
-        createPost, getAllPostsForAdmin, verifyPost, deletePost, suggestPost,
+        isShow, err, result, isLoading, totalPages, currentPage, key, posts, totalCount,
+        createPost, getAllPostsForAdmin, verifyPost, deletePost, searchPostsByImage,
         getAllPostsByUserId, getAllPostsForUser, getPostById,
         closeFilterModal, showFilterModal,
         closePostModal, showPostModal,

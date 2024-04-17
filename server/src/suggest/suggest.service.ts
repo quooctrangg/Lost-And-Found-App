@@ -146,15 +146,8 @@ export class SuggestService {
 
     async getNearImage(image: string) {
         try {
-            const resImage = await this.client.graphql
-                .get()
-                .withClassName('Nestdb')
-                .withFields('text')
-                .withNearImage({ image, certainty: 0.8 })
-                .withLimit(2)
-                .do();
-            const urls = resImage.data.Get.Nestdb;
-            const post = await this.prismaService.post.findMany({
+            const urls = await this.searchUrlsByImage(image, 0.8, 2)
+            const posts = await this.prismaService.post.findMany({
                 where: {
                     Image: {
                         some: {
@@ -185,11 +178,22 @@ export class SuggestService {
                     Location: true
                 }
             })
-            return new ResponseData<any>(post, 200, 'Gợi ý thành công')
+            return new ResponseData<any>(posts, 200, 'Gợi ý thành công')
         } catch (error) {
             this.logger.error(error.message)
             return new ResponseData<string>(null, 500, 'Lỗi dịch vụ, thử lại sau')
         }
+    }
+
+    async searchUrlsByImage(image: string, certainty: number, limit: number) {
+        const resImage = await this.client.graphql
+            .get()
+            .withClassName('Nestdb')
+            .withFields('text')
+            .withNearImage({ image, certainty: certainty })
+            .withLimit(limit)
+            .do();
+        return resImage.data.Get.Nestdb;
     }
 
     @Cron(CronExpression.EVERY_DAY_AT_MIDNIGHT)

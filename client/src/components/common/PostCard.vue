@@ -59,3 +59,9 @@ const props = defineProps(['post'])
         </div>
     </div>
 </template>
+
+<style>
+.p-image-action {
+    color: white;
+}
+</style>

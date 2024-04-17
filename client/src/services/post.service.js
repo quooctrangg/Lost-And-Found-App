@@ -46,26 +46,6 @@ class postService {
         })).data
     }
 
-    async suggestPost(token, option) {
-        const { locations, ...other } = option
-        let parameter = createQueryString(other)
-        if (locations.length && locations.length == 1) {
-            parameter += `&locations=${locations[0]}`
-            parameter += `&locations=${locations[0]}`
-        } else if (locations.length && locations.length > 1) {
-            locations.forEach(element => {
-                parameter += `&locations=${element}`
-            });
-        }
-        return (await this.api.get(`/suggest${parameter}`, {
-            headers: {
-                "Content-Type": "application/json",
-                Accept: "application/json",
-                Authorization: `Bearer ${token}`
-            }
-        })).data
-    }
-
     async verifyPost(token, id, data) {
         return (await this.api.patch(`/verify/${id}`, data, {
             headers: {
@@ -101,6 +81,15 @@ class postService {
                 "Content-Type": "application/json",
                 Accept: "application/json",
                 Authorization: `Bearer ${token}`
+            }
+        })).data
+    }
+
+    async searchPostsByImage(data) {
+        return (await this.api.postForm(`/search-post-by-image`, data, {
+            headers: {
+                "Content-Type": "application/json",
+                Accept: "application/json",
             }
         })).data
     }

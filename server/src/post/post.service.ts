@@ -322,47 +322,44 @@ export class PostService {
         }
     }
 
-    async suggestPost(option: { key: string, type: any, itemId: number, locations: number[] }) {
+    async searchPostByImage(image: string) {
         try {
-            let { key, type, itemId, locations } = option
-            const where: any = {
-                verify: 1,
-                done: {
-                    not: 1
-                },
-                isDelete: false,
-                User: {
-                    isBan: false
-                }
-            }
-            if (itemId) {
-                where.itemId = Number(itemId)
-            }
-            if (locations && locations.length) {
-                where.Location = {
-                    some: {
-                        id: {
-                            in: locations.map(id => Number(id))
+            const urls = await this.suggestService.searchUrlsByImage(image, 0.8, 5)
+            const posts = await this.prismaService.post.findMany({
+                where: {
+                    Image: {
+                        some: {
+                            url: {
+                                in: urls.map(url => url.text)
+                            }
                         }
+                    },
+                    isDelete: false,
+                    done: {
+                        not: 1
+                    },
+                    verify: 1,
+                    User: {
+                        isBan: false
                     }
-                }
-            }
-            if (key) {
-                where.description = {
-                    contains: key,
-                    mode: 'insensitive'
-                }
-            }
-            if (type != undefined || type != null) {
-                where.type = type == 1 ? false : true
-            }
-            const data = await this.prismaService.post.findFirst({
-                where: where,
+                },
                 include: {
+                    User: {
+                        select: {
+                            id: true,
+                            name: true,
+                            image: true
+                        }
+                    },
                     Image: true,
+                    Item: true,
+                    Location: true
+                },
+                orderBy: {
+                    updatedAt: 'desc'
                 }
             })
-            return new ResponseData<any>(data, 200, 'Tìm thành công bài viết')
+            return new ResponseData<any>(posts, 200, 'Tìm thành công')
         } catch (error) {
             this.logger.error(error.message)
             return new ResponseData<string>(null, 500, 'Lỗi dịch vụ, thử lại sau')

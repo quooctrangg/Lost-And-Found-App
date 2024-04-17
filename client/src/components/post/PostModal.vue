@@ -2,17 +2,20 @@
 import { FwbModal, FwbButton } from 'flowbite-vue'
 import { usePostStore } from '../../stores/post.store'
 import { useItemStore } from '../../stores/item.store'
+import { useSuggestStore } from '../../stores/suggest.store'
 import { useLocationStore } from '../../stores/location.store'
-import { onMounted, reactive, ref, watch, watchEffect } from 'vue';
+import { onMounted, reactive, ref, watchEffect } from 'vue';
 import { Form, Field, ErrorMessage } from "vee-validate";
 import { useToast } from 'vue-toast-notification'
 import * as yup from "yup";
 import Loading from '../common/Loading.vue';
+import dayjs from 'dayjs'
 // import Editor from 'primevue/editor';
 
 const postStore = usePostStore()
 const itemStore = useItemStore()
 const locationStore = useLocationStore()
+const suggestStore = useSuggestStore()
 const $toast = useToast()
 
 const maxAllowedFiles = 5
@@ -86,9 +89,11 @@ const submitPost = async () => {
     postStore.closePostModal()
 }
 
-const getSuggest = async () => {
-    await postStore.suggestPost({ key: data.description, type: data.type, itemId: data.itemId, locations: data.locations })
-    if (postStore.err) {
+const getNearImage = async (image) => {
+    const dataForm = new FormData()
+    dataForm.append('image', image)
+    await suggestStore.getNearImage(dataForm)
+    if (suggestStore.err) {
         return
     }
 }
@@ -109,15 +114,15 @@ const unCheckRadio = (e) => {
     }
 }
 
-watchEffect(async () => {
-    if (data.type !== '' && data.itemId !== '' && data.locations.length > 0) {
-        await getSuggest()
-    }
-})
-
 onMounted(async () => {
     await itemStore.getItem({})
     await locationStore.getLocation({})
+})
+
+watchEffect(async () => {
+    if (selectedFile.value.length) {
+        await getNearImage(selectedFile.value[0])
+    }
 })
 </script>
 
@@ -220,21 +225,33 @@ onMounted(async () => {
                         <input type="file" multiple hidden id="images" accept="image/png, image/jpeg"
                             @change="onFileSelected">
                     </div>
-                    <div v-if="postStore.suggest" class="w-full flex flex-col justify-center items-center mt-3">
+                    <div v-if="suggestStore.suggestsByImage.length"
+                        class="w-full flex flex-col justify-center items-center mt-3">
                         <div class="w-[70%] text-sm italic text-blue-500">
-                            Gợi ý:
+                            Gợi ý dựa vào hình ảnh:
                         </div>
-                        <router-link :to="{ name: 'post-detail', params: { id: postStore.suggest?.id } }"
-                            class="w-[70%] border-2 bg-white mt-2 rounded-md flex gap-2 cursor-pointer items-center overflow-hidden p-2 shadow">
-                            <div v-if="postStore.suggest?.Image.length"
-                                class="w-[20%] max-h-20 rounded-sm overflow-hidden flex items-center justify-center">
-                                <img :src="postStore.suggest?.Image[0]?.url" alt="">
-                            </div>
-                            <div class="w-[50%] overflow-hidden flex-1">
-                                <h2 class="line-clamp-2 text-black text-justify"
-                                    v-html="postStore.suggest?.description"></h2>
-                            </div>
-                        </router-link>
+                        <div class="w-full flex flex-col items-center">
+                            <router-link v-for="suggest in suggestStore.suggestsByImage"
+                                :to="{ name: 'post-detail', params: { id: suggest.id } }"
+                                class="w-[70%] border-2 bg-white mt-2 rounded-md flex gap-2 cursor-pointer items-center overflow-hidden p-2 shadow">
+                                <div v-if="suggest?.Image.length"
+                                    class="w-[20%] max-h-20 rounded-sm overflow-hidden flex items-center justify-center">
+                                    <img :src="suggest?.Image[0]?.url" alt="">
+                                </div>
+                                <div class="w-[50%] overflow-hidden flex-1">
+                                    <div class="">
+                                        <h2 class="line-clamp-2 text-black text-justify" v-html="suggest?.description">
+                                        </h2>
+                                    </div>
+                                    <span class="text-xs italic">
+                                        <i class=" fa-regular fa-clock"></i>
+                                        {{ dayjs().diff(dayjs(suggest.updatedAt), 'day') > 0 ?
+                                            dayjs(suggest.updatedAt).format('LT L')
+                                            : dayjs(suggest.updatedAt).fromNow() }}
+                                    </span>
+                                </div>
+                            </router-link>
+                        </div>
                     </div>
                 </div>
                 <Loading v-else />
