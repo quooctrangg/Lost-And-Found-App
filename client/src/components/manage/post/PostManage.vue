@@ -1,14 +1,14 @@
 <script setup>
-import { onMounted, ref, watchEffect } from 'vue'
+import { onMounted, ref, watch, watchEffect } from 'vue'
 import { FwbPagination } from 'flowbite-vue'
 import { useManageStore } from '../../../stores/manage.store'
 import { usePostStore } from '../../../stores/post.store'
+import { useToast } from 'vue-toast-notification'
 import Seach from '../../common/Seach.vue';
 import RefuseModal from './RefuseModal.vue';
 import HistoryModal from './HistoryModal.vue'
 import Loading from '@/components/common/Loading.vue';
 import dayjs from 'dayjs'
-import { useToast } from 'vue-toast-notification'
 
 const manageStore = useManageStore()
 const postStore = usePostStore()
@@ -16,11 +16,15 @@ const $toast = useToast()
 
 const emit = defineEmits(['currentPage'])
 
+const curentDate = dayjs()
 const currentPostId = ref(null)
 const currentFeedback = ref(null)
 const isShow = ref(false)
 const verify = ref(null)
 const key = ref('')
+const sortByDate = ref(null)
+const to = ref(curentDate.subtract(1, 'month').format('YYYY-MM-DD'),)
+const from = ref(dayjs(new Date()).format('YYYY-MM-DD'))
 
 const verifyPost = async (id, data) => {
     const conFirm = confirm('Bạn có chắc chắn xác nhận bài viết này?')
@@ -49,7 +53,7 @@ const deletePost = async (id) => {
 }
 
 const getAllPostForAdmin = async () => {
-    await postStore.getAllPostsForAdmin({ sort: 'desc', page: postStore.currentPage, verify: verify.value, key: key.value })
+    await postStore.getAllPostsForAdmin({ page: postStore.currentPage, verify: verify.value, key: key.value, to: to.value, from: from.value })
 }
 
 const showHistory = () => {
@@ -61,7 +65,11 @@ const closeHistory = () => {
 }
 
 watchEffect(async () => {
-    await postStore.getAllPostsForAdmin({ sort: 'desc', page: postStore.currentPage, verify: verify.value, key: key.value })
+    if (!sortByDate.value) {
+        await postStore.getAllPostsForAdmin({ page: postStore.currentPage, verify: verify.value, key: key.value })
+    } else {
+        await postStore.getAllPostsForAdmin({ page: postStore.currentPage, verify: verify.value, key: key.value, to: to.value, from: from.value })
+    }
 })
 
 onMounted(async () => {
@@ -73,21 +81,37 @@ onMounted(async () => {
 <template>
     <div class="flex flex-col gap-5">
         <div class="w-full">
-            <div class="flex items-center justify-between w-full">
-                <div class="flex gap-5 items-center justify-between w-full">
-                    <div class="border border-black rounded-xl">
-                        <Seach :title="'Tìm kiếm bài viết'" @key="(e) => { key = e }" />
-                    </div>
-                    <div class="flex gap-1 items-center">
-                        <h1>Trạng thái: </h1>
-                        <select name="" id="" class="p-1 rounded-xl" v-model="verify">
-                            <option :value="null">Tất cả</option>
-                            <option :value="1">Đã duyệt</option>
-                            <option :value="-1">Từ chối</option>
-                            <option :value="0">Chờ duyệt</option>
-                        </select>
-                    </div>
-
+            <div class="flex gap-2 items-center w-full justify-between">
+                <div class="border border-black rounded-xl">
+                    <Seach :title="'Tìm kiếm bài viết'" @key="(e) => { key = e }" />
+                </div>
+                <div class="flex gap-1 items-center">
+                    <label for="type">Trạng thái:</label>
+                    <select name="" id="type" class="p-2 rounded cursor-pointer" v-model="verify">
+                        <option :value="null">Tất cả</option>
+                        <option :value="1">Đã duyệt</option>
+                        <option :value="-1">Từ chối</option>
+                        <option :value="0">Chờ duyệt</option>
+                    </select>
+                </div>
+            </div>
+            <div class="flex items-center gap-1 mt-2">
+                <label for="sortByDate">
+                    Thời gian:
+                </label>
+                <select id="sortByDate" class="rounded p-2 cursor-pointer" v-model="sortByDate">
+                    <option :value="null">Tất cả</option>
+                    <option value="any">Tùy chọn</option>
+                </select>
+                <div v-if="sortByDate" class="flex gap-1 items-center">
+                    <label for="to">
+                        Từ ngày:
+                    </label>
+                    <input id="to" type="date" class="rounded p-2 text-sm font-medium cursor-pointer" v-model="to">
+                    <label for="from">
+                        đến ngày:
+                    </label>
+                    <input id="from" type="date" class="rounded p-2 text-sm font-medium cursor-pointer" v-model="from">
                 </div>
             </div>
             <div class="text-red-600 mt-2">

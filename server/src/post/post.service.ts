@@ -5,6 +5,7 @@ import { PAGE_SIZE, ResponseData, USER_TYPES } from '../global';
 import { CloudinaryService } from '../cloudinary/cloudinary.service';
 import { Post, User } from '@prisma/client';
 import { SuggestService } from '../suggest/suggest.service';
+import * as moment from 'moment-timezone';
 
 @Injectable()
 export class PostService {
@@ -63,10 +64,12 @@ export class PostService {
         }
     }
 
-    async getAllPostsForAdmin(option: { page: number, key: string, itemId: number, type: boolean, verify: number, sort: any }) {
+    async getAllPostsForAdmin(option: { page: number, key: string, itemId: number, type: boolean, verify: number, to: string, from: string }) {
         const pageSize = PAGE_SIZE.PAGE_POST
+        let start: any
+        let end: any
         try {
-            let { page, key, itemId, type, verify, sort } = option
+            let { page, key, itemId, type, verify, to, from } = option
             let where: any = {
                 isDelete: false
             }
@@ -85,10 +88,20 @@ export class PostService {
                     mode: 'insensitive'
                 }
             }
+            if (to && from) {
+                const startDate = moment.tz(to, 'Asia/Ho_Chi_Minh');
+                const endDate = moment.tz(from, 'Asia/Ho_Chi_Minh').endOf('day');
+                start = new Date(startDate.clone().utc().format())
+                end = new Date(endDate.clone().utc().format())
+                where.createdAt = {
+                    gte: start,
+                    lte: end
+                }
+            }
             const totalCount = await this.prismaService.post.count({
                 where: where,
                 orderBy: {
-                    createdAt: sort
+                    createdAt: 'desc'
                 }
             })
             let totalPages = Math.ceil(totalCount / pageSize)
@@ -98,7 +111,7 @@ export class PostService {
             const data = await this.prismaService.post.findMany({
                 where: where,
                 orderBy: {
-                    createdAt: sort
+                    createdAt: 'desc'
                 },
                 include: {
                     User: {
@@ -110,7 +123,8 @@ export class PostService {
                     },
                     Image: true,
                     Item: true,
-                    Location: true
+                    Location: true,
+                    ApprovedByAdmin: true
                 },
                 skip: next,
                 take: pageSize
@@ -194,7 +208,7 @@ export class PostService {
         }
     }
 
-    async verifyPost(id: number, verifyPostDto: VerifyPostDto) {
+    async verifyPost(id: number, verifyPostDto: VerifyPostDto, adminId: number) {
         try {
             const isPost = await this.prismaService.post.findUnique({
                 where: {
@@ -212,7 +226,8 @@ export class PostService {
             }
             let data: any = {
                 verify: verifyPostDto.verify,
-                updatedAt: new Date()
+                updatedAt: new Date(),
+                approvedByAdminId: adminId
             }
             if (verifyPostDto.verify == -1) {
                 data.feedback = verifyPostDto.feedback
@@ -354,12 +369,55 @@ export class PostService {
                     Image: true,
                     Item: true,
                     Location: true
-                },
-                orderBy: {
-                    updatedAt: 'desc'
                 }
             })
             return new ResponseData<any>(posts, 200, 'Tìm thành công')
+        } catch (error) {
+            this.logger.error(error.message)
+            return new ResponseData<string>(null, 500, 'Lỗi dịch vụ, thử lại sau')
+        }
+    }
+
+    async getAllPostForApprovedByAdminId(adminId: number, option: { page: number }) {
+        const pageSize = PAGE_SIZE.PAGE_POST
+        try {
+            let { page } = option
+            let where: any = {
+                approvedByAdminId: adminId,
+                isDelete: false
+            }
+            const totalCount = await this.prismaService.post.count({
+                where: where,
+                orderBy: {
+                    createdAt: 'desc'
+                }
+            })
+            let totalPages = Math.ceil(totalCount / pageSize)
+            if (!totalPages) totalPages = 1
+            if (!page || page < 1) page = 1
+            let next = (page - 1) * pageSize
+            const data = await this.prismaService.post.findMany({
+                where: where,
+                include: {
+                    User: {
+                        select: {
+                            id: true,
+                            name: true,
+                            image: true
+                        }
+                    },
+                    Image: true,
+                    Item: true,
+                    Location: true,
+                    ApprovedByAdmin: true
+                },
+                orderBy: {
+                    createdAt: 'desc'
+                },
+                skip: next,
+                take: pageSize
+            })
+            return new ResponseData<any>({ data, totalPages, totalCount }, 200, 'Tìm thành công')
         } catch (error) {
             this.logger.error(error.message)
             return new ResponseData<string>(null, 500, 'Lỗi dịch vụ, thử lại sau')

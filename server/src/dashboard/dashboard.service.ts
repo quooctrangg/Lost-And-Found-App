@@ -26,7 +26,7 @@ export class DashboardService {
                     break;
                 case 'any':
                     const startDate = moment.tz(to, 'Asia/Ho_Chi_Minh');
-                    const endDate = moment.tz(from, 'Asia/Ho_Chi_Minh');
+                    const endDate = moment.tz(from, 'Asia/Ho_Chi_Minh').endOf('day');
                     start = new Date(startDate.clone().utc().format())
                     end = new Date(endDate.clone().utc().format())
                     break;
@@ -96,7 +96,7 @@ export class DashboardService {
                     break;
                 case 'any':
                     const startDate = moment.tz(to, 'Asia/Ho_Chi_Minh');
-                    const endDate = moment.tz(from, 'Asia/Ho_Chi_Minh');
+                    const endDate = moment.tz(from, 'Asia/Ho_Chi_Minh').endOf('day');
                     start = new Date(startDate.clone().utc().format())
                     end = new Date(endDate.clone().utc().format())
                     break;
@@ -165,7 +165,7 @@ export class DashboardService {
                     break;
                 case 'any':
                     const startDate = moment.tz(to, 'Asia/Ho_Chi_Minh');
-                    const endDate = moment.tz(from, 'Asia/Ho_Chi_Minh');
+                    const endDate = moment.tz(from, 'Asia/Ho_Chi_Minh').endOf('day');
                     start = new Date(startDate.clone().utc().format())
                     end = new Date(endDate.clone().utc().format())
                     break;
@@ -270,7 +270,7 @@ export class DashboardService {
                     break;
                 case 'any':
                     const startDate = moment.tz(to, 'Asia/Ho_Chi_Minh');
-                    const endDate = moment.tz(from, 'Asia/Ho_Chi_Minh');
+                    const endDate = moment.tz(from, 'Asia/Ho_Chi_Minh').endOf('day');
                     start = new Date(startDate.clone().utc().format())
                     end = new Date(endDate.clone().utc().format())
                     break;

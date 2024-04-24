@@ -21,21 +21,20 @@ onMounted(async () => {
 })
 
 const select = computed(() => { return { ...option } })
-
 </script>
 
 <template>
     <div class="flex flex-col w-full gap-4">
         <div class="flex items-center gap-1">
-            <div>Theo: </div>
-            <select class="rounded p-2 text-sm font-medium" v-model="option.type">
+            <label for="type">Theo: </label>
+            <select id="type" class="rounded p-2 text-sm font-medium cursor-pointer" v-model="option.type">
                 <option value="month">Tháng</option>
                 <option value="year">Năm</option>
                 <option value="any">Tùy chọn</option>
             </select>
             <div class="flex gap-1">
                 <div v-if="option.type !== 'any'" class="flex gap-1">
-                    <select v-if="option.type == 'month'" class="rounded p-2 text-sm font-medium"
+                    <select v-if="option.type == 'month'" class="rounded p-2 text-sm font-medium cursor-pointer"
                         v-model="option.month">
                         <option value="1">01</option>
                         <option value="2">02</option>
@@ -53,10 +52,16 @@ const select = computed(() => { return { ...option } })
                     <input type="number" class="rounded p-2 text-sm font-medium w-auto" v-model="option.year">
                 </div>
                 <div v-else class="flex gap-1 items-center">
-                    Từ ngày:
-                    <input type="date" class="rounded p-2 text-sm font-medium" v-model="option.to">
-                    đến ngày:
-                    <input type="date" class="rounded p-2 text-sm font-medium" v-model="option.from">
+                    <label for="to">
+                        Từ ngày:
+                    </label>
+                    <input if="to" type="date" class="rounded p-2 text-sm font-medium cursor-pointer"
+                        v-model="option.to">
+                    <label for="from">
+                        đến ngày:
+                    </label>
+                    <input id="from" type="date" class="rounded p-2 text-sm font-medium cursor-pointer"
+                        v-model="option.from">
                 </div>
             </div>
         </div>

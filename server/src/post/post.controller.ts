@@ -22,7 +22,7 @@ export class PostController {
     @Get('post-for-admin')
     @UseGuards(MyJWTGuard, RolesGuard)
     @Roles(USER_TYPES.ADMIN, USER_TYPES.POST_MANAGE)
-    getAllPostsForAdmin(@Query() option: { page: number, key: string, itemId: number, type: boolean, verify: number, sort: any }) {
+    getAllPostsForAdmin(@Query() option: { page: number, key: string, itemId: number, type: boolean, verify: number, to: string, from: string }) {
         return this.postService.getAllPostsForAdmin(option)
     }
 
@@ -34,8 +34,8 @@ export class PostController {
     @Patch('verify/:id')
     @UseGuards(MyJWTGuard, RolesGuard)
     @Roles(USER_TYPES.ADMIN, USER_TYPES.POST_MANAGE)
-    verifyPost(@Param('id', ParseIntPipe) id: number, @Body() verifyPostDto: VerifyPostDto) {
-        return this.postService.verifyPost(id, verifyPostDto)
+    verifyPost(@Param('id', ParseIntPipe) id: number, @Body() verifyPostDto: VerifyPostDto, @GetUser() user: User) {
+        return this.postService.verifyPost(id, verifyPostDto, user.id)
     }
 
     @Delete(':id')
@@ -61,5 +61,12 @@ export class PostController {
     @UseInterceptors(FileInterceptor('image'))
     searchPostByImage(@UploadedFile() image: Express.Multer.File) {
         return this.postService.searchPostByImage(image.buffer.toString('base64'))
+    }
+
+    @Get('get-posts-for-approved-by-admin')
+    @UseGuards(MyJWTGuard, RolesGuard)
+    @Roles(USER_TYPES.POST_MANAGE, USER_TYPES.ADMIN)
+    getAllPostForApprovedByAdminId(@GetUser() user: User, @Query() option: { page: number }) {
+        return this.postService.getAllPostForApprovedByAdminId(user.id, option)
     }
 }
