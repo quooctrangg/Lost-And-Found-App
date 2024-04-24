@@ -165,10 +165,30 @@ export const usePostStore = defineStore('post', () => {
         }
     }
 
+    const reviewHistory = async option => {
+        err.value = null
+        result.value = null
+        isLoading.value = true
+        posts.value = []
+        try {
+            let res = await postService.reviewHistory(authStore.token, option)
+            if (res.statusCode !== 200) throw new Error(res.message)
+            result.value = res
+            totalPages.value = res.data.totalPages
+            posts.value = res.data.data
+            totalCount.value = res.data.totalCount
+            if (currentPage.value > totalPages.value) currentPage.value = totalPages.value
+        } catch (error) {
+            err.value = error.message
+        } finally {
+            isLoading.value = false
+        }
+    }
+
     return {
         isShow, err, result, isLoading, totalPages, currentPage, key, posts, totalCount,
         createPost, getAllPostsForAdmin, verifyPost, deletePost, searchPostsByImage,
-        getAllPostsByUserId, getAllPostsForUser, getPostById,
+        getAllPostsByUserId, getAllPostsForUser, getPostById, reviewHistory,
         closeFilterModal, showFilterModal,
         closePostModal, showPostModal,
         closeRequestModal, showRequestModal

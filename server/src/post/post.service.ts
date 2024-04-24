@@ -124,7 +124,14 @@ export class PostService {
                     Image: true,
                     Item: true,
                     Location: true,
-                    ApprovedByAdmin: true
+                    ApprovedByAdmin: {
+                        select: {
+                            id: true,
+                            name: true,
+                            image: true,
+                            studentId: true
+                        }
+                    }
                 },
                 skip: next,
                 take: pageSize
@@ -409,7 +416,14 @@ export class PostService {
                     Image: true,
                     Item: true,
                     Location: true,
-                    ApprovedByAdmin: true
+                    ApprovedByAdmin: {
+                        select: {
+                            id: true,
+                            name: true,
+                            image: true,
+                            studentId: true
+                        }
+                    }
                 },
                 orderBy: {
                     createdAt: 'desc'

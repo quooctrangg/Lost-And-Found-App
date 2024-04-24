@@ -1,7 +1,8 @@
 <script setup>
-import { onMounted, ref, watch, watchEffect } from 'vue'
+import { onMounted, ref, watchEffect } from 'vue'
 import { FwbPagination } from 'flowbite-vue'
 import { useManageStore } from '../../../stores/manage.store'
+import { useUserStore } from '../../../stores/user.store'
 import { usePostStore } from '../../../stores/post.store'
 import { useToast } from 'vue-toast-notification'
 import Seach from '../../common/Seach.vue';
@@ -12,6 +13,7 @@ import dayjs from 'dayjs'
 
 const manageStore = useManageStore()
 const postStore = usePostStore()
+const userStore = useUserStore()
 const $toast = useToast()
 
 const emit = defineEmits(['currentPage'])
@@ -53,7 +55,11 @@ const deletePost = async (id) => {
 }
 
 const getAllPostForAdmin = async () => {
-    await postStore.getAllPostsForAdmin({ page: postStore.currentPage, verify: verify.value, key: key.value, to: to.value, from: from.value })
+    if (!sortByDate.value) {
+        await postStore.getAllPostsForAdmin({ page: postStore.currentPage, verify: verify.value, key: key.value })
+    } else {
+        await postStore.getAllPostsForAdmin({ page: postStore.currentPage, verify: verify.value, key: key.value, to: to.value, from: from.value })
+    }
 }
 
 const showHistory = () => {
@@ -74,6 +80,7 @@ watchEffect(async () => {
 
 onMounted(async () => {
     emit('currentPage', 'post')
+    postStore.currentPage = 1
     await getAllPostForAdmin()
 })
 </script>
@@ -154,9 +161,15 @@ onMounted(async () => {
                         </td>
                         <td v-else-if="post.verify == 1" class=" text-blue-500 text-center">
                             Đã duyệt
+                            <span class="text-black">
+                                ({{ post?.ApprovedByAdmin?.studentId }})
+                            </span>
                         </td>
                         <td v-else class=" text-red-500 text-center">
                             Từ chối
+                            <span class="text-black">
+                                ({{ post?.ApprovedByAdmin?.studentId }})
+                            </span>
                         </td>
                         <td class="text-center text-sm">
                             {{ dayjs(post.createdAt).format('LT DD/MM/YYYY') }}
@@ -187,13 +200,11 @@ onMounted(async () => {
                                 <i class="fa-regular fa-eye"></i>
                             </div>
                         </td>
-                        <td class="">
-                            <div class="">
-                                <button class="p-2 text-yellow-300 hover:text-yellow-200 text-2xl"
-                                    @click="async () => { await deletePost(post.id) }">
-                                    <i class="fa-solid fa-trash-can"></i>
-                                </button>
-                            </div>
+                        <td v-if="userStore.user.type == 0">
+                            <button class="p-2 text-yellow-300 hover:text-yellow-200 text-2xl"
+                                @click="async () => { await deletePost(post.id) }">
+                                <i class="fa-solid fa-trash-can"></i>
+                            </button>
                         </td>
                     </tr>
                     <tr v-else class="text-center text-red-500 text-xl">

@@ -93,6 +93,17 @@ class postService {
             }
         })).data
     }
+
+    async reviewHistory(token, option) {
+        let parameter = createQueryString(option)
+        return (await this.api.get(`/get-posts-for-approved-by-admin${parameter}`, {
+            headers: {
+                "Content-Type": "application/json",
+                Accept: "application/json",
+                Authorization: `Bearer ${token}`
+            }
+        })).data
+    }
 }
 
 export default new postService()

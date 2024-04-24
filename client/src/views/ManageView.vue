@@ -14,13 +14,19 @@ const name = {
     'item': 'DANH MỤC',
     'location': 'VỊ TRÍ',
     'school': 'TRƯỜNG',
-    'major': 'CHUYÊN NGÀNH'
+    'major': 'CHUYÊN NGÀNH',
+    'review-history': 'LỊCH SỬ DUYỆT BÀI ĐĂNG'
 }
 </script>
 
 <template>
     <div class="w-[90%] mx-auto flex flex-col gap-2">
-        <h1 class="text-2xl font-semibold text-center p-2">QUẢN LÝ {{ name[currentPage] }}</h1>
+        <h1 class="text-2xl font-semibold text-center p-2">
+            <span v-if="currentPage != 'review-history'">
+                QUẢN LÝ
+            </span>
+            {{ name[currentPage] }}
+        </h1>
         <div class="flex gap-2">
             <div class=" flex flex-col gap-2 w-[15%]">
                 <router-link :to="{ name: 'dashboard' }" class="rounded-lg shadow p-2 font-medium"
@@ -64,6 +70,11 @@ const name = {
                     :class="currentPage == 'major' ? 'bg-white text-sky-400 border-2 border-blue-400' : 'text-white  bg-sky-400 hover:bg-sky-500'">
                     <i class="fa-solid fa-book"></i>
                     Chuyên ngành
+                </router-link>
+                <router-link :to="{ name: 'review-history' }" class="rounded-lg shadow p-2 font-medium"
+                    :class="currentPage == 'review-history' ? 'bg-white text-sky-400 border-2 border-blue-400' : 'text-white  bg-sky-400 hover:bg-sky-500'">
+                    <i class="fa-solid fa-clock-rotate-left"></i>
+                    Lịch sử duyệt bài
                 </router-link>
             </div>
             <div class="border-2 border-blue-400 p-4 rounded-lg shadow flex-1">

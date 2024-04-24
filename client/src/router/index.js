@@ -160,6 +160,16 @@ const routes = [
                     if (!userStore.user?.id || userStore.user?.type != 0) next('home')
                     else next()
                 }
+            },
+            {
+                path: 'review-history',
+                name: 'review-history',
+                component: () => import('../components/manage/review-history/Review-History.vue'),
+                beforeEnter: (to, from, next) => {
+                    const userStore = useUserStore()
+                    if (!userStore.user?.id || userStore.user?.type != 0 && userStore.user?.type != 1) next('home')
+                    else next()
+                }
             }
         ]
     },
