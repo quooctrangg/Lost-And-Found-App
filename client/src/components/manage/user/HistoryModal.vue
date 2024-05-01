@@ -17,35 +17,35 @@ const props = defineProps(['user'])
         </template>
         <template #body>
             <div class="w-full max-h-60 overflow-y-scroll">
-                <table class="table-auto w-full">
+                <table class="table-fixed w-full">
                     <thead class="border-b border-black font-medium">
                         <tr class="text-left">
-                            <th class="px-6 py-4 w-[10%] border border-black">
+                            <th class="px-6 py-4 border border-black">
                                 STT
                             </th>
-                            <th class="px-6 py-4 w-[20%] text-center border border-black">
+                            <th class="px-6 py-4  text-center border border-black">
                                 Ngày khóa
                             </th>
-                            <th class="px-6 py-4 w-[20%] text-center border border-black">
+                            <th class="px-6 py-4 text-center border border-black">
                                 Thời gian khóa
                             </th>
-                            <th class=" px-6 py-4 w-[70%] text-center border border-black">
+                            <th class=" px-6 py-4 text-center border border-black">
                                 Lý do
                             </th>
                         </tr>
                     </thead>
                     <tbody>
                         <tr v-if="props.user?.Feedback.length" v-for="(feedback, i) in props.user?.Feedback" :key="i">
-                            <td class="whitespace-nowrap px-6 py-4 w-[10%] border border-black text-center">
+                            <td class=" px-6 py-4 border border-black text-center">
                                 {{ i + 1 }}
                             </td>
-                            <td class="whitespace-nowrap px-6 py-4 w-[20%] border border-black">
+                            <td class=" px-6 py-4 border border-black">
                                 {{ dayjs(feedback.createdAt).format('LT L') }}
                             </td>
-                            <td class="whitespace-nowrap px-6 py-4 w-[20%] border border-black">
+                            <td class=" px-6 py-4 border border-black">
                                 {{ feedback.time == -1 ? "Vĩnh viễn" : feedback.time + ' ngày' }}
                             </td>
-                            <td class="whitespace-nowrap px-6 py-4 w-[70%] border border-black">
+                            <td class=" px-6 py-4 border border-black">
                                 {{ feedback.content }}
                             </td>
                         </tr>
