@@ -2,6 +2,7 @@ import { Injectable, Logger } from '@nestjs/common';
 import { PrismaService } from '../prisma/prisma.service';
 import { ResponseData } from '../global';
 import { Workbook } from 'exceljs'
+import { join } from 'path';
 import * as moment from 'moment-timezone';
 
 @Injectable()
@@ -256,7 +257,7 @@ export class DashboardService {
         let start: any
         let end: any
         try {
-            let list: { lost: string, found: string, item: string, major: string, day: string, school: string }[] = []
+            let list: { stt: number, lost: string, found: string, item: string, major: string, day: string, school: string }[] = []
             let rows: any[] = []
             const { type, month, year, to, from } = option
             switch (type) {
@@ -339,49 +340,79 @@ export class DashboardService {
                     Item: true
                 }
             })
+            let count = 1
             lostandfond.forEach(e => {
                 if (e.Post.type == true) {
-                    list.push({ found: e.Post.User.studentId, school: e.Post.User.Major.School.name, major: e.Post.User.Major.name, lost: e.User.studentId, item: e.Post.Item.name, day: moment(e.updatedAt).format('DD-MM-YYYY') })
+                    list.push({ stt: count, found: e.Post.User.studentId, school: e.Post.User.Major.School.name, major: e.Post.User.Major.name, lost: e.User.studentId, item: e.Post.Item.name, day: moment(e.updatedAt).format('DD-MM-YYYY') })
                 } else {
-                    list.push({ found: e.User.studentId, school: e.User.Major.School.name, major: e.User.Major.name, lost: e.Post.User.studentId, item: e.Post.Item.name, day: moment(e.updatedAt).format('DD-MM-YYYY') })
+                    list.push({ stt: count, found: e.User.studentId, school: e.User.Major.School.name, major: e.User.Major.name, lost: e.Post.User.studentId, item: e.Post.Item.name, day: moment(e.updatedAt).format('DD-MM-YYYY') })
                 }
+                count++
             })
             sendProtection.forEach(e => {
-                list.push({ found: e.User.studentId, school: e.User.Major.School.name, major: e.User.Major.name, lost: '', item: e.Item.name, day: moment(e.updatedAt).format('DD-MM-YYYY') })
+                list.push({ stt: count, found: e.User.studentId, school: e.User.Major.School.name, major: e.User.Major.name, lost: '', item: e.Item.name, day: moment(e.updatedAt).format('DD-MM-YYYY') })
+                count++
             })
             list.forEach(doc => {
                 rows.push(Object.values(doc))
             })
             let book = new Workbook()
-            let sheet = book.addWorksheet('DanhSach')
             let name = this.setDate(option)
-            rows.unshift(['Người tìm thấy', 'Trường / khoa', 'Chuyên ngành', 'Người thất lạc', 'Loại đồ', 'Ngày'])
-            rows.unshift([name])
-            rows.unshift(['Danh sách các sinh viên nhặt và trả lại thành công'])
+            let sheet = book.addWorksheet(`DanhSach-${name}`)
+            const imageId = book.addImage({
+                filename: join(__dirname, 'logo/logo.png'),
+                extension: 'png'
+            });
+            sheet.addImage(imageId, { tl: { col: 1, row: 1 }, ext: { width: 70, height: 70 } });
+            sheet.getCell('B3').value = 'TRƯỜNG ĐẠI HỌC CẦN THƠ'
+            sheet.getCell('B3').font = { size: 12 };
+            sheet.getCell('B3').alignment = { vertical: 'middle', horizontal: 'center' }
+            sheet.mergeCells('B3:C3')
+            sheet.getCell('B4').value = 'ĐOÀN THANH NIÊN'
+            sheet.getCell('B4').font = { size: 12, bold: true };
+            sheet.getCell('B4').alignment = { vertical: 'middle', horizontal: 'center' }
+            sheet.mergeCells('B4:C4')
+            sheet.getCell('E3').value = 'CỘNG HÒA XÃ HỘI CHỦ NGHĨA VIỆT NAM'
+            sheet.getCell('E3').font = { size: 12, bold: true };
+            sheet.getCell('E3').alignment = { vertical: 'middle', horizontal: 'center' }
+            sheet.mergeCells('E3:G3')
+            sheet.getCell('E4').value = 'Độc Lập - Tự Do - Hạnh Phúc'
+            sheet.getCell('E4').font = { size: 12, bold: true };
+            sheet.getCell('E4').alignment = { vertical: 'middle', horizontal: 'center' }
+            sheet.mergeCells('E4:G4')
+            sheet.getCell('A6').value = 'DANH SÁCH CÁC SINH VIÊN NHẶT VÀ TRẢ LẠI ĐỒ VẬT THÀNH CÔNG'
+            sheet.getCell('A6').font = { size: 16, bold: true };
+            sheet.getCell('A6').alignment = { vertical: 'middle', horizontal: 'center' }
+            sheet.mergeCells('A6:G6')
+            sheet.getCell('A7').value = `Thời gian: ${name}`
+            sheet.getCell('A7').font = { size: 12 };
+            sheet.getCell('A7').alignment = { vertical: 'middle', horizontal: 'center' }
+            sheet.mergeCells('A7:G7')
+            rows.unshift(['STT', 'Người tìm thấy', 'Trường / khoa', 'Chuyên ngành', 'Người thất lạc', 'Loại đồ', 'Ngày'])
+            rows.unshift('')
             sheet.addRows(rows)
-            sheet.getColumn(1).width = 20.5
-            sheet.getColumn(2).width = 50
+            sheet.getColumn(1).width = 5
+            sheet.getColumn(2).width = 20.5
             sheet.getColumn(3).width = 40
-            sheet.getColumn(4).width = 20.5
+            sheet.getColumn(4).width = 40
             sheet.getColumn(5).width = 20.5
             sheet.getColumn(6).width = 20.5
-            sheet.mergeCells(1, 1, 1, 6)
-            sheet.mergeCells(2, 1, 2, 6)
-            sheet.getCell('A1').alignment = { vertical: 'middle', horizontal: 'center' }
-            sheet.getCell('A2').alignment = { vertical: 'middle', horizontal: 'center' }
-            sheet.getCell('A1').font = { size: 20, bold: true };
-            for (let i = 0; i < 6; i++) {
-                sheet.getCell(3, i + 1).font = { size: 13, bold: true }
-                sheet.getCell(3, i + 1).border = {
+            sheet.getColumn(7).width = 20.5
+            for (let i = 0; i < 7; i++) {
+                sheet.getCell(9, i + 1).font = { size: 12, bold: true }
+                sheet.getCell(9, i + 1).alignment = { vertical: 'middle', horizontal: 'center' }
+                sheet.getCell(9, i + 1).border = {
                     top: { style: 'thin' },
                     left: { style: 'thin' },
                     bottom: { style: 'thin' },
                     right: { style: 'thin' }
                 };
             }
-            for (let j = 4; j <= rows.length; j++) {
-                for (let i = 0; i < 6; i++) {
-                    sheet.getCell(j, i + 1).border = {
+            for (let j = 0; j < rows.length - 2; j++) {
+                for (let i = 0; i < 7; i++) {
+                    sheet.getCell(j + 10, i + 1).font = { size: 12 }
+                    sheet.getCell(`A${j + 10}`).alignment = { vertical: 'middle', horizontal: 'center' }
+                    sheet.getCell(j + 10, i + 1).border = {
                         top: { style: 'thin' },
                         left: { style: 'thin' },
                         bottom: { style: 'thin' },

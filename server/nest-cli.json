@@ -12,6 +12,10 @@
             {
                 "include": "suggest/scripts/**/*",
                 "outDir": "dist"
+            },
+            {
+                "include": "dashboard/logo/**/*",
+                "outDir": "dist"
             }
         ],
         "watchAssets": true
