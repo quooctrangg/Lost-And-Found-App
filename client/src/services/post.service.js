@@ -66,11 +66,12 @@ class postService {
         })).data
     }
 
-    async getPostById(id) {
+    async getPostById(token, id) {
         return (await this.api.get(`/details/${id}`, {
             headers: {
                 "Content-Type": "application/json",
-                Accept: "application/json"
+                Accept: "application/json",
+                Authorization: `Bearer ${token}`
             }
         })).data
     }

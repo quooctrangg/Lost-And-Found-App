@@ -138,7 +138,7 @@ export const usePostStore = defineStore('post', () => {
         result.value = null
         isLoading.value = true
         try {
-            let res = await postService.getPostById(id)
+            let res = await postService.getPostById(authStore.token, id)
             if (res.statusCode !== 200) throw new Error(res.message)
             result.value = res
         } catch (error) {

@@ -46,6 +46,8 @@ export class PostController {
     }
 
     @Get('details/:id')
+    @UseGuards(MyJWTGuard, RolesGuard)
+    @Roles(USER_TYPES.USER, USER_TYPES.POST_MANAGE, USER_TYPES.ADMIN)
     getPostById(@Param('id', ParseIntPipe) id: number) {
         return this.postService.getPostById(id)
     }

@@ -146,7 +146,7 @@ export class SuggestService {
 
     async getNearImage(image: string) {
         try {
-            const urls = await this.searchUrlsByImage(image, 0.8, 2)
+            const urls = await this.searchUrlsByImage(image, 0.7, 2)
             const posts = await this.prismaService.post.findMany({
                 where: {
                     Image: {

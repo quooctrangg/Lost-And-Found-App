@@ -18,7 +18,6 @@ export class PostService {
             let uploadedImages: number[] = []
             for (const file of files) {
                 const result = await this.cloudinaryService.uploadFile(file)
-                await this.suggestService.addToDatabase(result.url)
                 const data = await this.prismaService.image.create({
                     data: {
                         url: result.url
@@ -220,6 +219,9 @@ export class PostService {
             const isPost = await this.prismaService.post.findUnique({
                 where: {
                     id: id
+                },
+                include: {
+                    Image: true
                 }
             })
             if (!isPost) {
@@ -238,6 +240,10 @@ export class PostService {
             }
             if (verifyPostDto.verify == -1) {
                 data.feedback = verifyPostDto.feedback
+            } else {
+                isPost.Image.forEach(async (image) => {
+                    await this.suggestService.addToDatabase(image.url)
+                })
             }
             await this.prismaService.post.update({
                 where: {
@@ -346,7 +352,7 @@ export class PostService {
 
     async searchPostByImage(image: string) {
         try {
-            const urls = await this.suggestService.searchUrlsByImage(image, 0.8, 5)
+            const urls = await this.suggestService.searchUrlsByImage(image, 0.7, 5)
             const posts = await this.prismaService.post.findMany({
                 where: {
                     Image: {
