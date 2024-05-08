@@ -357,7 +357,7 @@ export class UserService {
         try {
             const verifyCode = await this.prismaService.verifyCode.findFirst({
                 where: {
-                    studentId: forgotPasswordDto.studentId,
+                    studentId: forgotPasswordDto.studentId.toLowerCase(),
                     code: forgotPasswordDto.code
                 }
             })
@@ -371,7 +371,7 @@ export class UserService {
             }
             const user = await this.prismaService.user.findFirst({
                 where: {
-                    studentId: forgotPasswordDto.studentId
+                    studentId: forgotPasswordDto.studentId.toLowerCase()
                 }
             })
             if (!user) {
@@ -391,7 +391,7 @@ export class UserService {
             }
             await this.prismaService.verifyCode.deleteMany({
                 where: {
-                    studentId: user.studentId
+                    studentId: user.studentId.toLowerCase()
                 }
             })
             return new ResponseData<string>(null, 200, 'Đổi mật khẩu thành công')
@@ -405,7 +405,7 @@ export class UserService {
         try {
             const user = await this.prismaService.user.findFirst({
                 where: {
-                    studentId: verifyCodeDto.studentId
+                    studentId: verifyCodeDto.studentId.toLowerCase()
                 }
             })
             if (!user) {
@@ -413,13 +413,13 @@ export class UserService {
             }
             await this.prismaService.verifyCode.deleteMany({
                 where: {
-                    studentId: user.studentId
+                    studentId: user.studentId.toLowerCase()
                 }
             })
             const code = this.random6DigitNumber()
             await this.prismaService.verifyCode.create({
                 data: {
-                    studentId: user.studentId,
+                    studentId: user.studentId.toLowerCase(),
                     code: parseInt(code)
                 }
             })
