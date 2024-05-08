@@ -144,7 +144,8 @@ export class RequestService {
             const data = await this.prismaService.request.findMany({
                 where: {
                     Post: {
-                        userId: userId
+                        userId: userId,
+                        isDelete: false
                     },
                     status: 0
                 },
