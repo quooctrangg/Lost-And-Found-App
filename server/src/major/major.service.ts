@@ -82,6 +82,12 @@ export class MajorService {
 
     async create(createMajorDto: CreateMajorDto) {
         try {
+            const data = await this.prismaService.major.findFirst({
+                where: {
+                    name: createMajorDto.name
+                }
+            })
+            if (data) return new ResponseData<string>(null, 400, 'Ngành đã tồn tại')
             const school = await this.prismaService.school.findUnique({
                 where: {
                     id: createMajorDto.schoolId
@@ -106,6 +112,12 @@ export class MajorService {
 
     async update(id: number, updateMajorDto: UpdateMajorDto) {
         try {
+            const data = await this.prismaService.major.findFirst({
+                where: {
+                    name: updateMajorDto.name
+                }
+            })
+            if (data) return new ResponseData<string>(null, 400, 'Ngành đã tồn tại')
             if (updateMajorDto.schoolId) {
                 const school = await this.prismaService.school.findUnique({
                     where: {

@@ -52,6 +52,14 @@ export class ItemService {
 
     async create(createItemDto: CreateItemDto) {
         try {
+            const data = await this.prismaService.item.findFirst({
+                where: {
+                    name: createItemDto.name
+                }
+            })
+            if (data) {
+                return new ResponseData<any>(null, 400, 'Đã tồn tại')
+            }
             await this.prismaService.item.create({
                 data: {
                     name: createItemDto.name
@@ -66,6 +74,14 @@ export class ItemService {
 
     async update(id: number, updateItemDto: UpdateItemDto) {
         try {
+            const item = await this.prismaService.item.findFirst({
+                where: {
+                    name: updateItemDto.name
+                }
+            })
+            if (item) {
+                return new ResponseData<any>(null, 400, 'Đã tồn tại')
+            }
             const data = await this.prismaService.item.findUnique({
                 where: {
                     id: id

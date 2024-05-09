@@ -63,6 +63,19 @@ export class LocationService {
 
     async create(createLocationDto: CreateLocationDto) {
         try {
+            const data = await this.prismaService.location.findFirst({
+                where: {
+                    OR: [
+                        {
+                            name: createLocationDto.name
+                        },
+                        {
+                            symbol: createLocationDto.symbol
+                        }
+                    ]
+                }
+            })
+            if (data) return new ResponseData<any>(null, 400, 'Tên hoặc ký hiệu đã tồn tại')
             await this.prismaService.location.create({
                 data: { ...createLocationDto }
             })
@@ -75,6 +88,19 @@ export class LocationService {
 
     async update(id: number, updateLocationDto: UpdateLocationDto) {
         try {
+            const location = await this.prismaService.location.findFirst({
+                where: {
+                    OR: [
+                        {
+                            name: updateLocationDto.name
+                        },
+                        {
+                            symbol: updateLocationDto.symbol
+                        }
+                    ]
+                }
+            })
+            if (location) return new ResponseData<any>(null, 400, 'Tên hoặc ký hiệu đã tồn tại')
             const data = await this.prismaService.location.findUnique({
                 where: {
                     id: id

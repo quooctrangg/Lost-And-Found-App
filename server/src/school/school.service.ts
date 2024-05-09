@@ -53,6 +53,12 @@ export class SchoolService {
 
     async create(createSchoolDto: CreateSchoolDto) {
         try {
+            const data = await this.prismaService.school.findFirst({
+                where: {
+                    name: createSchoolDto.name
+                }
+            })
+            if (data) return new ResponseData<any>(null, 400, 'Đã tồn tại')
             await this.prismaService.school.create({
                 data: {
                     name: createSchoolDto.name
@@ -67,6 +73,12 @@ export class SchoolService {
 
     async update(id: number, updateSchoolDto: UpdateSchoolDto) {
         try {
+            const school = await this.prismaService.school.findFirst({
+                where: {
+                    name: updateSchoolDto.name
+                }
+            })
+            if (school) return new ResponseData<any>(null, 400, 'Đã tồn tại')
             const data = await this.prismaService.school.findUnique({
                 where: {
                     id: id

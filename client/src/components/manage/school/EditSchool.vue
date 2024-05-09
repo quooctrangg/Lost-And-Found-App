@@ -58,7 +58,7 @@ watchEffect(async () => {
             </template>
             <template #footer>
                 <div class="flex justify-end gap-2">
-                    <fwb-button color="red">
+                    <fwb-button color="blue">
                         Sửa
                     </fwb-button>
                     <fwb-button @click="manageStore.closeEditSchoolModal" color="red">

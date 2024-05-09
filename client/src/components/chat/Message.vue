@@ -1,6 +1,7 @@
 <script setup>
 import { useUserStore } from '../../stores/user.store'
 import dayjs from 'dayjs'
+import Image from 'primevue/image';
 
 const userStore = useUserStore()
 
@@ -20,13 +21,22 @@ const props = defineProps(['message'])
                 {{ props.message?.content }}
             </p>
             <p v-else class="w-full bg-white" :class="userStore.user.id === props.message.User.id ? '' : 'text-left'">
-                <img class="w-[200px] object-cover" :src="props.message?.content">
+                <!-- <img class="w-[200px] object-cover" :src="props.message?.content"> -->
+                <Image :src="props.message?.content" :alt="props.message?.content" width="250" preview
+                    :pt="{ icon: 'p-image-action' }" />
+
             </p>
             <span class="text-xs ">
                 {{ dayjs().diff(dayjs(props.message?.createdAt), 'day') > 0 ?
-            dayjs(props.message?.createdAt).format('LT L') :
-            dayjs(props.message?.createdAt).fromNow() }}
+                    dayjs(props.message?.createdAt).format('LT L') :
+                    dayjs(props.message?.createdAt).fromNow() }}
             </span>
         </div>
     </div>
 </template>
+
+<style>
+.p-image-action {
+    color: white;
+}
+</style>
